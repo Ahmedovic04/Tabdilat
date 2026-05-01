@@ -1,0 +1,2740 @@
+MIME-Version: 1.0
+X-Document-Type: Worksheet
+Content-Location: file:///C:/CE594994/Book4.htm
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office"
+xmlns:x=3D"urn:schemas-microsoft-com:office:excel"
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; charset=3D"utf-8">
+<meta name=3DProgId content=3DExcel.Sheet>
+<meta name=3DGenerator content=3D"Microsoft Excel 12">
+<link rel=3DFile-List href=3D"Book4_files/filelist.xml">
+<style id=3D"Book4_23370_Styles">
+<!--table
+	{mso-displayed-decimal-separator:"\,";
+	mso-displayed-thousand-separator:" ";}
+.xl1, .xl1b, .xl2, .s58, .s57, .s56, .s55, .s54, .s53, .s52, .s51, .s50, .s49, .s48, .s47, .s46, .s45, .s44, .s43, .s42, .s41, .s40, .s39, .s38, .s37, .s36, .s35, .s34, .s33, .s32, .s31, .s30, .s29, .s28, .s27, .s26, .s25, .s24, .s23, .s22, .s21, .s20, .s19, .s18, .s17, .s16, .s15, .s14, .s13, .s12, .s11, .xl3, .xl2b, .s70, .s69, .s68, .s67, .s66, .s65, .s64, .s63, .s62, .s61, .s60, .s59, .xl3b, .xl2h, .xl3h {
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:238;
+	text-align:general;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;
+	border-left:0.5pt solid black;
+	border-right:0.5pt solid black;
+	border-top:0.5pt solid black;
+	border-bottom:0.5pt solid black;
+	min-width:20px;
+}
+.xl1, .xl1b {
+	font-weight:700;
+	mso-number-format:General;
+	text-align:center; 
+	vertical-align:bottom;
+	border-top:2px solid black;
+	border-bottom:2px solid black;
+}
+.xl1b, .xl2b, .s70, .s69, .s68, .s67, .s66, .s65, .s64, .s63, .s62, .s61, .s60, .s59, .xl3b, .xl2h, .xl3h {
+	border-right:2px solid black;
+}
+.xl2, .s58, .s57, .s56, .s55, .s54, .s53, .s52, .s51, .s50, .s49, .s48, .s47, .s46, .s45, .s44, .s43, .s42, .s41, .s40, .s39, .s38, .s37, .s36, .s35, .s34, .s33, .s32, .s31, .s30, .s29, .s28, .s27, .s26, .s25, .s24, .s23, .s22, .s21, .s20, .s19, .s18, .s17, .s16, .s15, .s14, .s13, .s12, .s11, .xl3, .xl2b, .s70, .s69, .s68, .s67, .s66, .s65, .s64, .s63, .s62, .s61, .s60, .s59, .xl3b, .xl2h, .xl3h {
+	font-weight:normal;
+	mso-number-format:"\@";
+	vertical-align:middle;
+}
+.xl3, .xl3b, .xl3h {
+	background:#E0E0E0; 
+	mso-pattern:#E0E0E0 none;
+}
+.xl2h, .xl3h {
+	font-weight:700; 
+	text-align:center; 
+	vertical-align:middle;
+}
+.s11 {
+	background:#FF0000; mso-pattern:#FF0000 none;
+}
+.s12, .s59 {
+	background:#FF6666; mso-pattern:#FF6666 none;
+}
+.s13 {
+	background:#FFCC66; mso-pattern:#FFCC66 none;
+}
+.s14 {
+	background:#FFCCFF; mso-pattern:#FFCCFF none;
+}
+.s15, .s60 {
+	background:#FFFF80; mso-pattern:#FFFF80 none;
+}
+.s16, .s61 {
+	background:#996633; mso-pattern:#996633 none;
+}
+.s17, .s62 {
+	background:#FFFF66; mso-pattern:#FFFF66 none;
+}
+.s18 {
+	background:#FF8000; mso-pattern:#FF8000 none;
+}
+.s19 {
+	background:#009933; mso-pattern:#009933 none;
+}
+.s20, .s63 {
+	background:#80C014; mso-pattern:#80C014 none;
+}
+.s21 {
+	background:#DDFF97; mso-pattern:#DDFF97 none;
+}
+.s22, .s64 {
+	background:#80FF80; mso-pattern:#80FF80 none;
+}
+.s23 {
+	background:#669900; mso-pattern:#669900 none;
+}
+.s24 {
+	background:#6666FF; mso-pattern:#6666FF none;
+}
+.s25, .s65 {
+	background:#66FFFF; mso-pattern:#66FFFF none;
+}
+.s26, .s66 {
+	background:#FFFFCC; mso-pattern:#FFFFCC none;
+}
+.s27 {
+	background:#00FF00; mso-pattern:#00FF00 none;
+}
+.s28, .s67 {
+	background:#80FFFF; mso-pattern:#80FFFF none;
+}
+.s29 {
+	background:#3333FF; mso-pattern:#3333FF none;
+}
+.s30 {
+	background:#C014FF; mso-pattern:#C014FF none;
+}
+.s31 {
+	background:#99FF66; mso-pattern:#99FF66 none;
+}
+.s32 {
+	background:#00CCFF; mso-pattern:#00CCFF none;
+}
+.s33 {
+	background:#CCFFFF; mso-pattern:#CCFFFF none;
+}
+.s34 {
+	background:#33CC33; mso-pattern:#33CC33 none;
+}
+.s35 {
+	background:#FFFFFF; mso-pattern:#FFFFFF none;
+}
+.s36 {
+	background:#FFFF00; mso-pattern:#FFFF00 none;
+}
+.s37 {
+	background:#00FF80; mso-pattern:#00FF80 none;
+}
+.s38, .s68 {
+	background:#008080; mso-pattern:#008080 none;
+}
+.s39 {
+	background:#FF00FF; mso-pattern:#FF00FF none;
+}
+.s40 {
+	background:#808080; mso-pattern:#808080 none;
+}
+.s41 {
+	background:#808000; mso-pattern:#808000 none;
+}
+.s42 {
+	background:#FF8080; mso-pattern:#FF8080 none;
+}
+.s43 {
+	background:#FF9966; mso-pattern:#FF9966 none;
+}
+.s44 {
+	background:#00FFFF; mso-pattern:#00FFFF none;
+}
+.s45 {
+	background:#00CC00; mso-pattern:#00CC00 none;
+}
+.s46 {
+	background:#FFC0C0; mso-pattern:#FFC0C0 none;
+}
+.s47 {
+	background:#8000FF; mso-pattern:#8000FF none;
+}
+.s48 {
+	background:#CC6600; mso-pattern:#CC6600 none;
+}
+.s49, .s69 {
+	background:#00C0FF; mso-pattern:#00C0FF none;
+}
+.s50 {
+	background:#C0FFFF; mso-pattern:#C0FFFF none;
+}
+.s51 {
+	background:#C0C000; mso-pattern:#C0C000 none;
+}
+.s52 {
+	background:#80C0FF; mso-pattern:#80C0FF none;
+}
+.s53 {
+	background:#00FFC0; mso-pattern:#00FFC0 none;
+}
+.s54 {
+	background:#60FFC0; mso-pattern:#60FFC0 none;
+}
+.s55 {
+	background:#6060C0; mso-pattern:#6060C0 none;
+}
+.s56, .s70 {
+	background:#14C0C0; mso-pattern:#14C0C0 none;
+}
+.s57 {
+	background:#0000FF; mso-pattern:#0000FF none;
+}
+.s58 {
+	background:#14C030; mso-pattern:#14C030 none;
+}
+-->
+</style>
+</head>
+
+<body>
+<!--[if !excel]>&nbsp;&nbsp;<![endif]-->
+<!--The following information was generated by Microsoft Office Excel's Pub=
+lish
+as Web Page wizard.-->
+<!--If the same item is republished from Excel, all information between the=
+ DIV
+tags will be replaced.-->
+<!----------------------------->
+<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
+<!----------------------------->
+<h1>Summary timetable of teachers</h1>
+
+<div id=3D"Book4_23370" align=3Dcenter x:publishsource=3D"Excel">
+
+<table border=3D1 cellpadding=3D0 cellspacing=3D0 style=3D'border:2px solid black; border-collapse: collapse;table-layout:fixed'>
+<tr>
+<td class=3Dxl1b></td>
+<td colspan=3D'7' class=3Dxl1b>الأحد</td>
+<td colspan=3D'7' class=3Dxl1b>الإثنين</td>
+<td colspan=3D'7' class=3Dxl1b>الثلاثاء</td>
+<td colspan=3D'7' class=3Dxl1b>الأربعاء</td>
+<td colspan=3D'7' class=3Dxl1b>الخميس</td>
+</tr>
+<tr>
+<td class=3Dxl1b>Teacher</td>
+<td class=3Dxl1>1</td>
+<td class=3Dxl1>2</td>
+<td class=3Dxl1>3</td>
+<td class=3Dxl1>4</td>
+<td class=3Dxl1>5</td>
+<td class=3Dxl1>6</td>
+<td class=3Dxl1b>7</td>
+<td class=3Dxl1>1</td>
+<td class=3Dxl1>2</td>
+<td class=3Dxl1>3</td>
+<td class=3Dxl1>4</td>
+<td class=3Dxl1>5</td>
+<td class=3Dxl1>6</td>
+<td class=3Dxl1b>7</td>
+<td class=3Dxl1>1</td>
+<td class=3Dxl1>2</td>
+<td class=3Dxl1>3</td>
+<td class=3Dxl1>4</td>
+<td class=3Dxl1>5</td>
+<td class=3Dxl1>6</td>
+<td class=3Dxl1b>7</td>
+<td class=3Dxl1>1</td>
+<td class=3Dxl1>2</td>
+<td class=3Dxl1>3</td>
+<td class=3Dxl1>4</td>
+<td class=3Dxl1>5</td>
+<td class=3Dxl1>6</td>
+<td class=3Dxl1b>7</td>
+<td class=3Dxl1>1</td>
+<td class=3Dxl1>2</td>
+<td class=3Dxl1>3</td>
+<td class=3Dxl1>4</td>
+<td class=3Dxl1>5</td>
+<td class=3Dxl1>6</td>
+<td class=3Dxl1b>7</td>
+</tr>
+<tr>
+<td class=3Dxl3h>اسامه انور</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds11>S6</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds11>S6</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds11>S6</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds11>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>احمد الخلايلة</td>
+<td class=3Ds12>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds59>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds59>S4</td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S4</td>
+<td class=3Dxl2></td>
+<td class=3Ds59>S1</td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S4</td>
+<td class=3Ds59>S5</td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds12>S5</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>محمد سليمان</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FFCC66; mso-pattern:#FFCC66 none'>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F2</td>
+<td class=3Ds13>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FFCC66; mso-pattern:#FFCC66 none'>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F2</td>
+<td class=3Ds13>F6</td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F5</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F2</td>
+<td class=3Ds13>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F5</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds13>F2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>ضيف الله</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F3</td>
+<td class=3Ds14>F1</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#FFCCFF; mso-pattern:#FFCCFF none'>F3</td>
+<td class=3Ds14>F4</td>
+<td class=3Ds14>F1</td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#FFCCFF; mso-pattern:#FFCCFF none'>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F1</td>
+<td class=3Ds14>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F3</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds14>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>خالد جمعه</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds60>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds60>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S3</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S8</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>S3</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محسن فضل</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S2</td>
+<td class=3Ds61>S9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S7</td>
+<td class=3Ds16>S9</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S7</td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds61>S9</td>
+<td class=3Ds16>S7</td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S7</td>
+<td class=3Ds16>S9</td>
+<td class=3Dxl2></td>
+<td class=3Ds16>S2</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>احمد الرفاعي</td>
+<td class=3Ds17>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds62>F8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds62>F8</td>
+<td class=3Ds17>F8</td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F7</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds62>F8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F9</td>
+<td class=3Dxl3></td>
+<td class=3Ds17>F7</td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد عبدالقادر</td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>مثنى مرزوق</td>
+<td class=3Ds19>F1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl2b style=3D'background:#009933; mso-pattern:#009933 none'>F1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl2b style=3D'background:#009933; mso-pattern:#009933 none'>F1</td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F1</td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl3></td>
+<td class=3Ds19>F2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد حسان</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds63>F9</td>
+<td class=3Ds20>F9</td>
+<td class=3Ds20>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F9</td>
+<td class=3Ds20>F8</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds63>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F8</td>
+<td class=3Ds20>F9</td>
+<td class=3Ds20>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>خليل حسين</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#DDFF97; mso-pattern:#DDFF97 none'>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F6</td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F5</td>
+<td class=3Dxl3b></td>
+<td class=3Ds21>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F6</td>
+<td class=3Ds21>F6</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#DDFF97; mso-pattern:#DDFF97 none'>F5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds21>F5</td>
+<td class=3Ds21>F6</td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>وائل الدوان</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds64>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds64>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds64>F4</td>
+<td class=3Ds22>F3</td>
+<td class=3Ds22>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F4</td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F4</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F4</td>
+<td class=3Dxl2></td>
+<td class=3Ds22>F3</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>فؤاد التلاحمة</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S6</td>
+<td class=3Dxl2b style=3D'background:#669900; mso-pattern:#669900 none'>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#669900; mso-pattern:#669900 none'>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S9</td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S9</td>
+<td class=3Ds23>S6</td>
+<td class=3Ds23>S9</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds23>S6</td>
+<td class=3Ds23>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>سامر شداد</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S7</td>
+<td class=3Ds24>S3</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S7</td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S3</td>
+<td class=3Dxl2b></td>
+<td class=3Ds24>S3</td>
+<td class=3Ds24>S7</td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S3</td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S7</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S7</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#6666FF; mso-pattern:#6666FF none'>S3</td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S3</td>
+<td class=3Dxl2></td>
+<td class=3Ds24>S7</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>محمود مسلم</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S1</td>
+<td class=3Dxl3></td>
+<td class=3Ds65>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S4</td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S1</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S1</td>
+<td class=3Ds65>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S1</td>
+<td class=3Ds25>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds65>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds25>S4</td>
+<td class=3Ds25>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>اسماعيل القادري</td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds66>S8</td>
+<td class=3Ds26>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds66>S2</td>
+<td class=3Ds26>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2b></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds26>S8</td>
+<td class=3Dxl2></td>
+<td class=3Ds26>S8</td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds26>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>عصام الحمايدة</td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#00FF00; mso-pattern:#00FF00 none'>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds27>F7</td>
+<td class=3Ds66>S2</td>
+<td class=3Ds27>F7</td>
+<td class=3Ds27>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl3b></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds26>S2</td>
+<td class=3Dxl2b style=3D'background:#00FF00; mso-pattern:#00FF00 none'>F7</td>
+<td class=3Dxl3></td>
+<td class=3Ds27>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد حسان</td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds63>F9</td>
+<td class=3Ds20>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F9</td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds63>F9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds20>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>خالد محمود</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds28>S5</td>
+<td class=3Ds67></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds28>S5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds28>S5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds28>S5</td>
+<td class=3Dxl3></td>
+<td class=3Ds28>S5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>علي بني ملحم</td>
+<td class=3Ds29>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F1</td>
+<td class=3Ds29>F4</td>
+<td class=3Dxl2></td>
+<td class=3Ds67></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F4</td>
+<td class=3Ds29>F1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#3333FF; mso-pattern:#3333FF none'>F5</td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F5</td>
+<td class=3Ds29>F1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F4</td>
+<td class=3Dxl2b></td>
+<td class=3Ds29>F4</td>
+<td class=3Ds29>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F1</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F1</td>
+<td class=3Dxl2></td>
+<td class=3Ds29>F5</td>
+<td class=3Ds29>F4</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>محمد السراحنة</td>
+<td class=3Ds30>F3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F9</td>
+<td class=3Ds30>F8</td>
+<td class=3Ds67></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F3</td>
+<td class=3Dxl3b></td>
+<td class=3Ds30>F3</td>
+<td class=3Ds30>F9</td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F8</td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F9</td>
+<td class=3Dxl3b></td>
+<td class=3Ds30>F8</td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F8</td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#C014FF; mso-pattern:#C014FF none'>F3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F8</td>
+<td class=3Ds30>F3</td>
+<td class=3Dxl3></td>
+<td class=3Ds30>F9</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمود الحطاب</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F2</td>
+<td class=3Ds31>F6</td>
+<td class=3Ds67></td>
+<td class=3Ds31>F7</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F7</td>
+<td class=3Ds31>F6</td>
+<td class=3Dxl2b></td>
+<td class=3Ds31>F6</td>
+<td class=3Ds31>F2</td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#99FF66; mso-pattern:#99FF66 none'>F7</td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F7</td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F2</td>
+<td class=3Ds31>F6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F7</td>
+<td class=3Ds31>F6</td>
+<td class=3Dxl2></td>
+<td class=3Ds31>F2</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>حمزه ابو عكاز</td>
+<td class=3Ds32>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds32>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds67></td>
+<td class=3Ds32>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds32>S2</td>
+<td class=3Dxl3b></td>
+<td class=3Ds32>S2</td>
+<td class=3Ds32>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds32>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#00CCFF; mso-pattern:#00CCFF none'>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds32>S1</td>
+<td class=3Dxl3></td>
+<td class=3Ds32>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>رامو الشياب</td>
+<td class=3Ds33>S6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S4</td>
+<td class=3Ds33>S9</td>
+<td class=3Dxl2></td>
+<td class=3Ds67></td>
+<td class=3Ds33>S6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S9</td>
+<td class=3Ds33>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S6</td>
+<td class=3Ds33>S4</td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S9</td>
+<td class=3Dxl2b></td>
+<td class=3Ds33>S9</td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S6</td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S9</td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S4</td>
+<td class=3Dxl2></td>
+<td class=3Ds33>S6</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>عبدالله خلف</td>
+<td class=3Ds34>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S7</td>
+<td class=3Ds34>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds67></td>
+<td class=3Ds34>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S8</td>
+<td class=3Dxl2b style=3D'background:#33CC33; mso-pattern:#33CC33 none'>S3</td>
+<td class=3Ds34>S7</td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S8</td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds34>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S7</td>
+<td class=3Ds34>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#33CC33; mso-pattern:#33CC33 none'>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds34>S8</td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد بن أدات</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds35>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds35>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds35>S8</td>
+<td class=3Dxl2></td>
+<td class=3Ds35>S8</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#FFFFFF; mso-pattern:#FFFFFF none'>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds35>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>احمد عبدالفتاح</td>
+<td class=3Ds36>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S9</td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S1</td>
+<td class=3Dxl2b style=3D'background:#FFFF00; mso-pattern:#FFFF00 none'>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds35></td>
+<td class=3Ds36>S9</td>
+<td class=3Ds36>S1</td>
+<td class=3Ds36>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FFFF00; mso-pattern:#FFFF00 none'>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S9</td>
+<td class=3Dxl3></td>
+<td class=3Ds36>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>احمد ربابعة</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds37>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S5</td>
+<td class=3Ds37>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#00FF80; mso-pattern:#00FF80 none'>S5</td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S5</td>
+<td class=3Ds37>S4</td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S4</td>
+<td class=3Ds37>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S4</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>نعيم فضل</td>
+<td class=3Ds38>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds68>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds38>S6</td>
+<td class=3Ds38>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds68>S7</td>
+<td class=3Ds35></td>
+<td class=3Ds38>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds38>S7</td>
+<td class=3Ds38>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds38>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds38>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds68>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds38>S7</td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد يسن</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#808080; mso-pattern:#808080 none'>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds40>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds40>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2b style=3D'background:#FF00FF; mso-pattern:#FF00FF none'>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>عبدالرحمن جبر</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#808080; mso-pattern:#808080 none'>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds40>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds35></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds40>S2</td>
+<td class=3Dxl3></td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl2b style=3D'background:#FF00FF; mso-pattern:#FF00FF none'>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds40>S2</td>
+<td class=3Ds39>S3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمود مسامح</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F1</td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2b></td>
+<td class=3Ds41>F1</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#808000; mso-pattern:#808000 none'>F1</td>
+<td class=3Ds41>F1</td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F1</td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds41>F1</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>عمار المعايطة</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F6</td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F3</td>
+<td class=3Dxl3b></td>
+<td class=3Ds42>F3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F3</td>
+<td class=3Ds42>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds35></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FF8080; mso-pattern:#FF8080 none'>F6</td>
+<td class=3Ds42>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F3</td>
+<td class=3Ds42>F3</td>
+<td class=3Ds42>F6</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds42>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>عمر حسن</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds43>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F5</td>
+<td class=3Ds43>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F5</td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#FF9966; mso-pattern:#FF9966 none'>F5</td>
+<td class=3Ds43>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#FF9966; mso-pattern:#FF9966 none'>F2</td>
+<td class=3Dxl2></td>
+<td class=3Ds43>F2</td>
+<td class=3Ds43>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>داوود فايز</td>
+<td class=3Ds44>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F9</td>
+<td class=3Dxl3b></td>
+<td class=3Ds44>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#00FFFF; mso-pattern:#00FFFF none'>F7</td>
+<td class=3Ds35></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#00FFFF; mso-pattern:#00FFFF none'>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F7</td>
+<td class=3Ds44>F9</td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F7</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds44>F7</td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>جميل مرعي</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds45>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds45>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds35></td>
+<td class=3Dxl2></td>
+<td class=3Ds45>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#00CC00; mso-pattern:#00CC00 none'>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds45>F8</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds45>F8</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>محمد سلطان</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>اسماعيل حسين</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>S5</td>
+<td class=3Dxl2></td>
+<td class=3Ds22>S4</td>
+<td class=3Dxl2b></td>
+<td class=3Ds22>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S1</td>
+<td class=3Dxl2></td>
+<td class=3Ds22>S4</td>
+<td class=3Dxl2b></td>
+<td class=3Ds22>S5</td>
+<td class=3Ds22>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds22>S5</td>
+<td class=3Ds22>S4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S1</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds22>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds18>S1</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>لؤي عبيدات</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds47>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds47>S3</td>
+<td class=3Ds47>S7</td>
+<td class=3Dxl3b></td>
+<td class=3Ds47>S9</td>
+<td class=3Ds47>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds47>S6</td>
+<td class=3Ds47>S6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#8000FF; mso-pattern:#8000FF none'>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds47>S3</td>
+<td class=3Ds47>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds47>S7</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds47>S9</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>علاء محمد</td>
+<td class=3Ds48>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F5</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F7</td>
+<td class=3Dxl2b></td>
+<td class=3Ds48>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F6</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F7</td>
+<td class=3Ds48>F2</td>
+<td class=3Dxl2b></td>
+<td class=3Ds48>F2</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F5</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b style=3D'background:#CC6600; mso-pattern:#CC6600 none'>F6</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F6</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F7</td>
+<td class=3Dxl2></td>
+<td class=3Ds48>F5</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>خلدون جربان</td>
+<td class=3Ds18>F4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FF8000; mso-pattern:#FF8000 none'>F9</td>
+<td class=3Ds18>F4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds18>S1</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F9</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F4</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F1</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F3</td>
+<td class=3Dxl3b></td>
+<td class=3Ds18>F9</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F3</td>
+<td class=3Ds18>F1</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>S1</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F3</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>F1</td>
+<td class=3Dxl3></td>
+<td class=3Ds18>S1</td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>سعيد بدوي</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S9</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S9</td>
+<td class=3Ds37>F9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds37>F9</td>
+<td class=3Dxl2></td>
+<td class=3Ds37>S9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>عبدالعزيز اليافعي</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F5</td>
+<td class=3Ds60>F3</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds15>F1</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F3</td>
+<td class=3Ds15>F5</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F1</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds60>F1</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F5</td>
+<td class=3Ds15>F4</td>
+<td class=3Dxl3></td>
+<td class=3Ds15>F3</td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>انس الاخرس</td>
+<td class=3Ds28>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S3</td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S5</td>
+<td class=3Ds67>S6</td>
+<td class=3Ds28>S6</td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S5</td>
+<td class=3Ds67>S2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S2</td>
+<td class=3Dxl2></td>
+<td class=3Ds28>S3</td>
+<td class=3Dxl2></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl3h>حسن المحيميد</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl2b style=3D'background:#FFC0C0; mso-pattern:#FFC0C0 none'>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#FFC0C0; mso-pattern:#FFC0C0 none'>S1</td>
+<td class=3Ds46>S1</td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S4</td>
+<td class=3Dxl3b></td>
+<td class=3Ds46>S1</td>
+<td class=3Ds46>S7</td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S4</td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S8</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds46>S4</td>
+<td class=3Dxl3></td>
+<td class=3Ds61></td>
+</tr>
+<tr>
+<td class=3Dxl2h>براء سرور</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F7</td>
+<td class=3Dxl2></td>
+<td class=3Ds69>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F7</td>
+<td class=3Ds49>F8</td>
+<td class=3Dxl2></td>
+<td class=3Ds69>F2</td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F8</td>
+<td class=3Dxl2></td>
+<td class=3Ds69>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F6</td>
+<td class=3Ds49>F7</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds49>F8</td>
+<td class=3Ds49>F6</td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>مصطفى احمد</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds50></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Ds50>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds50>S1</td>
+<td class=3Ds50>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl2b style=3D'background:#C0FFFF; mso-pattern:#C0FFFF none'>S2</td>
+<td class=3Ds50>S4</td>
+<td class=3Ds50>S3</td>
+<td class=3Dxl3></td>
+<td class=3Ds50>S3</td>
+<td class=3Ds50>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>احمد عثمان- معلم</td>
+<td class=3Ds51>F6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds51>F6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds50></td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F8</td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F7</td>
+<td class=3Ds51>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Ds51>F7</td>
+<td class=3Ds51>F8</td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F5</td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F9</td>
+<td class=3Dxl2b style=3D'background:#C0C000; mso-pattern:#C0C000 none'>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F3</td>
+<td class=3Dxl2></td>
+<td class=3Ds51>F9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>حسام كامل</td>
+<td class=3Ds52>F2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds52>S7</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds50></td>
+<td class=3Ds52>S9</td>
+<td class=3Ds52>F1</td>
+<td class=3Dxl2b style=3D'background:#80C0FF; mso-pattern:#80C0FF none'>S5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds52>S5</td>
+<td class=3Dxl2b style=3D'background:#80C0FF; mso-pattern:#80C0FF none'>S8</td>
+<td class=3Ds52>S8</td>
+<td class=3Ds52>S6</td>
+<td class=3Ds52>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds52>F2</td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Ds52>S6</td>
+<td class=3Dxl3></td>
+<td class=3Ds52>F1</td>
+<td class=3Ds52>S7</td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td rowspan=3D4 class=3Dxl2h>خالد الجناحي</td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td class=3Ds53>F3</td>
+<td class=3Ds53>F3</td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2b></td>
+<td class=3Ds53></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2b></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2b></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2b></td>
+<td class=3Ds53></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2></td>
+<td rowspan=3D4 class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Ds53>F4</td>
+<td class=3Ds53>F4</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds53>F5</td>
+<td class=3Ds53>F5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds53>F6</td>
+<td class=3Ds53>F6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td rowspan=3D7 class=3Dxl3h>محمد الهاجري</td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td class=3Ds54>S1</td>
+<td class=3Ds54>S1</td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3b></td>
+<td class=3Ds53></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3b></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3b></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3b></td>
+<td class=3Ds53></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3></td>
+<td rowspan=3D7 class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds54>S2</td>
+<td class=3Ds54>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td class=3Ds54>S4</td>
+<td class=3Ds54>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td class=3Ds54>S7</td>
+<td class=3Ds54>S7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td class=3Ds54>F1</td>
+<td class=3Ds54>F1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td class=3Ds54>F2</td>
+<td class=3Ds54>F2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td class=3Ds54>F7</td>
+<td class=3Ds54>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+</tr>
+<tr>
+<td rowspan=3D7 class=3Dxl2h>طارق الزعتوري</td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td class=3Ds55>S3</td>
+<td class=3Ds55>S3</td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2b></td>
+<td class=3Ds53></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2b></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2b></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2b></td>
+<td class=3Ds53></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2></td>
+<td rowspan=3D7 class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Ds55>S8</td>
+<td class=3Ds55>S8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds55>S6</td>
+<td class=3Ds55>S6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds55>F9</td>
+<td class=3Ds55>F9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds55>S9</td>
+<td class=3Ds55>S9</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds55>S5</td>
+<td class=3Ds55>S5</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Ds55>F8</td>
+<td class=3Ds55>F8</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+</tr>
+<tr>
+<td class=3Dxl3h>-</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td rowspan=3D2 class=3Dxl2h>ايهاب حفناوي</td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2b></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td class=3Ds56>F5</td>
+<td class=3Ds56>F5</td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2b></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2b></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2b></td>
+<td class=3Ds56></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td rowspan=3D2 class=3Dxl2></td>
+<td class=3Ds70></td>
+</tr>
+<tr>
+<td class=3Ds56>F3</td>
+<td class=3Ds56>F3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td rowspan=3D5 class=3Dxl3h>عبدالرحمن جامع</td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3b></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td class=3Ds57>F4</td>
+<td class=3Ds57>F4</td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3b></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3b></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3b></td>
+<td class=3Ds56></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td rowspan=3D5 class=3Dxl3></td>
+<td class=3Ds70></td>
+</tr>
+<tr>
+<td class=3Ds57>F6</td>
+<td class=3Ds57>F6</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds57>F7</td>
+<td class=3Ds57>F7</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds57>S1</td>
+<td class=3Ds57>S1</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds57>S2</td>
+<td class=3Ds57>S2</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td rowspan=3D5 class=3Dxl2h>جوهر السعداوي</td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2b></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td class=3Ds58>F1</td>
+<td class=3Ds58>F1</td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2b></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2b></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2b></td>
+<td class=3Ds56></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td rowspan=3D5 class=3Dxl2></td>
+<td class=3Ds70></td>
+</tr>
+<tr>
+<td class=3Ds58>F2</td>
+<td class=3Ds58>F2</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Ds58>S6</td>
+<td class=3Ds58>S6</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Ds58>S7</td>
+<td class=3Ds58>S7</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Ds58>S3</td>
+<td class=3Ds58>S3</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td rowspan=3D6 class=3Dxl3h>ايمن الصيفي</td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3b></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td class=3Ds36>F8</td>
+<td class=3Ds36>F8</td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3b></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3b></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3b></td>
+<td class=3Ds56></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td rowspan=3D6 class=3Dxl3></td>
+<td class=3Ds70></td>
+</tr>
+<tr>
+<td class=3Ds36>F9</td>
+<td class=3Ds36>F9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds36>S8</td>
+<td class=3Ds36>S8</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds36>S9</td>
+<td class=3Ds36>S9</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds36>S5</td>
+<td class=3Ds36>S5</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Ds36>S4</td>
+<td class=3Ds36>S4</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>س</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+<tr>
+<td class=3Dxl3h>ص</td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3></td>
+<td class=3Dxl3b></td>
+</tr>
+<tr>
+<td class=3Dxl2h>محمد الحمايدة</td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2></td>
+<td class=3Dxl2b></td>
+</tr>
+</table>
+
+</div>
+
+
+<!----------------------------->
+<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
+<!----------------------------->
+</body>
+
+</html>
