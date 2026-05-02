@@ -9,8 +9,17 @@ function sendRasedEmail($to, $subject, $message) {
     $smtp_host = "ssl://smtp.gmail.com";
     $smtp_port = 465;
     $smtp_user = 'abo.hyzar41@gmail.com';
+<<<<<<< HEAD
     $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // MUST BE A 16-CHARACTER APP PASSWORD
     // --------------------------------
+=======
+    $smtp_pass = 'ruow qwda ikcs prhfE'; // User needs to generate an "App Password" from Google Security settings
+    
+    $headers = "From: Rased System <{$smtp_user}>\r\n" .
+               "Reply-To: {$smtp_user}\r\n" .
+               "Content-Type: text/plain; charset=utf-8\r\n" .
+               "X-Mailer: PHP/" . phpversion();
+>>>>>>> 33ce9591ffe339c457fe23743cca5b24c06349fe
 
     $header = "To: <" . $to . ">\r\n";
     $header .= "From: Rased System <" . $smtp_user . ">\r\n";

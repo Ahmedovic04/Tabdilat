@@ -2,7 +2,7 @@
 require_once 'config.php';
 startSecureSession();
 
-if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
+if (!isset($_SESSION['rased_user_id'])) {
     header('Location: login.php');
     exit;
 }
@@ -10,7 +10,7 @@ if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['t
 $db = getDB();
 $user_id = $_SESSION['rased_user_id'];
 
-// Fetch my personal requests
+// 1. Fetch requests where I am the requester (Absent Teacher)
 $stmtMy = $db->prepare("
     SELECT r.*, c.name as class_name, u2.name as substitute_name
     FROM rased_requests r
@@ -20,7 +20,19 @@ $stmtMy = $db->prepare("
     ORDER BY r.request_date DESC
 ");
 $stmtMy->execute([$user_id]);
-$my_requests = $stmtMy->fetchAll();
+$my_absent_requests = $stmtMy->fetchAll();
+
+// 2. Fetch requests where I am the substitute (Replacing Teacher)
+$stmtSub = $db->prepare("
+    SELECT r.*, c.name as class_name, u1.name as requester_name
+    FROM rased_requests r
+    JOIN rased_classes c ON r.class_id = c.id
+    JOIN rased_users u1 ON r.requester_id = u1.id
+    WHERE r.substitute_id = ?
+    ORDER BY r.request_date DESC
+");
+$stmtSub->execute([$user_id]);
+$my_substitute_tasks = $stmtSub->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +40,7 @@ $my_requests = $stmtMy->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طلباتي - راصد تبديلاتي</title>
+    <title>متابعة طلباتي - راصد تبديلاتي</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -38,88 +50,66 @@ $my_requests = $stmtMy->fetchAll();
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-color); color: var(--text-main); }
-        .navbar {
-            background: var(--card-bg); padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .navbar { background: var(--card-bg); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        h2 { color: var(--primary); margin-bottom: 1.5rem; }
+        h2 { color: var(--primary); margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 5px; }
         
-        table { width: 100%; border-collapse: collapse; text-align: center; }
+        table { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 2rem; }
         th, td { padding: 1rem; border: 1px solid var(--border-color); }
-        th { background: #F9FAFB; font-weight: 700; }
+        th { background: #F9FAFB; font-weight: 700; color: #4B5563; }
         
         .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: bold; }
         .status-pending { background: #FEF3C7; color: #D97706; }
         .status-approved { background: #D1FAE5; color: #059669; }
         .status-rejected { background: #FEE2E2; color: #DC2626; }
         
-        .btn {
-            background: var(--primary); color: white; padding: 0.5rem 1rem;
-            border: none; border-radius: 6px; cursor: pointer; transition: 0.3s;
-            text-decoration: none; display: inline-block;
-        }
-        .btn:hover { background: var(--primary-hover); }
+        .section-title { background: #EEF2FF; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; color: #4338CA; font-weight: 800; }
     </style>
 </head>
 <body>
 
 <div class="navbar">
-    <div class="brand">متابعة طلباتي</div>
+    <div class="brand">مركز متابعة الطلبات</div>
     <div>
         <a href="<?= $_SESSION['rased_role'] ?>/index.php" style="color: var(--primary); font-weight:bold; text-decoration: none;">العودة للوحة الرئيسية</a>
     </div>
 </div>
 
 <div class="container">
+    
+    <!-- القسم الأول: طلبات الغياب الخاصة بي -->
     <div class="card">
-        <h2>قائمة طلبات التبديل الخاصة بي</h2>
-        <?php if(empty($my_requests)): ?>
-            <p>لا توجد طلبات سابقة لك حالياً.</p>
+        <div class="section-title">🗓️ طلبات التبديل التي قدمتها (أنا الغائب)</div>
+        <?php if(empty($my_absent_requests)): ?>
+            <p style="padding: 1rem; color: #6B7280;">لم تقم بتقديم أي طلبات تبديل حتى الآن.</p>
         <?php else: ?>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
-                            <th>التاريخ</th>
+                            <th>تاريخ الغياب</th>
                             <th>الحصة</th>
-                            <th>البديل</th>
+                            <th>المعلم البديل</th>
                             <th>موعد التعويض</th>
-                            <th>حالة المنسق</th>
-                            <th>حالة النائب</th>
+                            <th>حالة الاعتماد</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($my_requests as $req): ?>
+                        <?php foreach($my_absent_requests as $req): ?>
                             <tr>
                                 <td><?= htmlspecialchars($req['request_date']) ?></td>
                                 <td><?= $req['period_number'] ?></td>
                                 <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
-                                <td><?= $req['repayment_date'] ? htmlspecialchars($req['repayment_date']) : '-' ?></td>
-                                <td>
-                                    <?php 
-                                        // If deputy approved, coordinator status doesn't matter for display
-                                        if($req['deputy_status'] == 'approved' || $req['deputy_status'] == 'approved_with_mod') {
-                                            echo '<span class="status-badge status-approved">تمت الموافقة</span>';
-                                        } elseif($req['req_coordinator_status'] == 'rejected' || $req['sub_coordinator_status'] == 'rejected') {
-                                            echo '<span class="status-badge status-rejected">مرفوض من المنسق</span>';
-                                        } elseif($req['req_coordinator_status'] == 'approved' && $req['sub_coordinator_status'] == 'approved') {
-                                            echo '<span class="status-badge status-approved">وافق المنسق</span>';
-                                        } else {
-                                            echo '<span class="status-badge status-pending">قيد المراجعة</span>';
-                                        }
-                                    ?>
-                                </td>
+                                <td><?= $req['repayment_date'] ? htmlspecialchars($req['repayment_date']) : '<span style="color:#9CA3AF;">لم يحدد</span>' ?></td>
                                 <td>
                                     <?php 
                                         if($req['deputy_status'] == 'approved' || $req['deputy_status'] == 'approved_with_mod')
-                                            echo '<span class="status-badge status-approved">معتمد نهائياً</span>';
+                                            echo '<span class="status-badge status-approved">تم الاعتماد</span>';
                                         elseif($req['deputy_status'] == 'rejected')
                                             echo '<span class="status-badge status-rejected">مرفوض</span>';
                                         else
-                                            echo '<span class="status-badge status-pending">بانتظار النائب</span>';
+                                            echo '<span class="status-badge status-pending">قيد المراجعة</span>';
                                     ?>
                                 </td>
                             </tr>
@@ -129,6 +119,47 @@ $my_requests = $stmtMy->fetchAll();
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- القسم الثاني: المهام المكلف بها كبديل -->
+    <div class="card">
+        <div class="section-title">🤝 طلبات التغطية المكلف بها (أنا البديل)</div>
+        <?php if(empty($my_substitute_tasks)): ?>
+            <p style="padding: 1rem; color: #6B7280;">لا توجد طلبات تغطية مكلف بها حالياً.</p>
+        <?php else: ?>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>تاريخ التغطية</th>
+                            <th>الحصة</th>
+                            <th>المعلم الغائب</th>
+                            <th>الصف</th>
+                            <th>حالة الطلب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($my_substitute_tasks as $req): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($req['request_date']) ?></td>
+                                <td><?= $req['period_number'] ?></td>
+                                <td><strong><?= htmlspecialchars($req['requester_name']) ?></strong></td>
+                                <td><?= htmlspecialchars($req['class_name']) ?></td>
+                                <td>
+                                    <?php 
+                                        if($req['deputy_status'] == 'approved' || $req['deputy_status'] == 'approved_with_mod')
+                                            echo '<span class="status-badge status-approved">معتمد</span>';
+                                        else
+                                            echo '<span class="status-badge status-pending">بانتظار الاعتماد</span>';
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>
+
 </div>
 
 </body>
