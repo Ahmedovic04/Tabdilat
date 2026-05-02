@@ -9,7 +9,7 @@
 function sendRasedEmail($to, $subject, $message) {
     // Gmail SMTP Configuration
     $smtp_user = 'abo.hyzar41@gmail.com';
-    $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // User needs to generate an "App Password" from Google Security settings
+    $smtp_pass = 'ruow qwda ikcs prhfE'; // User needs to generate an "App Password" from Google Security settings
     
     $headers = "From: Rased System <{$smtp_user}>\r\n" .
                "Reply-To: {$smtp_user}\r\n" .
