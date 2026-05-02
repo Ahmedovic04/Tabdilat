@@ -56,6 +56,7 @@ try {
             class_id INT NOT NULL,
             request_date DATE NOT NULL,
             period_number INT NOT NULL,
+            repayment_date DATE NULL,
             req_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
             sub_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
             deputy_status ENUM('pending', 'approved', 'approved_with_mod', 'rejected') DEFAULT 'pending',
@@ -67,12 +68,20 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ");
 
-    echo "Tables created successfully.\n";
+    // Add repayment_date if it doesn't exist (Migration)
+    try {
+        $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_date DATE NULL AFTER period_number");
+        echo "Added repayment_date column.\n";
+    } catch (Exception $e) {
+        // Column probably already exists
+    }
+
+    echo "Tables created successfully.<br>\n";
 
     // 2. Parse Excel/HTML File
     $file_path = 'Teachers_Summary (2).xls';
     if (!file_exists($file_path)) {
-        die("File not found at: $file_path\n");
+        die("File not found at: $file_path<br>\n");
     }
 
     $content = file_get_contents($file_path);
@@ -136,13 +145,13 @@ try {
         }
     }
     
-    echo "Import completed!\n";
-    echo "Teachers processed: $teachers_added\n";
-    echo "Schedule entries added: $schedule_added\n";
+    echo "Import completed!<br>\n";
+    echo "Teachers processed: $teachers_added<br>\n";
+    echo "Schedule entries added: $schedule_added<br>\n";
     
     // Add Academic Deputy user for testing
     $db->prepare("INSERT IGNORE INTO rased_users (username, password, name, role) VALUES ('deputy', ?, 'النائب الأكاديمي', 'deputy')")->execute([$default_password]);
 
 } catch (Exception $e) {
-    echo "Error: " . $e->getMessage() . "\n";
+    echo "Error: " . $e->getMessage() . "<br>\n";
 }

@@ -51,7 +51,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             background: #F9FAFB;
         }
         .class-info { font-weight: bold; }
-        .subs-select { max-width: 300px; }
+        .subs-select { max-width: 350px; }
         
         #submit-btn { display: none; width: 100%; margin-top: 1rem; }
     </style>
@@ -74,6 +74,11 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         
         <div id="classes-container"></div>
         
+        <div class="form-group" id="repayment-group" style="display: none; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <label>تاريخ تعويض الحصص (متى ستقوم بأخذ الحصص بدلاً من زميلك؟)</label>
+            <input type="date" id="repayment-date" min="<?= date('Y-m-d') ?>">
+        </div>
+        
         <button id="submit-btn" class="btn">تأكيد إرسال الطلب</button>
     </div>
 </div>
@@ -81,10 +86,11 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
 <script>
     const dateInput = document.getElementById('date-input');
     const classesContainer = document.getElementById('classes-container');
+    const repaymentGroup = document.getElementById('repayment-group');
+    const repaymentDateInput = document.getElementById('repayment-date');
     const submitBtn = document.getElementById('submit-btn');
     
     let currentClasses = [];
-    let selectedSubstitutes = {};
 
     dateInput.addEventListener('change', async (e) => {
         const date = e.target.value;
@@ -92,6 +98,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         
         classesContainer.innerHTML = '<p>جاري تحميل الحصص...</p>';
         submitBtn.style.display = 'none';
+        repaymentGroup.style.display = 'none';
         
         try {
             const res = await fetch(`api.php?action=get_classes&date=${date}`);
@@ -99,6 +106,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             
             if (data.classes && data.classes.length > 0) {
                 renderClasses(data.classes, data.day);
+                repaymentGroup.style.display = 'block';
             } else {
                 classesContainer.innerHTML = '<p style="color:red;">لا توجد حصص في هذا اليوم، أو أنه يوم عطلة.</p>';
             }
@@ -110,7 +118,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
     async function renderClasses(classes, dayOfWeek) {
         classesContainer.innerHTML = '';
         currentClasses = classes;
-        selectedSubstitutes = {};
         
         for (const cls of classes) {
             const row = document.createElement('div');
@@ -128,7 +135,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             `;
             classesContainer.appendChild(row);
             
-            // Load substitutes
             loadSubstitutes(cls.class_id, dayOfWeek, cls.period_number, `sub_${cls.period_number}`);
         }
         
@@ -145,7 +151,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 data.substitutes.forEach(sub => {
                     const opt = document.createElement('option');
                     opt.value = sub.id;
-                    opt.textContent = sub.name;
+                    opt.textContent = `${sub.name} (لديه ${sub.daily_classes_count} حصص اليوم)`;
                     select.appendChild(opt);
                 });
             }
@@ -156,7 +162,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
     
     submitBtn.addEventListener('click', async () => {
         const requests = [];
-        let hasError = false;
         
         currentClasses.forEach(cls => {
             const select = document.getElementById(`sub_${cls.period_number}`);
@@ -174,6 +179,11 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             return;
         }
         
+        if (!repaymentDateInput.value) {
+            alert('يرجى تحديد تاريخ تعويض الحصص للزميل.');
+            return;
+        }
+        
         submitBtn.disabled = true;
         submitBtn.textContent = 'جاري الإرسال...';
         
@@ -183,6 +193,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     date: dateInput.value,
+                    repayment_date: repaymentDateInput.value,
                     requests: requests
                 })
             });

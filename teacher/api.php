@@ -53,15 +53,17 @@ if ($action === 'get_substitutes') {
     // Find teachers who teach this class in general
     // BUT are NOT busy in this day/period
     $stmt = $db->prepare("
-        SELECT DISTINCT u.id, u.name 
-        FROM rased_teacher_classes tc
-        JOIN rased_users u ON tc.teacher_id = u.id
+        SELECT u.id, u.name, 
+               (SELECT COUNT(*) FROM rased_teacher_classes WHERE teacher_id = u.id AND day_of_week = ?) as daily_classes_count
+        FROM rased_users u
+        JOIN rased_teacher_classes tc ON tc.teacher_id = u.id
         WHERE tc.class_id = ? AND u.id != ?
         AND u.id NOT IN (
             SELECT teacher_id FROM rased_teacher_classes WHERE day_of_week = ? AND period_number = ?
         )
+        GROUP BY u.id, u.name
     ");
-    $stmt->execute([$class_id, $teacher_id, $day_of_week, $period]);
+    $stmt->execute([$day_of_week, $class_id, $teacher_id, $day_of_week, $period]);
     $substitutes = $stmt->fetchAll();
     
     echo json_encode(['success' => true, 'substitutes' => $substitutes]);
@@ -76,13 +78,14 @@ if ($action === 'submit_request') {
     }
     
     $date = $data['date'];
+    $repayment_date = $data['repayment_date'] ?? null;
     
     $db->beginTransaction();
     try {
         $stmt = $db->prepare("
             INSERT INTO rased_requests 
-            (requester_id, substitute_id, class_id, request_date, period_number) 
-            VALUES (?, ?, ?, ?, ?)
+            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date) 
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
         
         foreach ($data['requests'] as $req) {
@@ -91,14 +94,15 @@ if ($action === 'submit_request') {
                 $req['substitute_id'], 
                 $req['class_id'], 
                 $date, 
-                $req['period_number']
+                $req['period_number'],
+                $repayment_date
             ]);
         }
         $db->commit();
         echo json_encode(['success' => true]);
     } catch (Exception $e) {
         $db->rollBack();
-        echo json_encode(['success' => false, 'message' => 'حدث خطأ']);
+        echo json_encode(['success' => false, 'message' => 'حدث خطأ: ' . $e->getMessage()]);
     }
     exit;
 }

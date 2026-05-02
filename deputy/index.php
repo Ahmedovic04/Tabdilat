@@ -11,7 +11,7 @@ $db = getDB();
 
 // Fetch Pending Requests for Deputy
 $stmt = $db->query("
-    SELECT r.id, r.request_date, r.period_number, 
+    SELECT r.id, r.request_date, r.repayment_date, r.period_number, 
            c.name as class_name, 
            u1.name as requester_name, 
            u2.name as substitute_name,
@@ -58,11 +58,14 @@ $new_teachers_count = $stmtNew->fetchColumn();
         th { background: #F9FAFB; font-weight: 700; }
         .btn {
             padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.3s; margin: 0 0.2rem;
+            text-decoration: none; display: inline-block;
         }
         .btn-approve { background: var(--success); }
         .btn-approve:hover { background: #059669; }
         .btn-reject { background: var(--danger); }
         .btn-reject:hover { background: #DC2626; }
+        .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: var(--primary-hover); }
     </style>
 </head>
 <body>
@@ -89,9 +92,8 @@ $new_teachers_count = $stmtNew->fetchColumn();
                             <th>المعلم الغائب</th>
                             <th>المعلم البديل</th>
                             <th>الصف</th>
-                            <th>تاريخ الغياب</th>
-                            <th>الحصة</th>
-                            <th>حالة المنسقين</th>
+                            <th>تاريخ الغياب (الحصة)</th>
+                            <th>تاريخ التعويض</th>
                             <th>إجراء</th>
                         </tr>
                     </thead>
@@ -99,14 +101,19 @@ $new_teachers_count = $stmtNew->fetchColumn();
                         <?php foreach($pending_requests as $req): ?>
                             <tr>
                                 <td>#<?= $req['id'] ?></td>
-                                <td><?= htmlspecialchars($req['requester_name']) ?></td>
-                                <td><?= htmlspecialchars($req['substitute_name']) ?></td>
+                                <td><strong><?= htmlspecialchars($req['requester_name']) ?></strong></td>
+                                <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
                                 <td><?= htmlspecialchars($req['class_name']) ?></td>
-                                <td><?= htmlspecialchars($req['request_date']) ?></td>
-                                <td><?= $req['period_number'] ?></td>
                                 <td>
-                                    م. الأساسي: <?= $req['req_coordinator_status'] ?> <br>
-                                    م. البديل: <?= $req['sub_coordinator_status'] ?>
+                                    <?= htmlspecialchars($req['request_date']) ?><br>
+                                    <span style="color:var(--primary); font-size: 0.9em;">(الحصة <?= $req['period_number'] ?>)</span>
+                                </td>
+                                <td>
+                                    <?php if($req['repayment_date']): ?>
+                                        <span style="color:var(--success); font-weight:bold;"><?= htmlspecialchars($req['repayment_date']) ?></span>
+                                    <?php else: ?>
+                                        <span style="color:#9CA3AF;">غير محدد</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <button class="btn btn-approve" onclick="updateStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
@@ -121,16 +128,18 @@ $new_teachers_count = $stmtNew->fetchColumn();
     </div>
     
     <div class="card">
-        <h2>إدارة النظام</h2>
+        <h2>إدارة النظام والتقارير</h2>
         <?php if($new_teachers_count > 0): ?>
             <div style="background: #FEF2F2; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-right: 4px solid #DC2626;">
                 <strong>تنبيه:</strong> تم اكتشاف <?= $new_teachers_count ?> معلم جديد في الجدول الأخير. يرجى تحديث بياناتهم والمواد الخاصة بهم.
             </div>
         <?php endif; ?>
         
-        <p>من هنا يمكنك إدارة إعدادات المنسقين والمواد لاحقاً.</p>
-        <div style="margin-top: 1rem;">
-            <a href="upload.php" class="btn btn-approve" style="text-decoration:none; display:inline-block;">رفع / تحديث جدول المعلمين</a>
+        <p style="margin-bottom: 1.5rem;">من هنا يمكنك استخراج تقارير شاملة عن جميع التبديلات التي تمت، أو تحديث الجدول الدراسي للنظام.</p>
+        
+        <div style="display: flex; gap: 1rem;">
+            <a href="reports.php" class="btn btn-primary">📊 تقارير التبديلات (للطباعة)</a>
+            <a href="upload.php" class="btn btn-approve">⬆️ رفع / تحديث جدول المعلمين</a>
         </div>
     </div>
 </div>
