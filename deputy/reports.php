@@ -9,12 +9,11 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'deputy') 
 
 $db = getDB();
 
-// Get filter dates if provided
-$start_date = $_GET['start_date'] ?? date('Y-m-01'); // Default to start of current month
-$end_date = $_GET['end_date'] ?? date('Y-m-t');     // Default to end of current month
+$start_date = $_GET['start_date'] ?? date('Y-m-01');
+$end_date = $_GET['end_date'] ?? date('Y-m-t');
 
 $stmt = $db->prepare("
-    SELECT r.id, r.request_date, r.repayment_date, r.period_number, 
+    SELECT r.id, r.request_date, r.repayment_date, r.repayment_period, r.period_number, 
            c.name as class_name, 
            u1.name as requester_name, 
            u2.name as substitute_name,
@@ -125,7 +124,7 @@ $reports = $stmt->fetchAll();
                             <th>المعلم الغائب</th>
                             <th>الحصة / الصف</th>
                             <th>المعلم البديل</th>
-                            <th>تاريخ التعويض</th>
+                            <th>موعد التعويض</th>
                             <th>الحالة النهائية</th>
                         </tr>
                     </thead>
@@ -142,7 +141,8 @@ $reports = $stmt->fetchAll();
                                 <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
                                 <td>
                                     <?php if($req['repayment_date']): ?>
-                                        <?= htmlspecialchars($req['repayment_date']) ?>
+                                        <?= htmlspecialchars($req['repayment_date']) ?> <br>
+                                        <span style="font-size:0.9em; color:#6B7280;">(الحصة <?= $req['repayment_period'] ?>)</span>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>

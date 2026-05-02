@@ -16,22 +16,17 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --bg-color: #F3F4F6;
-            --card-bg: #FFFFFF;
-            --text-main: #1F2937;
-            --border-color: #E5E7EB;
+            --primary: #4F46E5; --primary-hover: #4338CA;
+            --bg-color: #F3F4F6; --card-bg: #FFFFFF; --text-main: #1F2937; --border-color: #E5E7EB;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-color); color: var(--text-main); }
         .navbar {
-            background: var(--card-bg);
-            padding: 1rem 2rem;
+            background: var(--card-bg); padding: 1rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         h2 { color: var(--primary); margin-bottom: 1rem; }
         .form-group { margin-bottom: 1.5rem; }
@@ -46,26 +41,31 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         .btn:hover { background: var(--primary-hover); }
         
         .class-row {
-            display: flex; justify-content: space-between; align-items: center;
             padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;
             background: #F9FAFB;
         }
-        .class-info { font-weight: bold; }
-        .subs-select { max-width: 350px; }
+        .class-info { font-weight: bold; margin-bottom: 1rem; color: var(--primary); font-size: 1.1rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+        
+        .row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .row-grid { grid-template-columns: 1fr; } }
         
         #submit-btn { display: none; width: 100%; margin-top: 1rem; }
+        
+        .repay-container { background: #EEF2FF; padding: 0.75rem; border-radius: 8px; border: 1px dashed var(--primary); }
+        .repay-container label { color: var(--primary); font-size: 0.9em; }
     </style>
 </head>
 <body>
 
 <div class="navbar">
-    <div class="brand"><a href="index.php" style="text-decoration:none; color:inherit;">راصد تبديلاتي</a></div>
-    <div>رجوع للوحة الرئيسية</div>
+    <div class="brand"><a href="index.php" style="text-decoration:none; color:inherit; font-weight:bold;">راصد تبديلاتي</a></div>
+    <div><a href="index.php" style="color:var(--text-main); text-decoration:none;">العودة للوحة الرئيسية</a></div>
 </div>
 
 <div class="container">
     <div class="card">
-        <h2>طلب تبديل</h2>
+        <h2>طلب تبديل ذكي</h2>
+        <p style="margin-bottom: 1.5rem; color: #6B7280;">اختر تاريخ الغياب وسيقوم النظام باقتراح المعلمين المتاحين واقتراح أفضل الحصص التي يمكنك من خلالها تعويضهم.</p>
         
         <div class="form-group">
             <label>تاريخ الغياب / التبديل</label>
@@ -74,11 +74,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         
         <div id="classes-container"></div>
         
-        <div class="form-group" id="repayment-group" style="display: none; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-            <label>تاريخ تعويض الحصص (متى ستقوم بأخذ الحصص بدلاً من زميلك؟)</label>
-            <input type="date" id="repayment-date" min="<?= date('Y-m-d') ?>">
-        </div>
-        
         <button id="submit-btn" class="btn">تأكيد إرسال الطلب</button>
     </div>
 </div>
@@ -86,8 +81,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
 <script>
     const dateInput = document.getElementById('date-input');
     const classesContainer = document.getElementById('classes-container');
-    const repaymentGroup = document.getElementById('repayment-group');
-    const repaymentDateInput = document.getElementById('repayment-date');
     const submitBtn = document.getElementById('submit-btn');
     
     let currentClasses = [];
@@ -98,7 +91,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         
         classesContainer.innerHTML = '<p>جاري تحميل الحصص...</p>';
         submitBtn.style.display = 'none';
-        repaymentGroup.style.display = 'none';
         
         try {
             const res = await fetch(`api.php?action=get_classes&date=${date}`);
@@ -106,7 +98,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             
             if (data.classes && data.classes.length > 0) {
                 renderClasses(data.classes, data.day);
-                repaymentGroup.style.display = 'block';
             } else {
                 classesContainer.innerHTML = '<p style="color:red;">لا توجد حصص في هذا اليوم، أو أنه يوم عطلة.</p>';
             }
@@ -127,10 +118,19 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 <div class="class-info">
                     الحصة ${cls.period_number} - ${cls.class_name}
                 </div>
-                <div class="subs-select">
-                    <select id="sub_${cls.period_number}" data-class="${cls.class_id}" data-period="${cls.period_number}">
-                        <option value="">-- اختر المعلم البديل --</option>
-                    </select>
+                <div class="row-grid">
+                    <div>
+                        <label>اختر المعلم البديل</label>
+                        <select id="sub_${cls.period_number}" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number})">
+                            <option value="">-- اختر المعلم البديل --</option>
+                        </select>
+                    </div>
+                    <div class="repay-container">
+                        <label>اقتراحات الحصص لتعويض الزميل</label>
+                        <select id="repay_${cls.period_number}" disabled>
+                            <option value="">-- اختر المعلم أولاً --</option>
+                        </select>
+                    </div>
                 </div>
             `;
             classesContainer.appendChild(row);
@@ -160,16 +160,66 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         }
     }
     
+    async function handleSubChange(periodNumber) {
+        const subSelect = document.getElementById(`sub_${periodNumber}`);
+        const repaySelect = document.getElementById(`repay_${periodNumber}`);
+        const dateVal = dateInput.value;
+        const subId = subSelect.value;
+        
+        if (!subId) {
+            repaySelect.innerHTML = '<option value="">-- اختر المعلم أولاً --</option>';
+            repaySelect.disabled = true;
+            return;
+        }
+        
+        repaySelect.innerHTML = '<option value="">جاري البحث عن حصص...</option>';
+        repaySelect.disabled = true;
+        
+        try {
+            const res = await fetch(`api.php?action=get_repayment_suggestions&sub_id=${subId}&date=${dateVal}`);
+            const data = await res.json();
+            
+            repaySelect.innerHTML = '<option value="">-- اختر حصة لتعويض الزميل --</option>';
+            if (data.suggestions && data.suggestions.length > 0) {
+                data.suggestions.forEach(sug => {
+                    const opt = document.createElement('option');
+                    opt.value = `${sug.date}_${sug.period}`;
+                    opt.textContent = `${sug.formatted_date} - الحصة ${sug.period} (${sug.class_name})`;
+                    repaySelect.appendChild(opt);
+                });
+                repaySelect.disabled = false;
+            } else {
+                repaySelect.innerHTML = '<option value="">لا توجد حصص متاحة لتعويض هذا المعلم قريباً</option>';
+                // Allow them to still submit without repayment if none exist, or we can add a manual option
+                const manualOpt = document.createElement('option');
+                manualOpt.value = 'manual';
+                manualOpt.textContent = 'تحديد يدوي لاحقاً';
+                repaySelect.appendChild(manualOpt);
+                repaySelect.disabled = false;
+            }
+        } catch (err) {
+            repaySelect.innerHTML = '<option value="">خطأ في جلب الاقتراحات</option>';
+        }
+    }
+    
     submitBtn.addEventListener('click', async () => {
         const requests = [];
+        let missingRepayment = false;
         
         currentClasses.forEach(cls => {
-            const select = document.getElementById(`sub_${cls.period_number}`);
-            if (select.value) {
+            const subSelect = document.getElementById(`sub_${cls.period_number}`);
+            const repaySelect = document.getElementById(`repay_${cls.period_number}`);
+            
+            if (subSelect.value) {
+                if (!repaySelect.value) {
+                    missingRepayment = true;
+                }
+                
                 requests.push({
                     class_id: cls.class_id,
                     period_number: cls.period_number,
-                    substitute_id: select.value
+                    substitute_id: subSelect.value,
+                    repayment_val: repaySelect.value === 'manual' ? null : repaySelect.value
                 });
             }
         });
@@ -179,8 +229,8 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             return;
         }
         
-        if (!repaymentDateInput.value) {
-            alert('يرجى تحديد تاريخ تعويض الحصص للزميل.');
+        if (missingRepayment) {
+            alert('يرجى اختيار حصة التعويض لجميع الطلبات.');
             return;
         }
         
@@ -193,13 +243,12 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     date: dateInput.value,
-                    repayment_date: repaymentDateInput.value,
                     requests: requests
                 })
             });
             const data = await res.json();
             if (data.success) {
-                alert('تم إرسال الطلب بنجاح للتقييم.');
+                alert('تم إرسال الطلب بنجاح.');
                 window.location.href = 'index.php';
             } else {
                 alert(data.message || 'حدث خطأ');

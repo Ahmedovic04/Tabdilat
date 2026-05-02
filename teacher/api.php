@@ -17,11 +17,10 @@ if ($action === 'get_classes') {
     $date = $_GET['date'] ?? '';
     if (!$date) { echo json_encode(['success' => false]); exit; }
     
-    // Day of week: 0=Sunday, 4=Thursday
     $timestamp = strtotime($date);
-    $day_of_week = date('w', $timestamp); // 0 (for Sunday) through 6 (for Saturday)
+    $day_of_week = date('w', $timestamp);
     
-    if ($day_of_week > 4) { // Friday or Saturday
+    if ($day_of_week > 4) {
         echo json_encode(['success' => true, 'classes' => []]);
         exit;
     }
@@ -50,8 +49,6 @@ if ($action === 'get_substitutes') {
         exit;
     }
     
-    // Find teachers who teach this class in general
-    // BUT are NOT busy in this day/period
     $stmt = $db->prepare("
         SELECT u.id, u.name, 
                (SELECT COUNT(*) FROM rased_teacher_classes WHERE teacher_id = u.id AND day_of_week = ?) as daily_classes_count
@@ -70,6 +67,66 @@ if ($action === 'get_substitutes') {
     exit;
 }
 
+if ($action === 'get_repayment_suggestions') {
+    $sub_id = (int)($_GET['sub_id'] ?? 0);
+    $absence_date = $_GET['date'] ?? '';
+    
+    if (!$sub_id || !$absence_date) {
+        echo json_encode(['success' => false]);
+        exit;
+    }
+    
+    // Get substitute's full schedule
+    $stmt = $db->prepare("SELECT class_id, day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ?");
+    $stmt->execute([$sub_id]);
+    $sub_schedule = $stmt->fetchAll();
+    
+    // Get requester's full schedule
+    $stmt2 = $db->prepare("SELECT day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ?");
+    $stmt2->execute([$teacher_id]);
+    $req_schedule_raw = $stmt2->fetchAll();
+    $req_busy = [];
+    foreach ($req_schedule_raw as $rs) {
+        $req_busy[$rs['day_of_week'] . '-' . $rs['period_number']] = true;
+    }
+    
+    // We want to find upcoming days where Substitute HAS a class, and Requester is FREE in that same period
+    $suggestions = [];
+    $current_date = strtotime($absence_date . ' + 1 day');
+    $days_checked = 0;
+    
+    // Check up to 14 days ahead to find at least 5 suggestions
+    while ($days_checked < 14 && count($suggestions) < 10) {
+        $dow = date('w', $current_date);
+        
+        if ($dow <= 4) { // Sunday to Thursday
+            foreach ($sub_schedule as $ss) {
+                if ($ss['day_of_week'] == $dow) {
+                    // Check if requester is free
+                    if (!isset($req_busy[$dow . '-' . $ss['period_number']])) {
+                        // Get class name
+                        $c_stmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
+                        $c_stmt->execute([$ss['class_id']]);
+                        $c_name = $c_stmt->fetchColumn();
+                        
+                        $suggestions[] = [
+                            'date' => date('Y-m-d', $current_date),
+                            'formatted_date' => date('d/m/Y', $current_date),
+                            'period' => $ss['period_number'],
+                            'class_name' => $c_name
+                        ];
+                    }
+                }
+            }
+        }
+        $current_date = strtotime('+1 day', $current_date);
+        $days_checked++;
+    }
+    
+    echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+    exit;
+}
+
 if ($action === 'submit_request') {
     $data = json_decode(file_get_contents('php://input'), true);
     if (!$data || empty($data['requests'])) {
@@ -78,24 +135,35 @@ if ($action === 'submit_request') {
     }
     
     $date = $data['date'];
-    $repayment_date = $data['repayment_date'] ?? null;
     
     $db->beginTransaction();
     try {
         $stmt = $db->prepare("
             INSERT INTO rased_requests 
-            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date) 
-            VALUES (?, ?, ?, ?, ?, ?)
+            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date, repayment_period) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
         
         foreach ($data['requests'] as $req) {
+            // Repayment can be "YYYY-MM-DD_P" format
+            $rep_date = null;
+            $rep_period = null;
+            if (!empty($req['repayment_val'])) {
+                $parts = explode('_', $req['repayment_val']);
+                if (count($parts) == 2) {
+                    $rep_date = $parts[0];
+                    $rep_period = (int)$parts[1];
+                }
+            }
+            
             $stmt->execute([
                 $teacher_id, 
                 $req['substitute_id'], 
                 $req['class_id'], 
                 $date, 
                 $req['period_number'],
-                $repayment_date
+                $rep_date,
+                $rep_period
             ]);
         }
         $db->commit();

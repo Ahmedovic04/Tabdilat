@@ -9,9 +9,8 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'deputy') 
 
 $db = getDB();
 
-// Fetch Pending Requests for Deputy
 $stmt = $db->query("
-    SELECT r.id, r.request_date, r.repayment_date, r.period_number, 
+    SELECT r.id, r.request_date, r.repayment_date, r.repayment_period, r.period_number, 
            c.name as class_name, 
            u1.name as requester_name, 
            u2.name as substitute_name,
@@ -26,7 +25,6 @@ $stmt = $db->query("
 ");
 $pending_requests = $stmt->fetchAll();
 
-// Check for new teachers
 $stmtNew = $db->query("SELECT COUNT(*) FROM rased_users WHERE is_new = 1 AND role = 'teacher'");
 $new_teachers_count = $stmtNew->fetchColumn();
 ?>
@@ -93,7 +91,7 @@ $new_teachers_count = $stmtNew->fetchColumn();
                             <th>المعلم البديل</th>
                             <th>الصف</th>
                             <th>تاريخ الغياب (الحصة)</th>
-                            <th>تاريخ التعويض</th>
+                            <th>موعد التعويض</th>
                             <th>إجراء</th>
                         </tr>
                     </thead>
@@ -110,7 +108,8 @@ $new_teachers_count = $stmtNew->fetchColumn();
                                 </td>
                                 <td>
                                     <?php if($req['repayment_date']): ?>
-                                        <span style="color:var(--success); font-weight:bold;"><?= htmlspecialchars($req['repayment_date']) ?></span>
+                                        <span style="color:var(--success); font-weight:bold;"><?= htmlspecialchars($req['repayment_date']) ?></span><br>
+                                        <span style="color:#6B7280; font-size: 0.9em;">(الحصة <?= $req['repayment_period'] ?>)</span>
                                     <?php else: ?>
                                         <span style="color:#9CA3AF;">غير محدد</span>
                                     <?php endif; ?>
