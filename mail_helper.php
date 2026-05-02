@@ -1,7 +1,7 @@
 <?php
 /**
  * PHPMailer-based Mail Helper for Rased System
- * This uses a simplified SMTP implementation to ensure delivery via Gmail.
+ * Using Port 465 (SSL) for maximum compatibility with restricted servers.
  */
 
 function sendRasedEmail($to, $subject, $message) {
@@ -10,15 +10,18 @@ function sendRasedEmail($to, $subject, $message) {
     $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // MUST BE 16-CHAR APP PASSWORD
     // -------------------------------------------
 
-    $host = "smtp.gmail.com";
-    $port = 587;
+    $host = "ssl://smtp.gmail.com";
+    $port = 465;
     $timeout = 10;
 
-    $socket = fsockopen($host, $port, $errno, $errstr, $timeout);
-    if (!$socket) return false;
+    $socket = @fsockopen($host, $port, $errno, $errstr, $timeout);
+    if (!$socket) {
+        error_log("Socket Connection Failed: $errno - $errstr");
+        return false;
+    }
 
-    function smtp_comm($socket, $cmd) {
-        fwrite($socket, $cmd . "\r\n");
+    function smtp_comm($socket, $cmd = "") {
+        if ($cmd !== "") fwrite($socket, $cmd . "\r\n");
         $res = "";
         while ($str = fgets($socket, 515)) {
             $res .= $str;
@@ -28,15 +31,7 @@ function sendRasedEmail($to, $subject, $message) {
     }
 
     try {
-        smtp_comm($socket, ""); // Read greeting
-        smtp_comm($socket, "EHLO " . $_SERVER['HTTP_HOST']);
-        smtp_comm($socket, "STARTTLS");
-        
-        // After STARTTLS, we need to enable encryption on the existing socket
-        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            return false;
-        }
-
+        smtp_comm($socket); // Greeting
         smtp_comm($socket, "EHLO " . $_SERVER['HTTP_HOST']);
         smtp_comm($socket, "AUTH LOGIN");
         smtp_comm($socket, base64_encode($smtp_user));
@@ -77,7 +72,7 @@ function sendSubstitutionEmails($db, $request_id) {
     
     if (!$req) return false;
 
-    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator'");
+    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator' AND email IS NOT NULL");
     
     $stmtCoord->execute([$req['req_sub_id']]);
     $req_coord_email = $stmtCoord->fetchColumn();
