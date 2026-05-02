@@ -50,7 +50,7 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .navbar .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-        .navbar .user-info { font-weight: 500; }
+        .navbar .user-info { font-weight: 500; display: flex; gap: 1rem; align-items: center; }
         
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
         .card {
@@ -78,6 +78,8 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
             display: inline-block;
         }
         .btn:hover { background: #4338CA; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
@@ -85,14 +87,18 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
 <div class="navbar">
     <div class="brand">راصد تبديلاتي</div>
     <div class="user-info">
-        مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?> | 
-        <a href="logout.php" style="color: #DC2626; text-decoration: none;">تسجيل خروج</a>
+        مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?>
+        <a href="profile.php" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.9em;">تغيير كلمة المرور</a>
+        <a href="logout.php" style="color: #DC2626; text-decoration: none; margin-right:0.5rem;">خروج</a>
     </div>
 </div>
 
 <div class="container">
     <div class="card">
-        <h2>جدول الحصص الخاص بك</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="margin: 0;">جدول الحصص الخاص بك</h2>
+            <a href="schedule.php" class="btn" style="background: #4B5563;">⚙️ إعداد الجدول يدوياً</a>
+        </div>
         <div class="table-container">
             <table>
                 <thead>

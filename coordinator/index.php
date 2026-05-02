@@ -10,8 +10,12 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'coordinat
 $db = getDB();
 $coord_id = $_SESSION['rased_user_id'];
 
+// Get coordinator's subject
+$stmt = $db->prepare("SELECT subject_id FROM rased_users WHERE id = ?");
+$stmt->execute([$coord_id]);
+$coord_subject = $stmt->fetchColumn();
+
 // Get requests for teachers in this coordinator's subject
-// Requester coordinator:
 $stmt = $db->prepare("
     SELECT r.id, r.request_date, r.period_number, 
            c.name as class_name, 
@@ -23,12 +27,10 @@ $stmt = $db->prepare("
     JOIN rased_classes c ON r.class_id = c.id
     JOIN rased_users u1 ON r.requester_id = u1.id
     JOIN rased_users u2 ON r.substitute_id = u2.id
-    LEFT JOIN rased_subjects s1 ON u1.subject_id = s1.id
-    LEFT JOIN rased_subjects s2 ON u2.subject_id = s2.id
-    WHERE (s1.coordinator_id = ? AND r.req_coordinator_status = 'pending')
-       OR (s2.coordinator_id = ? AND r.sub_coordinator_status = 'pending')
+    WHERE (u1.subject_id = ? AND r.req_coordinator_status = 'pending')
+       OR (u2.subject_id = ? AND r.sub_coordinator_status = 'pending')
 ");
-$stmt->execute([$coord_id, $coord_id]);
+$stmt->execute([$coord_subject, $coord_subject]);
 $pending_requests = $stmt->fetchAll();
 
 ?>
@@ -79,9 +81,11 @@ $pending_requests = $stmt->fetchAll();
 
 <div class="container">
     <div class="card">
-        <h2>طلبات التبديل المعلقة</h2>
-        <?php if(empty($pending_requests)): ?>
-            <p>لا توجد طلبات معلقة حالياً.</p>
+        <h2>طلبات التبديل المعلقة في القسم الخاص بك</h2>
+        <?php if(!$coord_subject): ?>
+            <p style="color:red; font-weight:bold;">تنبيه: لم يتم تعيين قسم / مادة دراسية لك. يرجى مراجعة النائب الأكاديمي لربط حسابك بالمادة.</p>
+        <?php elseif(empty($pending_requests)): ?>
+            <p>لا توجد طلبات معلقة حالياً في قسمك.</p>
         <?php else: ?>
             <div style="overflow-x: auto;">
                 <table>
