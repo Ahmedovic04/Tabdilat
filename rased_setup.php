@@ -67,30 +67,20 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ");
 
-    // Fix Duplicate Subjects (Migration & Cleanup)
-    try {
-        // First, ensure the 'name' column is unique to prevent future duplicates
-        $db->exec("ALTER TABLE rased_subjects ADD UNIQUE (name)");
-    } catch (Exception $e) {
-        // If duplicates already exist, UNIQUE index creation will fail. 
-        // We need to manually clean them up first.
-        $db->exec("
-            DELETE t1 FROM rased_subjects t1
-            INNER JOIN rased_subjects t2 
-            WHERE t1.id > t2.id AND t1.name = t2.name
-        ");
-        // Now try adding unique again
-        try { $db->exec("ALTER TABLE rased_subjects ADD UNIQUE (name)"); } catch(Exception $e2){}
-    }
+    // Migration for missing columns
+    try { $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_date DATE NULL AFTER period_number"); } catch(Exception $e){}
+    try { $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_period INT NULL AFTER repayment_date"); } catch(Exception $e){}
+    try { $db->exec("ALTER TABLE rased_users ADD COLUMN subject_id INT NULL AFTER role"); } catch(Exception $e){}
+    try { $db->exec("ALTER TABLE rased_subjects ADD UNIQUE (name)"); } catch(Exception $e){}
 
-    // Seed Subjects securely with INSERT IGNORE
-    $subjects = ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'اجتماعيات', 'تربية رياضية', 'فنون', 'حوسبة'];
+    // Seed Subjects securely
+    $subjects = ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'اجتماعيات', 'تربية رياضية', 'فنون', 'حوسبة', 'تربية إسلامية', 'علوم'];
     $stmtSub = $db->prepare("INSERT IGNORE INTO rased_subjects (name) VALUES (?)");
     foreach ($subjects as $sub) {
         $stmtSub->execute([$sub]);
     }
 
-    echo "Setup, Cleanup and Seeding completed successfully.<br>\n";
+    echo "Setup and Seeding updated successfully.<br>\n";
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>\n";
