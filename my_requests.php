@@ -100,18 +100,22 @@ $my_requests = $stmtMy->fetchAll();
                                 <td><?= $req['repayment_date'] ? htmlspecialchars($req['repayment_date']) : '-' ?></td>
                                 <td>
                                     <?php 
-                                        if($req['req_coordinator_status'] == 'rejected' || $req['sub_coordinator_status'] == 'rejected')
-                                            echo '<span class="status-badge status-rejected">مرفوض</span>';
-                                        elseif($req['req_coordinator_status'] == 'approved' && $req['sub_coordinator_status'] == 'approved')
-                                            echo '<span class="status-badge status-approved">مقبول</span>';
-                                        else
+                                        // If deputy approved, coordinator status doesn't matter for display
+                                        if($req['deputy_status'] == 'approved' || $req['deputy_status'] == 'approved_with_mod') {
+                                            echo '<span class="status-badge status-approved">تمت الموافقة</span>';
+                                        } elseif($req['req_coordinator_status'] == 'rejected' || $req['sub_coordinator_status'] == 'rejected') {
+                                            echo '<span class="status-badge status-rejected">مرفوض من المنسق</span>';
+                                        } elseif($req['req_coordinator_status'] == 'approved' && $req['sub_coordinator_status'] == 'approved') {
+                                            echo '<span class="status-badge status-approved">وافق المنسق</span>';
+                                        } else {
                                             echo '<span class="status-badge status-pending">قيد المراجعة</span>';
+                                        }
                                     ?>
                                 </td>
                                 <td>
                                     <?php 
                                         if($req['deputy_status'] == 'approved' || $req['deputy_status'] == 'approved_with_mod')
-                                            echo '<span class="status-badge status-approved">معتمد</span>';
+                                            echo '<span class="status-badge status-approved">معتمد نهائياً</span>';
                                         elseif($req['deputy_status'] == 'rejected')
                                             echo '<span class="status-badge status-rejected">مرفوض</span>';
                                         else
