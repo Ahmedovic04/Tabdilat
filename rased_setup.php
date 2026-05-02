@@ -70,7 +70,7 @@ try {
     echo "Tables created successfully.\n";
 
     // 2. Parse Excel/HTML File
-    $file_path = 'D:/Tabdilat/Teachers_Summary (2).xls';
+    $file_path = 'Teachers_Summary (2).xls';
     if (!file_exists($file_path)) {
         die("File not found at: $file_path\n");
     }
