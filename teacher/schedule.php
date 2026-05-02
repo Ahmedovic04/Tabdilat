@@ -2,7 +2,8 @@
 require_once '../config.php';
 startSecureSession();
 
-if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher') {
+// Allow both teachers and coordinators to access their personal schedule
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
     header('Location: ../login.php');
     exit;
 }
@@ -106,16 +107,16 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
 <body>
 
 <div class="navbar">
-    <div class="brand">إعداد الجدول اليدوي</div>
+    <div class="brand">إعداد الجدول الشخصي</div>
     <div>
-        <a href="index.php" style="color: var(--primary); font-weight:bold; text-decoration: none;">العودة للوحة الرئيسية</a>
+        <a href="../<?= $_SESSION['rased_role'] ?>/index.php" style="color: var(--primary); font-weight:bold; text-decoration: none;">العودة للوحة الرئيسية</a>
     </div>
 </div>
 
 <div class="container">
     <div class="card">
         <h2>إنشاء أو تعديل جدول الحصص</h2>
-        <p style="margin-bottom: 1.5rem; color: #6B7280;">أدخل اسم الصف في الخانة المناسبة (مثال: S1 أو الأول أ). اترك الخانة فارغة إذا لم تكن لديك حصة.</p>
+        <p style="margin-bottom: 1.5rem; color: #6B7280;">أدخل اسم الصف في الخانة المناسبة. اترك الخانة فارغة إذا لم تكن لديك حصة.</p>
         
         <?= $message ?>
         

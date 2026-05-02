@@ -2,7 +2,8 @@
 require_once '../config.php';
 startSecureSession();
 
-if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher') {
+// Allow both teachers and coordinators to request a substitution
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
     header('Location: ../login.php');
     exit;
 }
@@ -58,8 +59,8 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
 <body>
 
 <div class="navbar">
-    <div class="brand"><a href="index.php" style="text-decoration:none; color:inherit; font-weight:bold;">راصد تبديلاتي</a></div>
-    <div><a href="index.php" style="color:var(--text-main); text-decoration:none;">العودة للوحة الرئيسية</a></div>
+    <div class="brand"><a href="../index.php" style="text-decoration:none; color:inherit; font-weight:bold;">راصد تبديلاتي</a></div>
+    <div><a href="../<?= $_SESSION['rased_role'] ?>/index.php" style="color:var(--text-main); text-decoration:none; font-weight: bold;">العودة للوحة الرئيسية</a></div>
 </div>
 
 <div class="container">
@@ -190,7 +191,6 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 repaySelect.disabled = false;
             } else {
                 repaySelect.innerHTML = '<option value="">لا توجد حصص متاحة لتعويض هذا المعلم قريباً</option>';
-                // Allow them to still submit without repayment if none exist, or we can add a manual option
                 const manualOpt = document.createElement('option');
                 manualOpt.value = 'manual';
                 manualOpt.textContent = 'تحديد يدوي لاحقاً';
@@ -249,7 +249,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
             const data = await res.json();
             if (data.success) {
                 alert('تم إرسال الطلب بنجاح.');
-                window.location.href = 'index.php';
+                window.location.href = '../<?= $_SESSION['rased_role'] ?>/index.php';
             } else {
                 alert(data.message || 'حدث خطأ');
                 submitBtn.disabled = false;
