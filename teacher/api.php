@@ -4,7 +4,7 @@ startSecureSession();
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher') {
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
     echo json_encode(['success' => false, 'message' => 'غير مصرح']);
     exit;
 }
@@ -77,12 +77,10 @@ if ($action === 'get_repayment_suggestions') {
         exit;
     }
     
-    // Get substitute's schedule ONLY for the specified class
     $stmt = $db->prepare("SELECT class_id, day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ? AND class_id = ?");
     $stmt->execute([$sub_id, $class_id]);
     $sub_schedule = $stmt->fetchAll();
     
-    // Get requester's full schedule
     $stmt2 = $db->prepare("SELECT day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ?");
     $stmt2->execute([$teacher_id]);
     $req_schedule_raw = $stmt2->fetchAll();
@@ -91,21 +89,16 @@ if ($action === 'get_repayment_suggestions') {
         $req_busy[$rs['day_of_week'] . '-' . $rs['period_number']] = true;
     }
     
-    // We want to find upcoming days where Substitute HAS a class, and Requester is FREE in that same period
     $suggestions = [];
     $current_date = strtotime($absence_date . ' + 1 day');
     $days_checked = 0;
     
-    // Check up to 14 days ahead to find at least 5 suggestions
     while ($days_checked < 14 && count($suggestions) < 10) {
         $dow = date('w', $current_date);
-        
-        if ($dow <= 4) { // Sunday to Thursday
+        if ($dow <= 4) {
             foreach ($sub_schedule as $ss) {
                 if ($ss['day_of_week'] == $dow) {
-                    // Check if requester is free
                     if (!isset($req_busy[$dow . '-' . $ss['period_number']])) {
-                        // Get class name
                         $c_stmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
                         $c_stmt->execute([$ss['class_id']]);
                         $c_name = $c_stmt->fetchColumn();
@@ -141,8 +134,8 @@ if ($action === 'submit_request') {
     try {
         $stmt = $db->prepare("
             INSERT INTO rased_requests 
-            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date, repayment_period) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date, repayment_period, req_coordinator_status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
         foreach ($data['requests'] as $req) {
@@ -156,6 +149,11 @@ if ($action === 'submit_request') {
                 }
             }
             
+            // Logged in user role
+            $role = $_SESSION['rased_role'];
+            // If requester is a coordinator, set their status to approved automatically
+            $initial_status = ($role === 'coordinator') ? 'approved' : 'pending';
+            
             $stmt->execute([
                 $teacher_id, 
                 $req['substitute_id'], 
@@ -163,7 +161,8 @@ if ($action === 'submit_request') {
                 $date, 
                 $req['period_number'],
                 $rep_date,
-                $rep_period
+                $rep_period,
+                $initial_status
             ]);
         }
         $db->commit();

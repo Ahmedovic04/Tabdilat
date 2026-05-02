@@ -88,7 +88,7 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
     <div class="brand">راصد تبديلاتي</div>
     <div class="user-info">
         مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?>
-        <a href="profile.php" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.9em;">تغيير كلمة المرور</a>
+        <a href="profile.php" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.9em;">🔐 كلمة المرور</a>
         <a href="logout.php" style="color: #DC2626; text-decoration: none; margin-right:0.5rem;">خروج</a>
     </div>
 </div>
@@ -97,7 +97,10 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h2 style="margin: 0;">جدول الحصص الخاص بك</h2>
-            <a href="schedule.php" class="btn" style="background: #4B5563;">⚙️ إعداد الجدول يدوياً</a>
+            <div style="display:flex; gap:0.5rem;">
+                <a href="../my_requests.php" class="btn" style="background: #10B981;">📋 متابعة طلباتي</a>
+                <a href="schedule.php" class="btn" style="background: #4B5563;">⚙️ إعداد الجدول</a>
+            </div>
         </div>
         <div class="table-container">
             <table>
@@ -130,7 +133,7 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
         </div>
         
         <div style="margin-top: 2rem; text-align: left;">
-            <a href="request.php" class="btn">طلب تبديل حصة</a>
+            <a href="request.php" class="btn">➕ طلب تبديل حصة</a>
         </div>
     </div>
 </div>

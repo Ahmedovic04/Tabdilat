@@ -15,7 +15,7 @@ $stmt = $db->prepare("SELECT subject_id FROM rased_users WHERE id = ?");
 $stmt->execute([$coord_id]);
 $coord_subject = $stmt->fetchColumn();
 
-// Get requests for teachers in this coordinator's subject
+// Get requests for teachers in this coordinator's subject (Section Tasks)
 $stmt = $db->prepare("
     SELECT r.id, r.request_date, r.period_number, 
            c.name as class_name, 
@@ -57,16 +57,20 @@ $pending_requests = $stmt->fetchAll();
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
         .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
         h2 { color: var(--primary); margin-bottom: 1.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        
         table { width: 100%; border-collapse: collapse; text-align: center; }
         th, td { padding: 1rem; border: 1px solid var(--border-color); }
         th { background: #F9FAFB; font-weight: 700; }
         .btn {
             padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.3s; margin: 0 0.2rem;
+            text-decoration: none; display: inline-block; text-align: center;
         }
         .btn-approve { background: var(--success); }
         .btn-approve:hover { background: #059669; }
         .btn-reject { background: var(--danger); }
         .btn-reject:hover { background: #DC2626; }
+        .btn-primary { background: var(--primary); }
     </style>
 </head>
 <body>
@@ -80,8 +84,27 @@ $pending_requests = $stmt->fetchAll();
 </div>
 
 <div class="container">
+
+    <div class="grid">
+        <div class="card">
+            <h2>إدارة حصصي الشخصية</h2>
+            <p>يمكنك طلب تبديل حصصك أو تعديل جدولك الشخصي.</p><br>
+            <div style="display:flex; gap:0.5rem; flex-direction: column;">
+                <a href="../teacher/request.php" class="btn btn-primary">➕ طلب تبديل حصة لي</a>
+                <a href="../teacher/schedule.php" class="btn btn-primary" style="background:#4B5563;">⚙️ إعداد جدولي يدوياً</a>
+                <a href="../my_requests.php" class="btn btn-primary" style="background:#10B981;">📋 متابعة طلباتي الشخصية</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>إدارة الملف الشخصي</h2>
+            <p>تعديل بيانات الدخول الخاصة بك.</p><br>
+            <a href="../teacher/profile.php" class="btn btn-primary" style="background:#F59E0B;">🔐 تغيير كلمة المرور</a>
+        </div>
+    </div>
+
     <div class="card">
-        <h2>طلبات التبديل المعلقة في القسم الخاص بك</h2>
+        <h2>طلبات القسم (تحتاج موافقتك)</h2>
         <?php if(!$coord_subject): ?>
             <p style="color:red; font-weight:bold;">تنبيه: لم يتم تعيين قسم / مادة دراسية لك. يرجى مراجعة النائب الأكاديمي لربط حسابك بالمادة.</p>
         <?php elseif(empty($pending_requests)): ?>
