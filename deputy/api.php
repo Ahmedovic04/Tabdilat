@@ -23,21 +23,34 @@ if ($action === 'update_status') {
         exit;
     }
 
-    $db->beginTransaction();
-    try {
+    // Process approval with strict email check
+    if (in_array($status, ['approved', 'approved_with_mod'])) {
+        try {
+            // First: Attempt to send emails
+            $mailSuccess = sendSubstitutionEmails($db, $request_id);
+            
+            if (!$mailSuccess) {
+                echo json_encode(['success' => false, 'message' => 'خطأ: فشل إرسال إشعارات البريد الإلكتروني. يرجى التأكد من إعدادات السيرفر ومن وجود إيميلات صحيحة للموظفين.']);
+                exit;
+            }
+
+            // Second: If emails sent, update DB
+            $db->beginTransaction();
+            $stmt = $db->prepare("UPDATE rased_requests SET deputy_status = ? WHERE id = ?");
+            $stmt->execute([$status, $request_id]);
+            $db->commit();
+            
+            echo json_encode(['success' => true]);
+
+        } catch (Exception $e) {
+            if ($db->inTransaction()) $db->rollBack();
+            echo json_encode(['success' => false, 'message' => 'فشل العملية: ' . $e->getMessage()]);
+        }
+    } else {
+        // Simple rejection (no email required usually, or simpler logic)
         $stmt = $db->prepare("UPDATE rased_requests SET deputy_status = ? WHERE id = ?");
         $stmt->execute([$status, $request_id]);
-        
-        // If approved, send notification emails using the new helper
-        if (in_array($status, ['approved', 'approved_with_mod'])) {
-            sendSubstitutionEmails($db, $request_id);
-        }
-        
-        $db->commit();
         echo json_encode(['success' => true]);
-    } catch (Exception $e) {
-        $db->rollBack();
-        echo json_encode(['success' => false, 'message' => 'خطأ في التحديث: ' . $e->getMessage()]);
     }
     exit;
 }
