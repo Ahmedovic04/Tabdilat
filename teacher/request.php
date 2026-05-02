@@ -121,7 +121,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
                 <div class="row-grid">
                     <div>
                         <label>اختر المعلم البديل</label>
-                        <select id="sub_${cls.period_number}" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number})">
+                        <select id="sub_${cls.period_number}" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number}, ${cls.class_id})">
                             <option value="">-- اختر المعلم البديل --</option>
                         </select>
                     </div>
@@ -160,7 +160,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         }
     }
     
-    async function handleSubChange(periodNumber) {
+    async function handleSubChange(periodNumber, classId) {
         const subSelect = document.getElementById(`sub_${periodNumber}`);
         const repaySelect = document.getElementById(`repay_${periodNumber}`);
         const dateVal = dateInput.value;
@@ -176,7 +176,7 @@ if (!isset($_SESSION['rased_user_id']) || $_SESSION['rased_role'] !== 'teacher')
         repaySelect.disabled = true;
         
         try {
-            const res = await fetch(`api.php?action=get_repayment_suggestions&sub_id=${subId}&date=${dateVal}`);
+            const res = await fetch(`api.php?action=get_repayment_suggestions&sub_id=${subId}&date=${dateVal}&class_id=${classId}`);
             const data = await res.json();
             
             repaySelect.innerHTML = '<option value="">-- اختر حصة لتعويض الزميل --</option>';

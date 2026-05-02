@@ -70,15 +70,16 @@ if ($action === 'get_substitutes') {
 if ($action === 'get_repayment_suggestions') {
     $sub_id = (int)($_GET['sub_id'] ?? 0);
     $absence_date = $_GET['date'] ?? '';
+    $class_id = (int)($_GET['class_id'] ?? 0);
     
-    if (!$sub_id || !$absence_date) {
+    if (!$sub_id || !$absence_date || !$class_id) {
         echo json_encode(['success' => false]);
         exit;
     }
     
-    // Get substitute's full schedule
-    $stmt = $db->prepare("SELECT class_id, day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ?");
-    $stmt->execute([$sub_id]);
+    // Get substitute's schedule ONLY for the specified class
+    $stmt = $db->prepare("SELECT class_id, day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ? AND class_id = ?");
+    $stmt->execute([$sub_id, $class_id]);
     $sub_schedule = $stmt->fetchAll();
     
     // Get requester's full schedule
@@ -145,10 +146,9 @@ if ($action === 'submit_request') {
         ");
         
         foreach ($data['requests'] as $req) {
-            // Repayment can be "YYYY-MM-DD_P" format
             $rep_date = null;
             $rep_period = null;
-            if (!empty($req['repayment_val'])) {
+            if (!empty($req['repayment_val']) && $req['repayment_val'] !== 'manual') {
                 $parts = explode('_', $req['repayment_val']);
                 if (count($parts) == 2) {
                     $rep_date = $parts[0];
