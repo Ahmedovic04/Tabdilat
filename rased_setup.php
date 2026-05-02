@@ -13,6 +13,7 @@ try {
             username VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
             name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NULL,
             role ENUM('teacher', 'coordinator', 'deputy') DEFAULT 'teacher',
             subject_id INT NULL,
             is_new BOOLEAN DEFAULT TRUE,
@@ -67,20 +68,21 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ");
 
-    // Migration for missing columns
+    // Migrations
+    try { $db->exec("ALTER TABLE rased_users ADD COLUMN email VARCHAR(100) NULL AFTER name"); } catch(Exception $e){}
     try { $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_date DATE NULL AFTER period_number"); } catch(Exception $e){}
     try { $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_period INT NULL AFTER repayment_date"); } catch(Exception $e){}
     try { $db->exec("ALTER TABLE rased_users ADD COLUMN subject_id INT NULL AFTER role"); } catch(Exception $e){}
     try { $db->exec("ALTER TABLE rased_subjects ADD UNIQUE (name)"); } catch(Exception $e){}
 
-    // Seed Subjects securely
+    // Seed Subjects
     $subjects = ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'اجتماعيات', 'تربية رياضية', 'فنون', 'حوسبة', 'تربية إسلامية', 'علوم'];
     $stmtSub = $db->prepare("INSERT IGNORE INTO rased_subjects (name) VALUES (?)");
     foreach ($subjects as $sub) {
         $stmtSub->execute([$sub]);
     }
 
-    echo "Setup and Seeding updated successfully.<br>\n";
+    echo "Setup and Email migration updated successfully.<br>\n";
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>\n";
