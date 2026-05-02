@@ -3,8 +3,6 @@ version: '3.8'
 services:
   app:
     build: .
-    ports:
-      - "80:80"
     environment:
       - MYSQLHOST=db
       - MYSQLDATABASE=tabdilat
@@ -26,8 +24,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
-    ports:
-      - "8080:80"
     environment:
       - PMA_HOST=db
       - MYSQL_ROOT_PASSWORD=root
