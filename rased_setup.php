@@ -57,6 +57,7 @@ try {
             request_date DATE NOT NULL,
             period_number INT NOT NULL,
             repayment_date DATE NULL,
+            repayment_period INT NULL,
             req_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
             sub_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
             deputy_status ENUM('pending', 'approved', 'approved_with_mod', 'rejected') DEFAULT 'pending',
@@ -72,6 +73,14 @@ try {
     try {
         $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_date DATE NULL AFTER period_number");
         echo "Added repayment_date column.\n";
+    } catch (Exception $e) {
+        // Column probably already exists
+    }
+
+    // Add repayment_period if it doesn't exist (Migration)
+    try {
+        $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_period INT NULL AFTER repayment_date");
+        echo "Added repayment_period column.\n";
     } catch (Exception $e) {
         // Column probably already exists
     }

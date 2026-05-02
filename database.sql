@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS rased_requests (
     request_date DATE NOT NULL,
     period_number INT NOT NULL,
     repayment_date DATE NULL,
+    repayment_period INT NULL,
     req_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     sub_coordinator_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     deputy_status ENUM('pending', 'approved', 'approved_with_mod', 'rejected') DEFAULT 'pending',
