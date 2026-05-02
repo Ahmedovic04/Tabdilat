@@ -64,6 +64,8 @@ $new_teachers_count = $stmtNew->fetchColumn();
         .btn-reject:hover { background: #DC2626; }
         .btn-primary { background: var(--primary); }
         .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: #4B5563; }
+        .btn-secondary:hover { background: #374151; }
     </style>
 </head>
 <body>
@@ -130,15 +132,16 @@ $new_teachers_count = $stmtNew->fetchColumn();
         <h2>إدارة النظام والتقارير</h2>
         <?php if($new_teachers_count > 0): ?>
             <div style="background: #FEF2F2; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-right: 4px solid #DC2626;">
-                <strong>تنبيه:</strong> تم اكتشاف <?= $new_teachers_count ?> معلم جديد في الجدول الأخير. يرجى تحديث بياناتهم والمواد الخاصة بهم.
+                <strong>تنبيه:</strong> تم اكتشاف <?= $new_teachers_count ?> موظف جديد (أو تحديثات) في النظام. يرجى الدخول لإدارة الموظفين لتحديد صلاحياتهم (معلم / منسق).
             </div>
         <?php endif; ?>
         
-        <p style="margin-bottom: 1.5rem;">من هنا يمكنك استخراج تقارير شاملة عن جميع التبديلات التي تمت، أو تحديث الجدول الدراسي للنظام.</p>
+        <p style="margin-bottom: 1.5rem;">من هنا يمكنك استخراج تقارير شاملة عن جميع التبديلات، أو إدارة صلاحيات الموظفين، أو تحديث الجدول الدراسي للنظام.</p>
         
-        <div style="display: flex; gap: 1rem;">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <a href="reports.php" class="btn btn-primary">📊 تقارير التبديلات (للطباعة)</a>
-            <a href="upload.php" class="btn btn-approve">⬆️ رفع / تحديث جدول المعلمين</a>
+            <a href="users.php" class="btn btn-secondary">👥 إدارة الموظفين والصلاحيات</a>
+            <a href="upload.php" class="btn btn-approve">⬆️ رفع / تحديث جدول الحصص</a>
         </div>
     </div>
 </div>
