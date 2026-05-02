@@ -1,33 +1,61 @@
 <?php
 /**
- * Simple SMTP Mail Helper
- * Uses PHP's PHPMailer or a custom lightweight SMTP implementation.
- * For now, I will create a structured configuration in config.php 
- * and a robust mail sender here.
+ * Advanced SMTP Mail Helper for Rased System
+ * Connects directly to Gmail SMTP servers via SSL/TLS
  */
 
 function sendRasedEmail($to, $subject, $message) {
-    // Gmail SMTP Configuration
+    // --- Gmail SMTP Configuration ---
+    $smtp_host = "ssl://smtp.gmail.com";
+    $smtp_port = 465;
     $smtp_user = 'abo.hyzar41@gmail.com';
-    $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // User needs to generate an "App Password" from Google Security settings
-    
-    $headers = "From: Rased System <{$smtp_user}>\r\n" .
-               "Reply-To: {$smtp_user}\r\n" .
-               "Content-Type: text/plain; charset=utf-8\r\n" .
-               "X-Mailer: PHP/" . phpversion();
+    $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // MUST BE A 16-CHARACTER APP PASSWORD
+    // --------------------------------
 
-    // Note: If the server doesn't have an SMTP relay configured, 
-    // the best approach is using a library like PHPMailer.
-    // However, to keep it lightweight without composer, we can use the default mail() 
-    // if the hosting environment (like Nakama/Docker) is configured with an SMTP relay.
-    
-    // Attempt to send using default mail (configured via php.ini / ssmtp in docker)
-    return @mail($to, $subject, $message, $headers);
+    $header = "To: <" . $to . ">\r\n";
+    $header .= "From: Rased System <" . $smtp_user . ">\r\n";
+    $header .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
+    $header .= "MIME-Version: 1.0\r\n";
+    $header .= "Content-Type: text/plain; charset=utf-8\r\n";
+    $header .= "Content-Transfer-Encoding: 8bit\r\n";
+    $header .= "X-Mailer: PHP/" . phpversion();
+
+    // Open connection to Gmail
+    $socket = @fsockopen($smtp_host, $smtp_port, $errno, $errstr, 10);
+    if (!$socket) return false;
+
+    function get_response($socket) {
+        $res = "";
+        while ($str = fgets($socket, 515)) {
+            $res .= $str;
+            if (substr($str, 3, 1) == " ") break;
+        }
+        return $res;
+    }
+
+    get_response($socket);
+    fwrite($socket, "EHLO " . $_SERVER['HTTP_HOST'] . "\r\n");
+    get_response($socket);
+    fwrite($socket, "AUTH LOGIN\r\n");
+    get_response($socket);
+    fwrite($socket, base64_encode($smtp_user) . "\r\n");
+    get_response($socket);
+    fwrite($socket, base64_encode($smtp_pass) . "\r\n");
+    get_response($socket);
+    fwrite($socket, "MAIL FROM: <" . $smtp_user . ">\r\n");
+    get_response($socket);
+    fwrite($socket, "RCPT TO: <" . $to . ">\r\n");
+    get_response($socket);
+    fwrite($socket, "DATA\r\n");
+    get_response($socket);
+    fwrite($socket, $header . "\r\n" . $message . "\r\n.\r\n");
+    get_response($socket);
+    fwrite($socket, "QUIT\r\n");
+    fclose($socket);
+
+    return true;
 }
 
-/**
- * Advanced Email Sender for Substitution
- */
 function sendSubstitutionEmails($db, $request_id) {
     $stmt = $db->prepare("
         SELECT r.*, 
@@ -45,8 +73,7 @@ function sendSubstitutionEmails($db, $request_id) {
     
     if (!$req) return;
 
-    // Get coordinators
-    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator'");
+    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator' AND email IS NOT NULL");
     
     $stmtCoord->execute([$req['req_sub_id']]);
     $req_coord_email = $stmtCoord->fetchColumn();
@@ -58,7 +85,7 @@ function sendSubstitutionEmails($db, $request_id) {
     
     if (empty($to_emails)) return;
 
-    $subject = "إشعار اعتماد تبديل حصة - مدرسة معيذر (راصد)";
+    $subject = "إشعار اعتماد تبديل حصة - نظام راصد";
     $body = "تحية طيبة،\n\nتم اعتماد طلب التبديل رقم #{$request_id} رسمياً من قبل النائب الأكاديمي.\n\n" .
             "التفاصيل:\n" .
             "--------------------------\n" .
@@ -69,8 +96,7 @@ function sendSubstitutionEmails($db, $request_id) {
             "- الحصة: {$req['period_number']}\n" .
             "- موعد التعويض: " . ($req['repayment_date'] ?: 'سيتم التحديد لاحقاً') . "\n" .
             "--------------------------\n\n" .
-            "يرجى مراجعة الجدول المحدث والالتزام بالمواعيد.\n" .
-            "هذا إيميل تلقائي، يرجى عدم الرد عليه.\n\n" .
+            "يرجى مراجعة الجدول المحدث والالتزام بالمواعيد.\n\n" .
             "نظام راصد تبديلاتي - مدرسة معيذر الابتدائية";
 
     foreach ($to_emails as $email) {
