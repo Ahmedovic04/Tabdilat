@@ -1,9 +1,9 @@
 <?php
-require_once '../config.php';
+require_once 'config.php';
 startSecureSession();
 
 if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
-    header('Location: ../login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -100,7 +100,6 @@ $my_requests = $stmtMy->fetchAll();
                                 <td><?= $req['repayment_date'] ? htmlspecialchars($req['repayment_date']) : '-' ?></td>
                                 <td>
                                     <?php 
-                                        // Simplified coordinator check
                                         if($req['req_coordinator_status'] == 'rejected' || $req['sub_coordinator_status'] == 'rejected')
                                             echo '<span class="status-badge status-rejected">مرفوض</span>';
                                         elseif($req['req_coordinator_status'] == 'approved' && $req['sub_coordinator_status'] == 'approved')
