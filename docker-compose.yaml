@@ -24,5 +24,16 @@ services:
       - db_data:/var/lib/mysql
     restart: always
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=db
+      - MYSQL_ROOT_PASSWORD=root
+    depends_on:
+      - db
+    restart: always
+
 volumes:
   db_data:
