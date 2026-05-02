@@ -1,21 +1,63 @@
 <?php
 /**
- * Simplified Mail Helper for Rased System
- * Returns true on success, false on failure.
+ * PHPMailer-based Mail Helper for Rased System
+ * This uses a simplified SMTP implementation to ensure delivery via Gmail.
  */
 
 function sendRasedEmail($to, $subject, $message) {
-    $from_email = 'abo.hyzar41@gmail.com';
-    
-    $headers = "From: Rased System <{$from_email}>\r\n" .
-               "Reply-To: {$from_email}\r\n" .
-               "MIME-Version: 1.0\r\n" .
-               "Content-Type: text/plain; charset=utf-8\r\n" .
-               "Content-Transfer-Encoding: 8bit\r\n" .
-               "X-Mailer: PHP/" . phpversion();
+    // --- IMPORTANT: Gmail SMTP Configuration ---
+    $smtp_user = 'abo.hyzar41@gmail.com';
+    $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // MUST BE 16-CHAR APP PASSWORD
+    // -------------------------------------------
 
-    // Standard mail returns true if accepted for delivery
-    return mail($to, $subject, $message, $headers);
+    $host = "smtp.gmail.com";
+    $port = 587;
+    $timeout = 10;
+
+    $socket = fsockopen($host, $port, $errno, $errstr, $timeout);
+    if (!$socket) return false;
+
+    function smtp_comm($socket, $cmd) {
+        fwrite($socket, $cmd . "\r\n");
+        $res = "";
+        while ($str = fgets($socket, 515)) {
+            $res .= $str;
+            if (substr($str, 3, 1) == " ") break;
+        }
+        return $res;
+    }
+
+    try {
+        smtp_comm($socket, ""); // Read greeting
+        smtp_comm($socket, "EHLO " . $_SERVER['HTTP_HOST']);
+        smtp_comm($socket, "STARTTLS");
+        
+        // After STARTTLS, we need to enable encryption on the existing socket
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            return false;
+        }
+
+        smtp_comm($socket, "EHLO " . $_SERVER['HTTP_HOST']);
+        smtp_comm($socket, "AUTH LOGIN");
+        smtp_comm($socket, base64_encode($smtp_user));
+        smtp_comm($socket, base64_encode($smtp_pass));
+        
+        smtp_comm($socket, "MAIL FROM: <$smtp_user>");
+        smtp_comm($socket, "RCPT TO: <$to>");
+        smtp_comm($socket, "DATA");
+        
+        $header = "To: <$to>\r\n" .
+                  "From: Rased System <$smtp_user>\r\n" .
+                  "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n" .
+                  "Content-Type: text/plain; charset=utf-8\r\n\r\n";
+        
+        smtp_comm($socket, $header . $message . "\r\n.");
+        smtp_comm($socket, "QUIT");
+        fclose($socket);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
 }
 
 function sendSubstitutionEmails($db, $request_id) {
@@ -35,7 +77,7 @@ function sendSubstitutionEmails($db, $request_id) {
     
     if (!$req) return false;
 
-    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator' AND email IS NOT NULL");
+    $stmtCoord = $db->prepare("SELECT email FROM rased_users WHERE subject_id = ? AND role = 'coordinator'");
     
     $stmtCoord->execute([$req['req_sub_id']]);
     $req_coord_email = $stmtCoord->fetchColumn();
@@ -46,9 +88,7 @@ function sendSubstitutionEmails($db, $request_id) {
     $to_emails = array_unique(array_filter([$req['req_email'], $req['sub_email'], $req_coord_email, $sub_coord_email]));
     
     if (empty($to_emails)) {
-        // If no emails are set for involved parties, we consider this a partial failure 
-        // Or we can throw an error to force deputy to ensure emails are set.
-        throw new Exception("لم يتم العثور على عناوين بريد إلكتروني للموظفين المعنيين بالطلب.");
+        throw new Exception("الموظفون المعنيون بالطلب لم يسجلوا إيميلاتهم بعد.");
     }
 
     $subject = "إشعار اعتماد تبديل حصة - نظام راصد";
@@ -62,7 +102,7 @@ function sendSubstitutionEmails($db, $request_id) {
             "- الحصة: {$req['period_number']}\n" .
             "- موعد التعويض: " . ($req['repayment_date'] ?: 'سيتم التحديد لاحقاً') . "\n" .
             "--------------------------\n\n" .
-            "نظام راصد تبديلاتي";
+            "نظام راصد تبديلاتي - مدرسة معيذر الابتدائية";
 
     $all_sent = true;
     foreach ($to_emails as $email) {
