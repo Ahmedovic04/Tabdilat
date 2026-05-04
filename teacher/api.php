@@ -132,13 +132,33 @@ if ($action === 'submit_request') {
     
     $db->beginTransaction();
     try {
+        // ── CHECK FOR DUPLICATES BEFORE INSERTING ──
+        $dupCheck = $db->prepare("
+            SELECT COUNT(*) FROM rased_requests
+            WHERE requester_id = ?
+              AND request_date = ?
+              AND period_number = ?
+              AND deputy_status != 'rejected'
+        ");
+
         $stmt = $db->prepare("
             INSERT INTO rased_requests 
             (requester_id, substitute_id, class_id, request_date, period_number, repayment_date, repayment_period, req_coordinator_status) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
+        $duplicates = [];
+
         foreach ($data['requests'] as $req) {
+            // Check duplicate: same requester + same date + same period
+            $dupCheck->execute([$teacher_id, $date, $req['period_number']]);
+            $count = $dupCheck->fetchColumn();
+
+            if ($count > 0) {
+                $duplicates[] = $req['period_number'];
+                continue; // skip this one
+            }
+
             $rep_date = null;
             $rep_period = null;
             if (!empty($req['repayment_val']) && $req['repayment_val'] !== 'manual') {
@@ -149,9 +169,7 @@ if ($action === 'submit_request') {
                 }
             }
             
-            // Logged in user role
             $role = $_SESSION['rased_role'];
-            // If requester is a coordinator, set their status to approved automatically
             $initial_status = ($role === 'coordinator') ? 'approved' : 'pending';
             
             $stmt->execute([
@@ -166,7 +184,17 @@ if ($action === 'submit_request') {
             ]);
         }
         $db->commit();
-        echo json_encode(['success' => true]);
+
+        if (!empty($duplicates)) {
+            $periods = implode('، ', $duplicates);
+            echo json_encode([
+                'success' => false,
+                'message' => "⚠️ لا يمكن إرسال الطلب: يوجد طلب تبديل مسبق للحصة رقم ({$periods}) في نفس اليوم. لا يمكن تكرار الطلب."
+            ]);
+        } else {
+            echo json_encode(['success' => true]);
+        }
+
     } catch (Exception $e) {
         $db->rollBack();
         echo json_encode(['success' => false, 'message' => 'حدث خطأ: ' . $e->getMessage()]);
