@@ -2,11 +2,20 @@
 require_once '../config.php';
 startSecureSession();
 
-// Allow both teachers and coordinators to request a substitution
 if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
     header('Location: ../login.php');
     exit;
 }
+
+$db = getDB();
+$user_id = $_SESSION['rased_user_id'];
+
+// Check if email is registered
+$stmtEmail = $db->prepare("SELECT email FROM rased_users WHERE id = ?");
+$stmtEmail->execute([$user_id]);
+$user_email = $stmtEmail->fetchColumn();
+
+$has_email = !empty($user_email);
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -64,18 +73,31 @@ if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['t
 </div>
 
 <div class="container">
-    <div class="card">
-        <h2>طلب تبديل ذكي</h2>
-        <p style="margin-bottom: 1.5rem; color: #6B7280;">اختر تاريخ الغياب وسيقوم النظام باقتراح المعلمين المتاحين واقتراح أفضل الحصص التي يمكنك من خلالها تعويضهم.</p>
-        
-        <div class="form-group">
-            <label>تاريخ الغياب / التبديل</label>
-            <input type="date" id="date-input" min="<?= date('Y-m-d') ?>">
-        </div>
-        
-        <div id="classes-container"></div>
-        
-        <button id="submit-btn" class="btn">تأكيد إرسال الطلب</button>
+    <div class="card shadow-sm border-0">
+        <?php if (!$has_email): ?>
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-envelope-exclamation-fill text-warning" style="font-size: 5rem;"></i>
+                </div>
+                <h2 class="text-dark fw-bold mb-3">عذراً، البريد الإلكتروني غير مسجل!</h2>
+                <p class="text-muted mb-4 fs-5">لضمان وصول إشعارات التبديل والموافقات إليك، يجب تسجيل بريدك الإلكتروني أولاً في ملفك الشخصي قبل البدء بطلب أي تبديل.</p>
+                <a href="profile.php" class="btn btn-primary btn-lg px-5 shadow">
+                    <i class="bi bi-person-gear me-2"></i> انتقل للملف الشخصي الآن
+                </a>
+            </div>
+        <?php else: ?>
+            <h2>طلب تبديل ذكي</h2>
+            <p style="margin-bottom: 1.5rem; color: #6B7280;">اختر تاريخ الغياب وسيقوم النظام باقتراح المعلمين المتاحين واقتراح أفضل الحصص التي يمكنك من خلالها تعويضهم.</p>
+            
+            <div class="form-group">
+                <label>تاريخ الغياب / التبديل</label>
+                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control">
+            </div>
+            
+            <div id="classes-container"></div>
+            
+            <button id="submit-btn" class="btn btn-primary w-100 mt-4 shadow-sm py-3 fw-bold" style="display: none;">تأكيد إرسال الطلب</button>
+        <?php endif; ?>
     </div>
 </div>
 
