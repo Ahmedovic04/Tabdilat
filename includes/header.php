@@ -42,9 +42,37 @@
 
 <div class="main-content">
     <div class="topbar shadow-sm">
-        <h1 class="page-title"><?= $page_title ?? 'لوحة التحكم' ?></h1>
+        <div class="d-flex align-items-center gap-3">
+            <button id="sidebarToggle" class="btn shadow-none">
+                <i class="bi bi-list"></i>
+            </button>
+            <h1 class="page-title"><?= $page_title ?? 'لوحة التحكم' ?></h1>
+        </div>
         <div class="user-nav">
             <span class="fw-bold d-none d-md-inline">مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?></span>
             <div class="badge bg-primary px-3 py-2 rounded-pill"><?= $_SESSION['rased_role'] == 'teacher' ? 'معلم' : 'إدارة' ?></div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const body = document.body;
+            
+            // Check saved state
+            if (localStorage.getItem('sidebar-state') === 'collapsed') {
+                body.classList.add('sidebar-collapsed');
+            }
+
+            toggleBtn.addEventListener('click', function() {
+                body.classList.toggle('sidebar-collapsed');
+                
+                // Save state
+                if (body.classList.contains('sidebar-collapsed')) {
+                    localStorage.setItem('sidebar-state', 'collapsed');
+                } else {
+                    localStorage.setItem('sidebar-state', 'expanded');
+                }
+            });
+        });
+    </script>
