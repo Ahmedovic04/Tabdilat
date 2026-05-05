@@ -71,167 +71,197 @@ $stmt = $db->prepare("
 $stmt->execute([$_SESSION['rased_user_id']]);
 $users = $stmt->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الموظفين - النائب الأكاديمي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5; --primary-hover: #4338CA;
-            --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
-            --bg-color: #F3F4F6; --card-bg: #FFFFFF; --text-main: #1F2937; --border-color: #E5E7EB;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); }
-        .navbar { background: var(--card-bg); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        h2 { color: var(--primary); margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 1rem; border: 1px solid var(--border-color); }
-        th { background: #F9FAFB; font-weight: 700; }
-        .btn { background: var(--primary); color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
-        .btn:hover { background: var(--primary-hover); }
-        .btn-danger { background: var(--danger); }
-        .btn-danger:hover { background: #DC2626; }
-        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: bold; }
-        .badge-teacher { background: #E0E7FF; color: #4338CA; }
-        .badge-coord { background: #D1FAE5; color: #059669; }
-        .msg { background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-right: 4px solid #059669; }
-        .bulk-actions { margin-bottom: 1rem; display: none; }
-    </style>
-</head>
-<body>
+<?php 
+$page_title = 'إدارة الموظفين والصلاحيات';
+$active_page = 'users';
+$base_url = '../';
+include '../includes/header.php'; 
+?>
 
-<div class="navbar">
-    <div class="brand">إدارة الموظفين والمواد</div>
-    <div><a href="index.php" style="color: var(--primary); font-weight:bold; text-decoration: none;">العودة للوحة النائب</a></div>
-</div>
-
-<div class="container">
+<div class="container-fluid">
     <?php if(isset($success_msg)): ?>
-        <div class="msg"><?= $success_msg ?></div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><?= $success_msg ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     <?php endif; ?>
 
-    <div class="card">
-        <h2>إضافة موظف جديد يدوياً</h2>
-        <form method="POST" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; background: #F9FAFB; padding: 1.5rem; border-radius: 8px;">
-            <input type="hidden" name="action" value="add_user">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="display:block; margin-bottom: 5px; font-weight: bold;">الاسم</label>
-                <input type="text" name="name" required style="width:100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+    <div class="row g-4">
+        <!-- Add User Column -->
+        <div class="col-xl-4">
+            <div class="custom-card shadow-sm">
+                <h2 class="h5 mb-4 fw-bold text-primary"><i class="bi bi-person-plus me-2"></i>إضافة موظف جديد</h2>
+                <form method="POST">
+                    <input type="hidden" name="action" value="add_user">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">الاسم الكامل</label>
+                        <input type="text" name="name" class="form-control" required placeholder="أدخل اسم الموظف">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">الصلاحية</label>
+                        <select name="role" class="form-select">
+                            <option value="teacher">معلم</option>
+                            <option value="coordinator">منسق مادة</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">المادة الدراسية</label>
+                        <select name="subject_id" class="form-select">
+                            <option value="">-- غير محدد --</option>
+                            <?php foreach($subjects as $sub): ?>
+                                <option value="<?= $sub['id'] ?>"><?= htmlspecialchars($sub['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-plus-lg me-1"></i> إضافة الموظف
+                    </button>
+                    <p class="text-muted small mt-3 text-center">
+                        <i class="bi bi-info-circle me-1"></i> سيتم إنشاء اسم مستخدم تلقائي بكلمة مرور افتراضية (123456).
+                    </p>
+                </form>
             </div>
-            <div style="flex: 1; min-width: 150px;">
-                <label style="display:block; margin-bottom: 5px; font-weight: bold;">الصلاحية</label>
-                <select name="role" style="width:100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
-                    <option value="teacher">معلم</option>
-                    <option value="coordinator">منسق مادة</option>
-                </select>
-            </div>
-            <div style="flex: 1; min-width: 150px;">
-                <label style="display:block; margin-bottom: 5px; font-weight: bold;">المادة</label>
-                <select name="subject_id" style="width:100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
-                    <option value="">-- اختر --</option>
-                    <?php foreach($subjects as $sub): ?>
-                        <option value="<?= $sub['id'] ?>"><?= htmlspecialchars($sub['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <button type="submit" class="btn" style="background: var(--success); padding: 0.6rem 1.5rem;">➕ إضافة</button>
-        </form>
-    </div>
+        </div>
 
-    <div class="card">
-        <h2>قائمة الموظفين</h2>
-        
-        <form id="bulk-form" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف جميع الموظفين المحددين؟');">
-            <input type="hidden" name="action" value="bulk_delete">
-            
-            <div id="bulk-actions-bar" class="bulk-actions">
-                <button type="submit" class="btn btn-danger">🗑️ حذف الموظفين المحددين</button>
-                <span id="selected-count" style="margin-right: 1rem; font-weight: bold;"></span>
-            </div>
+        <!-- Users List Column -->
+        <div class="col-xl-8">
+            <div class="custom-card shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h2 class="h5 mb-0 fw-bold text-primary"><i class="bi bi-people me-2"></i>قائمة الموظفين</h2>
+                    
+                    <!-- Search Input -->
+                    <div class="input-group" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="userSearch" class="form-control border-start-0 ps-0" placeholder="بحث عن موظف...">
+                    </div>
+                </div>
+                
+                <form id="bulk-form" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف جميع الموظفين المحددين؟');">
+                    <input type="hidden" name="action" value="bulk_delete">
+                    
+                    <div id="bulk-actions-bar" class="alert alert-dark py-2 px-3 mb-3 d-none align-items-center justify-content-between shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check2-square fs-5 me-2"></i>
+                            <span id="selected-count" class="fw-bold"></span>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-danger px-3">🗑️ حذف المحدد</button>
+                    </div>
 
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;"><input type="checkbox" id="select-all"></th>
-                            <th>الاسم</th>
-                            <th>الدور</th>
-                            <th>المادة</th>
-                            <th>تحديث</th>
-                            <th>حذف</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($users as $user): ?>
-                            <tr>
-                                <td><input type="checkbox" name="user_ids[]" value="<?= $user['id'] ?>" class="user-checkbox"></td>
-                                <td><strong><?= htmlspecialchars($user['name']) ?></strong><br><small><?= htmlspecialchars($user['username']) ?></small></td>
-                                <form method="POST">
-                                    <input type="hidden" name="action" value="update_user">
-                                    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                    <td>
-                                        <select name="new_role">
-                                            <option value="teacher" <?= $user['role'] === 'teacher' ? 'selected' : '' ?>>معلم</option>
-                                            <option value="coordinator" <?= $user['role'] === 'coordinator' ? 'selected' : '' ?>>منسق</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="subject_id">
-                                            <option value="">--</option>
-                                            <?php foreach($subjects as $sub): ?>
-                                                <option value="<?= $sub['id'] ?>" <?= $user['subject_id'] == $sub['id'] ? 'selected' : '' ?>><?= htmlspecialchars($sub['name']) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                    <td><button type="submit" class="btn btn-sm">تحديث</button></td>
-                                </form>
-                                <td>
-                                    <form method="POST" onsubmit="return confirm('حذف هذا الموظف؟');">
-                                        <input type="hidden" name="action" value="delete_user">
-                                        <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                        <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem;">🗑️</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="usersTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="select-all" class="form-check-input"></th>
+                                    <th>الموظف</th>
+                                    <th>الدور والصلاحية</th>
+                                    <th>المادة</th>
+                                    <th class="text-center">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($users as $user): ?>
+                                    <tr class="user-row">
+                                        <td><input type="checkbox" name="user_ids[]" value="<?= $user['id'] ?>" class="user-checkbox form-check-input"></td>
+                                        <td>
+                                            <div class="fw-bold user-name"><?= htmlspecialchars($user['name']) ?></div>
+                                            <div class="small text-muted user-username"><?= htmlspecialchars($user['username']) ?></div>
+                                            <?php if($user['is_new']): ?>
+                                                <span class="badge bg-danger p-1 small" style="font-size: 0.65rem;">جديد</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <form method="POST">
+                                            <input type="hidden" name="action" value="update_user">
+                                            <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                            <td>
+                                                <select name="new_role" class="form-select form-select-sm" style="min-width: 120px;">
+                                                    <option value="teacher" <?= $user['role'] === 'teacher' ? 'selected' : '' ?>>معلم</option>
+                                                    <option value="coordinator" <?= $user['role'] === 'coordinator' ? 'selected' : '' ?>>منسق مادة</option>
+                                                    <option value="deputy" <?= $user['role'] === 'deputy' ? 'selected' : '' ?>>نائب/مدير</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="subject_id" class="form-select form-select-sm" style="min-width: 130px;">
+                                                    <option value="">-- غير محدد --</option>
+                                                    <?php foreach($subjects as $sub): ?>
+                                                        <option value="<?= $sub['id'] ?>" <?= $user['subject_id'] == $sub['id'] ? 'selected' : '' ?>><?= htmlspecialchars($sub['name']) ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary" title="حفظ التعديلات"><i class="bi bi-check2"></i></button>
+                                        </form>
+                                                    <form method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الموظف نهائياً؟');" class="d-inline">
+                                                        <input type="hidden" name="action" value="delete_user">
+                                                        <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف الموظف"><i class="bi bi-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <script>
-    const selectAll = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('.user-checkbox');
-    const bulkBar = document.getElementById('bulk-actions-bar');
-    const countSpan = document.getElementById('selected-count');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search Functionality
+        const searchInput = document.getElementById('userSearch');
+        const tableRows = document.querySelectorAll('.user-row');
 
-    function updateBulkBar() {
-        const checkedCount = document.querySelectorAll('.user-checkbox:checked').length;
-        if (checkedCount > 0) {
-            bulkBar.style.display = 'block';
-            countSpan.textContent = `تم تحديد ${checkedCount} موظف`;
-        } else {
-            bulkBar.style.display = 'none';
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            tableRows.forEach(row => {
+                const name = row.querySelector('.user-name').textContent.toLowerCase();
+                const username = row.querySelector('.user-username').textContent.toLowerCase();
+                
+                if (name.includes(query) || username.includes(query)) {
+                    row.classList.remove('d-none');
+                } else {
+                    row.classList.add('d-none');
+                }
+            });
+        });
+
+        // Bulk Actions
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        const bulkBar = document.getElementById('bulk-actions-bar');
+        const countSpan = document.getElementById('selected-count');
+
+        function updateBulkBar() {
+            const checkedCount = document.querySelectorAll('.user-checkbox:checked').length;
+            if (checkedCount > 0) {
+                bulkBar.classList.remove('d-none');
+                bulkBar.classList.add('d-flex');
+                countSpan.textContent = `تم تحديد ${checkedCount} موظف`;
+            } else {
+                bulkBar.classList.add('d-none');
+                bulkBar.classList.remove('d-flex');
+            }
         }
-    }
 
-    selectAll.addEventListener('change', (e) => {
-        checkboxes.forEach(cb => cb.checked = e.target.checked);
-        updateBulkBar();
-    });
+        selectAll.addEventListener('change', (e) => {
+            checkboxes.forEach(cb => {
+                if (!cb.closest('.user-row').classList.contains('d-none')) {
+                    cb.checked = e.target.checked;
+                }
+            });
+            updateBulkBar();
+        });
 
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', updateBulkBar);
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkBar);
+        });
     });
 </script>
 
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
+
