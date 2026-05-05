@@ -170,9 +170,14 @@ if ($action === 'submit_request') {
             }
             
             $role = $_SESSION['rased_role'];
-            $initial_status = ($role === 'coordinator') ? 'approved' : 'pending';
+                    $initial_status = 'pending';
+        $stmt = $db->prepare(
+            "INSERT INTO rased_requests 
+            (requester_id, substitute_id, class_id, request_date, period_number, repayment_date, repayment_period, sub_coordinator_status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        );
             
-            $stmt->execute([
+                        $stmt->execute([
                 $teacher_id, 
                 $req['substitute_id'], 
                 $req['class_id'], 

@@ -110,11 +110,14 @@ include '../includes/header.php';
                             <td><span class="badge bg-secondary"><?= htmlspecialchars($req['class_name']) ?></span></td>
                             <td><?= htmlspecialchars($req['request_date']) ?></td>
                             <td><span class="badge bg-info text-dark">حصة <?= $req['period_number'] ?></span></td>
-                            <td>
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <button class="btn btn-sm btn-success px-3" onclick="updateStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
-                                    <button class="btn btn-sm btn-danger px-3" onclick="updateStatus(<?= $req['id'] ?>, 'rejected')">رفض</button>
-                                </div>
+                            <td class="fw-bold text-primary">
+                                <?php if ($req['sub_coordinator_status'] === 'approved'): ?>
+                                    <span class="status-badge approved">موافق</span>
+                                <?php elseif ($req['sub_coordinator_status'] === 'rejected'): ?>
+                                    <span class="status-badge rejected">مرفوض</span>
+                                <?php else: ?>
+                                    <span class="status-badge pending">قيد المراجعة</span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

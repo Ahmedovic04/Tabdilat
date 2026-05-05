@@ -76,14 +76,22 @@ $has_email = !empty($user_email);
     <div class="card shadow-sm border-0">
         <?php if (!$has_email): ?>
             <div class="text-center py-5">
-                <div class="mb-4">
-                    <i class="bi bi-envelope-exclamation-fill text-warning" style="font-size: 5rem;"></i>
-                </div>
-                <h2 class="text-dark fw-bold mb-3">عذراً، البريد الإلكتروني غير مسجل!</h2>
-                <p class="text-muted mb-4 fs-5">لضمان وصول إشعارات التبديل والموافقات إليك، يجب تسجيل بريدك الإلكتروني أولاً في ملفك الشخصي قبل البدء بطلب أي تبديل.</p>
-                <a href="profile.php" class="btn btn-primary btn-lg px-5 shadow">
-                    <i class="bi bi-person-gear me-2"></i> انتقل للملف الشخصي الآن
-                </a>
+                <h2 class="text-dark fw-bold mb-3">تسجيل بريد إلكتروني وكلمة مرور</h2>
+                <p class="text-muted mb-4">يرجى إدخال بريدك الإلكتروني وكلمة مرور جديدة لتتمكن من طلب تبديل.</p>
+                <form id="profile-save-form" class="row g-3">
+                    <div class="form-group" style="text-align: right;">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" name="email" id="email" required placeholder="example@school.com">
+                    </div>
+                    <div class="form-group" style="text-align: right;">
+                        <label>كلمة المرور الجديدة</label>
+                        <input type="password" name="new_password" id="new_password" required placeholder="كلمة مرور قوية">
+                        <input type="password" name="confirm_password" id="confirm_password" class="mt-2" required placeholder="تأكيد كلمة المرور">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" id="save-profile-btn" class="btn" style="background:#059669;">حفظ البيانات</button>
+                    </div>
+                </form>
             </div>
         <?php else: ?>
             <h2>طلب تبديل ذكي</h2>

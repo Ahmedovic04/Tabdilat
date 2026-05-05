@@ -58,11 +58,24 @@ if ($action === 'update_status') {
     }
 
     // Check if coord is for substitute
-    if ($request['sub_sub'] == $coord_subject) {
-        $up = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = ? WHERE id = ?");
-        $up->execute([$status, $request_id]);
-        $updated = true;
+    // Update only substitute coordinator status and send notification email on approval
+if ($request['sub_sub'] == $coord_subject) {
+    $up = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = ? WHERE id = ?");
+    $up->execute([$status, $request_id]);
+    $updated = true;
+    if ($status === 'approved') {
+        // Send email notification about approval
+        $requesterName = $request['requester_name'];
+        $subName = $request['substitute_name'];
+        $subject = "تمت الموافقة على طلب تبديل";
+        $message = "الزميل $subName (البديل) وافق على طلب تبديل مقدّم من $requesterName.";
+        $to = 'allusersgroup@gmail.com';
+        // Simple mail function (ensure proper headers)
+        $headers = "From: no-reply@" . parse_url(SITE_URL, PHP_URL_HOST) . "\r\nContent-Type: text/plain; charset=UTF-8";
+        @mail($to, $subject, $message, $headers);
     }
+}
+
 
     if ($updated) {
         echo json_encode(['success' => true]);
