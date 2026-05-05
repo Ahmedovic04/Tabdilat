@@ -33,46 +33,61 @@
         <li class="mt-auto"><a href="<?= $base_url ?? '' ?>teacher/profile.php"><i class="bi bi-person-gear"></i> الملف الشخصي</a></li>
     </ul>
 
+
+
     <div class="sidebar-footer">
-        <a href="<?= $base_url ?? '' ?>teacher/logout.php" class="text-danger text-decoration-none fw-bold d-block text-center">
+        <a href="<?= $base_url ?? '' ?>teacher/logout.php" class="text-danger text-decoration-none fw-bold d-block text-center py-2">
             <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
         </a>
     </div>
 </div>
 
+<!-- Mobile Overlay -->
+<div id="sidebarOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+
 <div class="main-content">
-    <div class="topbar shadow-sm">
-        <div class="d-flex align-items-center gap-3">
-            <button id="sidebarToggle" class="btn shadow-none">
-                <i class="bi bi-list"></i>
+    <div class="topbar shadow-sm px-3 py-2">
+        <div class="d-flex align-items-center gap-3 w-100">
+            <button id="sidebarToggle" class="btn btn-light shadow-sm d-flex align-items-center justify-content-center" style="width:40px; height:40px; border-radius:10px;">
+                <i class="bi bi-list fs-4"></i>
             </button>
-            <h1 class="page-title"><?= $page_title ?? 'لوحة التحكم' ?></h1>
-        </div>
-        <div class="user-nav">
-            <span class="fw-bold d-none d-md-inline">مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?></span>
-            <div class="badge bg-primary px-3 py-2 rounded-pill"><?= $_SESSION['rased_role'] == 'teacher' ? 'معلم' : 'إدارة' ?></div>
+            <h1 class="page-title mb-0 fs-5 fw-bold text-primary"><?= $page_title ?? 'لوحة التحكم' ?></h1>
+            
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <div class="user-nav d-none d-sm-flex align-items-center gap-2">
+                    <span class="small fw-bold">مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?></span>
+                    <span class="badge bg-primary rounded-pill small"><?= $_SESSION['rased_role'] == 'teacher' ? 'معلم' : 'إدارة' ?></span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
             const body = document.body;
             
-            // Check saved state
-            if (localStorage.getItem('sidebar-state') === 'collapsed') {
-                body.classList.add('sidebar-collapsed');
+            // Initial desktop state from localStorage
+            if (window.innerWidth > 991) {
+                if (localStorage.getItem('sidebar-state') === 'collapsed') {
+                    body.classList.add('sidebar-collapsed');
+                }
             }
 
-            toggleBtn.addEventListener('click', function() {
-                body.classList.toggle('sidebar-collapsed');
-                
-                // Save state
-                if (body.classList.contains('sidebar-collapsed')) {
-                    localStorage.setItem('sidebar-state', 'collapsed');
+            function toggleSidebar() {
+                if (window.innerWidth <= 991) {
+                    // Mobile: Toggle 'sidebar-open'
+                    body.classList.toggle('sidebar-open');
+                    overlay.style.display = body.classList.contains('sidebar-open') ? 'block' : 'none';
                 } else {
-                    localStorage.setItem('sidebar-state', 'expanded');
+                    // Desktop: Toggle 'sidebar-collapsed'
+                    body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebar-state', body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
                 }
-            });
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
         });
     </script>
