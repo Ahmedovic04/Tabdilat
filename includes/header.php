@@ -43,12 +43,12 @@
 </div>
 
 <!-- Mobile Overlay -->
-<div id="sidebarOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+<div id="sidebarOverlay" onclick="toggleSidebar()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
 
 <div class="main-content">
     <div class="topbar shadow-sm px-3 py-2">
         <div class="d-flex align-items-center gap-3 w-100">
-            <button id="sidebarToggle" class="btn btn-light shadow-sm d-flex align-items-center justify-content-center" style="width:40px; height:40px; border-radius:10px;">
+            <button id="sidebarToggle" onclick="toggleSidebar()" class="btn btn-light shadow-sm d-flex align-items-center justify-content-center" style="width:40px; height:40px; border-radius:10px;">
                 <i class="bi bi-list fs-4"></i>
             </button>
             <h1 class="page-title mb-0 fs-5 fw-bold text-primary"><?= $page_title ?? 'لوحة التحكم' ?></h1>
@@ -63,31 +63,25 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const overlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
             const body = document.body;
+            const overlay = document.getElementById('sidebarOverlay');
             
-            // Initial desktop state from localStorage
-            if (window.innerWidth > 991) {
-                if (localStorage.getItem('sidebar-state') === 'collapsed') {
-                    body.classList.add('sidebar-collapsed');
-                }
+            if (window.innerWidth <= 991) {
+                // Mobile behavior
+                body.classList.toggle('sidebar-open');
+                if (overlay) overlay.style.display = body.classList.contains('sidebar-open') ? 'block' : 'none';
+            } else {
+                // Desktop behavior
+                body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-state', body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
             }
+        }
 
-            function toggleSidebar() {
-                if (window.innerWidth <= 991) {
-                    // Mobile: Toggle 'sidebar-open'
-                    body.classList.toggle('sidebar-open');
-                    overlay.style.display = body.classList.contains('sidebar-open') ? 'block' : 'none';
-                } else {
-                    // Desktop: Toggle 'sidebar-collapsed'
-                    body.classList.toggle('sidebar-collapsed');
-                    localStorage.setItem('sidebar-state', body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
-                }
+        // Initialize state on load
+        (function() {
+            if (window.innerWidth > 991 && localStorage.getItem('sidebar-state') === 'collapsed') {
+                document.body.classList.add('sidebar-collapsed');
             }
-
-            toggleBtn.addEventListener('click', toggleSidebar);
-            overlay.addEventListener('click', toggleSidebar);
-        });
+        })();
     </script>
