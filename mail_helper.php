@@ -1,18 +1,28 @@
 <?php
 /**
  * PHPMailer-based Mail Helper for Rased System
- * Using Port 465 (SSL) for maximum compatibility with restricted servers.
+ * Using Port 587 (TLS) for maximum compatibility with restricted servers.
  */
+
+function _rased_smtp_comm($socket, $cmd = "") {
+    if ($cmd !== "") fwrite($socket, $cmd . "\r\n");
+    $res = "";
+    while ($str = fgets($socket, 515)) {
+        $res .= $str;
+        if (substr($str, 3, 1) == " ") break;
+    }
+    return $res;
+}
 
 function sendRasedEmail($to, $subject, $message) {
     // --- IMPORTANT: Gmail SMTP Configuration ---
     $smtp_user = 'abo.hyzar41@gmail.com';
-    $smtp_pass = 'YOUR_APP_PASSWORD_HERE'; // MUST BE 16-CHAR APP PASSWORD
+    $smtp_pass = 'ruowqwdaikcsprhf'; // 16-char App Password
     // -------------------------------------------
 
-    $host = "ssl://smtp.gmail.com";
-    $port = 465;
-    $timeout = 10;
+    $host = "smtp.gmail.com";
+    $port = 587;
+    $timeout = 15;
 
     $socket = @fsockopen($host, $port, $errno, $errstr, $timeout);
     if (!$socket) {
@@ -20,37 +30,38 @@ function sendRasedEmail($to, $subject, $message) {
         return false;
     }
 
-    function smtp_comm($socket, $cmd = "") {
-        if ($cmd !== "") fwrite($socket, $cmd . "\r\n");
-        $res = "";
-        while ($str = fgets($socket, 515)) {
-            $res .= $str;
-            if (substr($str, 3, 1) == " ") break;
-        }
-        return $res;
-    }
-
     try {
-        smtp_comm($socket); // Greeting
-        smtp_comm($socket, "EHLO " . $_SERVER['HTTP_HOST']);
-        smtp_comm($socket, "AUTH LOGIN");
-        smtp_comm($socket, base64_encode($smtp_user));
-        smtp_comm($socket, base64_encode($smtp_pass));
+        _rased_smtp_comm($socket); // Greeting
+        _rased_smtp_comm($socket, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
         
-        smtp_comm($socket, "MAIL FROM: <$smtp_user>");
-        smtp_comm($socket, "RCPT TO: <$to>");
-        smtp_comm($socket, "DATA");
+        // STARTTLS for Port 587
+        _rased_smtp_comm($socket, "STARTTLS");
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            error_log("Failed to enable crypto/TLS");
+            fclose($socket);
+            return false;
+        }
+        
+        _rased_smtp_comm($socket, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+        _rased_smtp_comm($socket, "AUTH LOGIN");
+        _rased_smtp_comm($socket, base64_encode($smtp_user));
+        _rased_smtp_comm($socket, base64_encode($smtp_pass));
+        
+        _rased_smtp_comm($socket, "MAIL FROM: <$smtp_user>");
+        _rased_smtp_comm($socket, "RCPT TO: <$to>");
+        _rased_smtp_comm($socket, "DATA");
         
         $header = "To: <$to>\r\n" .
                   "From: Rased System <$smtp_user>\r\n" .
                   "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n" .
                   "Content-Type: text/plain; charset=utf-8\r\n\r\n";
         
-        smtp_comm($socket, $header . $message . "\r\n.");
-        smtp_comm($socket, "QUIT");
+        _rased_smtp_comm($socket, $header . $message . "\r\n.");
+        _rased_smtp_comm($socket, "QUIT");
         fclose($socket);
         return true;
     } catch (Exception $e) {
+        if ($socket) fclose($socket);
         return false;
     }
 }
@@ -108,3 +119,4 @@ function sendSubstitutionEmails($db, $request_id) {
     
     return $all_sent;
 }
+
