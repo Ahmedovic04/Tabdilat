@@ -33,6 +33,16 @@ $page_title = 'لوحة النائب الأكاديمي - راصد تبديلا�
 $active_page = 'home';
 $base_url = '../';
 include '../includes/header.php'; 
+
+function statusBadgeFinal($status) {
+    if ($status === 'approved') {
+        return '<span class="badge bg-success py-2 px-3 shadow-sm"><i class="bi bi-check-circle-fill me-1"></i>موافق</span>';
+    } elseif ($status === 'rejected') {
+        return '<span class="badge bg-danger py-2 px-3 shadow-sm"><i class="bi bi-x-circle-fill me-1"></i>مرفوض</span>';
+    } else {
+        return '<span class="badge bg-warning text-dark py-2 px-3 shadow-sm"><i class="bi bi-hourglass-split me-1"></i>معلق</span>';
+    }
+}
 ?>
 
 <div class="row g-4 mb-4">
@@ -74,10 +84,11 @@ include '../includes/header.php';
                         <th>رقم الطلب</th>
                         <th>المعلم الغائب</th>
                         <th>المعلم البديل</th>
-                        <th>الصف</th>
-                        <th>تاريخ الغياب (الحصة)</th>
+                        <th>الصف / الحصة</th>
+                        <th>منسق الغائب</th>
+                        <th>منسق البديل</th>
                         <th>موعد التعويض</th>
-                        <th>إجراء</th>
+                        <th>إجراء المدير</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,23 +97,24 @@ include '../includes/header.php';
                             <td class="fw-bold text-primary">#<?= $req['id'] ?></td>
                             <td><strong><?= htmlspecialchars($req['requester_name']) ?></strong></td>
                             <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
-                            <td><span class="badge bg-secondary"><?= htmlspecialchars($req['class_name']) ?></span></td>
                             <td>
-                                <div><?= htmlspecialchars($req['request_date']) ?></div>
-                                <span class="small text-primary fw-bold">(الحصة <?= $req['period_number'] ?>)</span>
+                                <span class="badge bg-secondary"><?= htmlspecialchars($req['class_name']) ?></span>
+                                <div class="small mt-1 text-muted"><?= htmlspecialchars($req['request_date']) ?> (ح<?= $req['period_number'] ?>)</div>
                             </td>
+                            <td><?= statusBadgeFinal($req['req_coordinator_status']) ?></td>
+                            <td><?= statusBadgeFinal($req['sub_coordinator_status']) ?></td>
                             <td>
                                 <?php if($req['repayment_date']): ?>
-                                    <div class="text-success fw-bold"><?= htmlspecialchars($req['repayment_date']) ?></div>
-                                    <span class="small text-muted">(الحصة <?= $req['repayment_period'] ?>)</span>
+                                    <div class="text-success small fw-bold"><?= htmlspecialchars($req['repayment_date']) ?></div>
+                                    <span class="small text-muted">ح <?= $req['repayment_period'] ?></span>
                                 <?php else: ?>
-                                    <span class="text-muted italic">غير محدد</span>
+                                    <span class="text-muted small">غير محدد</span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <button class="btn btn-sm btn-success px-3" onclick="updateStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
-                                    <button class="btn btn-sm btn-danger px-3" onclick="updateStatus(<?= $req['id'] ?>, 'rejected')">رفض</button>
+                                    <button class="btn btn-sm btn-primary px-3 shadow-sm" onclick="updateStatus(<?= $req['id'] ?>, 'approved')"><i class="bi bi-check-lg"></i> اعتماد</button>
+                                    <button class="btn btn-sm btn-outline-danger px-3 shadow-sm" onclick="updateStatus(<?= $req['id'] ?>, 'rejected')"><i class="bi bi-x-lg"></i> رفض</button>
                                 </div>
                             </td>
                         </tr>
