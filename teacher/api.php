@@ -189,6 +189,27 @@ if ($action === 'submit_request') {
                 $rep_period,
                 $initial_status
             ]);
+
+            // --- SEND NOTIFICATION TO SUBSTITUTE ---
+            try {
+                $stmtSubInfo = $db->prepare("SELECT name, email FROM rased_users WHERE id = ?");
+                $stmtSubInfo->execute([$req['substitute_id']]);
+                $subInfo = $stmtSubInfo->fetch();
+
+                if ($subInfo && !empty($subInfo['email'])) {
+                    $req_name = $_SESSION['rased_full_name'] ?? 'زميلك';
+                    $subject = "قام المعلم ($req_name) بطلب تبديل حصة معك";
+                    $body = "تحية طيبة،\n\nقام المعلم ($req_name) بتقديم طلب لتبديل حصة معك (الحصة {$req['period_number']} بتاريخ $date).\n\n" .
+                            "يرجى الدخول إلى حسابك في نظام راصد (قسم متابعة طلباتي) لإبداء رأيك بالقبول أو الرفض.\n\n" .
+                            "رابط النظام: " . SITE_URL;
+                    
+                    sendRasedEmail($subInfo['email'], $subject, $body);
+                }
+            } catch (Exception $e) {
+                // Log error but don't stop the process
+                error_log("Failed to send request email: " . $e->getMessage());
+            }
+            // ----------------------------------------
         }
         $db->commit();
 
@@ -281,12 +302,33 @@ if ($action === 'sub_approve') {
     if ($status === 'approved') {
         $sub_name = $request['substitute_name'];
         $req_name = $request['requester_name'];
-        $subject = "تمت الموافقة على طلب تبديل حصة";
-        $message = "تحية طيبة،\n\nلقد وافق المعلم البديل ($sub_name) على طلب التبديل المقدم من الزميل ($req_name).\n\n" .
-                   "تفاصيل الطلب:\n" .
-                   "التاريخ: {$request['request_date']}\n" .
-                   "الحصة: {$request['period_number']}\n\n" .
-                   "يرجى متابعة الطلب حتى يتم اعتماده نهائياً من قبل النائب الأكاديمي.";
+        
+        // Fetch original class name
+        $stmtCls = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
+        $stmtCls->execute([$request['class_id']]);
+        $orig_class_name = $stmtCls->fetchColumn();
+
+        // Fetch repayment class name (if applicable)
+        $rep_class_name = '-';
+        if ($request['repayment_date'] && $request['repayment_period']) {
+            $dow = date('w', strtotime($request['repayment_date'])) - 1; // Adjusting to match our 0=Sun logic if needed, but let's check current date logic
+            // Our day_of_week logic in rased_setup.php/teacher_classes is 0=Sun, 1=Mon...
+            $dow = date('w', strtotime($request['repayment_date'])); 
+            
+            $stmtRepCls = $db->prepare("
+                SELECT c.name 
+                FROM rased_teacher_classes tc
+                JOIN rased_classes c ON tc.class_id = c.id
+                WHERE tc.teacher_id = ? AND tc.day_of_week = ? AND tc.period_number = ?
+            ");
+            $stmtRepCls->execute([$request['substitute_id'], $dow, $request['repayment_period']]);
+            $rep_class_name = $stmtRepCls->fetchColumn() ?: 'حصة إضافية';
+        }
+
+        $subject = "قام المعلم ($sub_name) بقبول طلب تبديل حصة";
+        $message = "تحية طيبة،\n\nقام المعلم ($sub_name) بقبول طلب تبديل الحصة ({$request['period_number']}) بتاريخ ({$request['request_date']}) في صف ($orig_class_name)،\n" .
+                   "على أن يكون التعويض يوم (" . ($request['repayment_date'] ?: 'لاحقاً') . ") في حصة (" . ($request['repayment_period'] ?: '-') . ") صف ($rep_class_name).\n\n" .
+                   "يرجى العلم بأن هذا الإشعار يحل محل الاعتماد الورقي، وجاري متابعة الطلب في النظام.";
         
         // Send to requester
         if (!empty($request['requester_email'])) {
