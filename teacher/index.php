@@ -23,120 +23,77 @@ $schedule = $stmt->fetchAll();
 
 $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة المعلم - راصد تبديلاتي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5;
-            --secondary: #10B981;
-            --bg-color: #F3F4F6;
-            --card-bg: #FFFFFF;
-            --text-main: #1F2937;
-            --border-color: #E5E7EB;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); }
-        .navbar {
-            background: var(--card-bg);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .navbar .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-        .navbar .user-info { font-weight: 500; display: flex; gap: 1rem; align-items: center; }
-        
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-        h2 { margin-bottom: 1.5rem; color: var(--primary); }
-        
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 1rem; border: 1px solid var(--border-color); }
-        th { background: #F9FAFB; font-weight: 700; }
-        .btn {
-            background: var(--primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn:hover { background: #4338CA; }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: white; }
-    </style>
-</head>
-<body>
+<?php 
+$page_title = 'لوحة المعلم - راصد تبديلاتي';
+$active_page = 'home';
+$base_url = '../';
+include '../includes/header.php'; 
+?>
 
-<div class="navbar">
-    <div class="brand">راصد تبديلاتي</div>
-    <div class="user-info">
-        مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?>
-        <a href="profile.php" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.9em;">🔐 كلمة المرور</a>
-        <a href="logout.php" style="color: #DC2626; text-decoration: none; margin-right:0.5rem;">خروج</a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 style="margin: 0;">جدول الحصص الخاص بك</h2>
-            <div style="display:flex; gap:0.5rem;">
-                <a href="../my_requests.php" class="btn" style="background: #10B981;">📋 متابعة طلباتي</a>
-                <a href="schedule.php" class="btn" style="background: #4B5563;">⚙️ إعداد الجدول</a>
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3><?= count($schedule) ?></h3>
+                <p>إجمالي الحصص</p>
             </div>
+            <div class="stat-icon"><i class="bi bi-book"></i></div>
         </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>اليوم / الحصة</th>
-                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($days as $index => $day): ?>
-                        <tr>
-                            <th><?= $day ?></th>
-                            <?php for($i=1; $i<=7; $i++): ?>
-                                <?php 
-                                    $class = '';
-                                    foreach($schedule as $s) {
-                                        if($s['day_of_week'] == $index && $s['period_number'] == $i) {
-                                            $class = $s['class_name'];
-                                            break;
-                                        }
-                                    }
-                                ?>
-                                <td><?= htmlspecialchars($class) ?></td>
-                            <?php endfor; ?>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        
-        <div style="margin-top: 2rem; text-align: left;">
-            <a href="request.php" class="btn">➕ طلب تبديل حصة</a>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="border-right-color: var(--accent-color);">
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>تبديلات اليوم</p>
+            </div>
+            <div class="stat-icon"><i class="bi bi-arrow-repeat"></i></div>
         </div>
     </div>
 </div>
 
-</body>
-</html>
+<div class="custom-card shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0 fw-bold text-primary">جدول الحصص الخاص بك</h2>
+        <div class="d-flex gap-2">
+            <a href="schedule.php" class="btn btn-sm btn-outline-secondary"><i class="bi bi-gear"></i> إعداد الجدول</a>
+            <a href="request.php" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> طلب تبديل</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 150px;">اليوم / الحصة</th>
+                    <?php for($i=1; $i<=7; $i++): ?>
+                        <th><?= $i ?></th>
+                    <?php endfor; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($days as $index => $day): ?>
+                    <tr>
+                        <td class="fw-bold bg-light"><?= $day ?></td>
+                        <?php for($i=1; $i<=7; $i++): ?>
+                            <?php 
+                                $class = '';
+                                foreach($schedule as $s) {
+                                    if($s['day_of_week'] == $index && $s['period_number'] == $i) {
+                                        $class = $s['class_name'];
+                                        break;
+                                    }
+                                }
+                            ?>
+                            <td class="<?= $class ? 'bg-white' : 'bg-light text-muted' ?>">
+                                <?= $class ? '<span class="badge bg-info text-dark">'.$class.'</span>' : '-' ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php include '../includes/footer.php'; ?>
+

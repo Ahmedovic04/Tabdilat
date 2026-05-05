@@ -42,106 +42,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - راصد تبديلاتي</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --secondary: #10B981;
-            --bg-color: #F3F4F6;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --text-main: #1F2937;
-            --text-muted: #6B7280;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-color);
+            border-radius: 20px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-main);
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            box-shadow: 0 10px 20px rgba(240, 165, 0, 0.3);
         }
-        .login-container {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
+        .login-title {
+            font-weight: 800;
+            margin-bottom: 5px;
+            letter-spacing: -1px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .logo { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
-        .subtitle { color: var(--text-muted); margin-bottom: 2rem; }
-        .input-group { margin-bottom: 1.5rem; text-align: right; }
-        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .input-group input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #E5E7EB;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        .input-group input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-        }
-        .btn-submit:hover { background: var(--primary-hover); transform: translateY(-2px); }
-        .btn-submit:active { transform: translateY(0); }
-        .error {
-            background: #FEE2E2;
-            color: #DC2626;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
+        .login-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
         }
     </style>
 </head>
-<body>
+<body class="login-body">
 
-<div class="login-container">
-    <div class="logo">راصد تبديلاتي</div>
-    <div class="subtitle">النظام الإلكتروني لإدارة تبديل الحصص</div>
+<div class="login-card shadow-lg">
+    <div class="text-center">
+        <div class="login-logo">🛰️</div>
+        <h2 class="login-title">راصد تبديلاتي</h2>
+        <p class="login-subtitle">نظام إدارة التبديلات المدرسية الذكي</p>
+    </div>
     
     <?php if ($error): ?>
-        <div class="error"><?= htmlspecialchars($error) ?></div>
+        <div class="alert alert-danger text-center py-2" style="border-radius: 10px; font-size: 0.9rem;">
+            <?= htmlspecialchars($error) ?>
+        </div>
     <?php endif; ?>
 
     <form method="POST">
-        <div class="input-group">
-            <label for="username">اسم المستخدم</label>
-            <input type="text" id="username" name="username" required placeholder="أدخل اسم المستخدم (مثال: t_12345)">
+        <div class="mb-4">
+            <label class="form-label mb-2 fw-500">اسم المستخدم</label>
+            <input type="text" name="username" class="form-control" required placeholder="أدخل اسم المستخدم">
         </div>
         
-        <div class="input-group">
-            <label for="password">كلمة المرور</label>
-            <input type="password" id="password" name="password" required placeholder="أدخل كلمة المرور">
+        <div class="mb-4">
+            <label class="form-label mb-2 fw-500">كلمة المرور</label>
+            <input type="password" name="password" class="form-control" required placeholder="أدخل كلمة المرور">
         </div>
         
-        <button type="submit" class="btn-submit">تسجيل الدخول</button>
+        <button type="submit" class="btn btn-accent w-100 py-3 mb-3">دخول النظام</button>
+        <p class="text-center m-0" style="font-size: 0.8rem; color: #555;">&copy; 2026 مدرسة معيذر الابتدائية للبنين</p>
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

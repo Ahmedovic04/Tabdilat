@@ -28,120 +28,124 @@ $pending_requests = $stmt->fetchAll();
 $stmtNew = $db->query("SELECT COUNT(*) FROM rased_users WHERE is_new = 1 AND role = 'teacher'");
 $new_teachers_count = $stmtNew->fetchColumn();
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة النائب الأكاديمي - راصد تبديلاتي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5; --primary-hover: #4338CA;
-            --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
-            --bg-color: #F3F4F6; --card-bg: #FFFFFF; --text-main: #1F2937; --border-color: #E5E7EB;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); }
-        .navbar {
-            background: var(--card-bg); padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        h2 { color: var(--primary); margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 1rem; border: 1px solid var(--border-color); }
-        th { background: #F9FAFB; font-weight: 700; }
-        .btn {
-            padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.3s; margin: 0 0.2rem;
-            text-decoration: none; display: inline-block;
-        }
-        .btn-approve { background: var(--success); }
-        .btn-approve:hover { background: #059669; }
-        .btn-reject { background: var(--danger); }
-        .btn-reject:hover { background: #DC2626; }
-        .btn-primary { background: var(--primary); }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-secondary { background: #4B5563; }
-        .btn-secondary:hover { background: #374151; }
-    </style>
-</head>
-<body>
+<?php 
+$page_title = 'لوحة النائب الأكاديمي - راصد تبديلاتي';
+$active_page = 'home';
+$base_url = '../';
+include '../includes/header.php'; 
+?>
 
-<div class="navbar">
-    <div class="brand">راصد تبديلاتي - النائب الأكاديمي</div>
-    <div>
-        مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?> | 
-        <a href="../teacher/logout.php" style="color: var(--danger); text-decoration: none;">تسجيل خروج</a>
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3><?= count($pending_requests) ?></h3>
+                <p>طلبات بانتظار الاعتماد</p>
+            </div>
+            <div class="stat-icon text-primary"><i class="bi bi-file-earmark-check"></i></div>
+        </div>
     </div>
+    <?php if($new_teachers_count > 0): ?>
+    <div class="col-md-3">
+        <div class="stat-card" style="border-right-color: var(--danger);">
+            <div class="stat-info">
+                <h3><?= $new_teachers_count ?></h3>
+                <p>موظفين جدد</p>
+            </div>
+            <div class="stat-icon text-danger"><i class="bi bi-person-plus"></i></div>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
-<div class="container">
-    <div class="card">
-        <h2>الطلبات المعلقة (الموافقات النهائية)</h2>
-        <?php if(empty($pending_requests)): ?>
-            <p>لا توجد طلبات معلقة حالياً.</p>
-        <?php else: ?>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>رقم الطلب</th>
-                            <th>المعلم الغائب</th>
-                            <th>المعلم البديل</th>
-                            <th>الصف</th>
-                            <th>تاريخ الغياب (الحصة)</th>
-                            <th>موعد التعويض</th>
-                            <th>إجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($pending_requests as $req): ?>
-                            <tr>
-                                <td>#<?= $req['id'] ?></td>
-                                <td><strong><?= htmlspecialchars($req['requester_name']) ?></strong></td>
-                                <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
-                                <td><?= htmlspecialchars($req['class_name']) ?></td>
-                                <td>
-                                    <?= htmlspecialchars($req['request_date']) ?><br>
-                                    <span style="color:var(--primary); font-size: 0.9em;">(الحصة <?= $req['period_number'] ?>)</span>
-                                </td>
-                                <td>
-                                    <?php if($req['repayment_date']): ?>
-                                        <span style="color:var(--success); font-weight:bold;"><?= htmlspecialchars($req['repayment_date']) ?></span><br>
-                                        <span style="color:#6B7280; font-size: 0.9em;">(الحصة <?= $req['repayment_period'] ?>)</span>
-                                    <?php else: ?>
-                                        <span style="color:#9CA3AF;">غير محدد</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <button class="btn btn-approve" onclick="updateStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
-                                    <button class="btn btn-reject" onclick="updateStatus(<?= $req['id'] ?>, 'rejected')">رفض</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-    </div>
+<div class="custom-card shadow-sm mb-4">
+    <h2 class="h4 mb-4 fw-bold text-primary">الطلبات المعلقة (الموافقات النهائية)</h2>
     
-    <div class="card">
-        <h2>إدارة النظام والتقارير</h2>
-        <?php if($new_teachers_count > 0): ?>
-            <div style="background: #FEF2F2; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-right: 4px solid #DC2626;">
-                <strong>تنبيه:</strong> تم اكتشاف <?= $new_teachers_count ?> موظف جديد (أو تحديثات) في النظام. يرجى الدخول لإدارة الموظفين لتحديد صلاحياتهم (معلم / منسق).
+    <?php if(empty($pending_requests)): ?>
+        <div class="text-center py-5">
+            <i class="bi bi-shield-check display-1 text-muted opacity-25"></i>
+            <p class="mt-3 text-muted">لا توجد طلبات معلقة حالياً.</p>
+        </div>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>المعلم الغائب</th>
+                        <th>المعلم البديل</th>
+                        <th>الصف</th>
+                        <th>تاريخ الغياب (الحصة)</th>
+                        <th>موعد التعويض</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($pending_requests as $req): ?>
+                        <tr>
+                            <td class="fw-bold text-primary">#<?= $req['id'] ?></td>
+                            <td><strong><?= htmlspecialchars($req['requester_name']) ?></strong></td>
+                            <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
+                            <td><span class="badge bg-secondary"><?= htmlspecialchars($req['class_name']) ?></span></td>
+                            <td>
+                                <div><?= htmlspecialchars($req['request_date']) ?></div>
+                                <span class="small text-primary fw-bold">(الحصة <?= $req['period_number'] ?>)</span>
+                            </td>
+                            <td>
+                                <?php if($req['repayment_date']): ?>
+                                    <div class="text-success fw-bold"><?= htmlspecialchars($req['repayment_date']) ?></div>
+                                    <span class="small text-muted">(الحصة <?= $req['repayment_period'] ?>)</span>
+                                <?php else: ?>
+                                    <span class="text-muted italic">غير محدد</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <button class="btn btn-sm btn-success px-3" onclick="updateStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
+                                    <button class="btn btn-sm btn-danger px-3" onclick="updateStatus(<?= $req['id'] ?>, 'rejected')">رفض</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</div>
+
+<div class="custom-card shadow-sm border-0 bg-white">
+    <h2 class="h4 mb-4 fw-bold text-primary"><i class="bi bi-tools me-2"></i> أدوات الإدارة والتقارير</h2>
+    
+    <?php if($new_teachers_count > 0): ?>
+        <div class="alert alert-danger d-flex align-items-center mb-4">
+            <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
+            <div>
+                <strong>تنبيه للمدير:</strong> تم اكتشاف <?= $new_teachers_count ?> موظف جديد. يرجى الدخول لإدارة الموظفين لتحديد صلاحياتهم.
             </div>
-        <?php endif; ?>
-        
-        <p style="margin-bottom: 1.5rem;">من هنا يمكنك استخراج تقارير شاملة عن جميع التبديلات، أو إدارة صلاحيات الموظفين، أو تحديث الجدول الدراسي للنظام.</p>
-        
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="reports.php" class="btn btn-primary">📊 تقارير التبديلات (للطباعة)</a>
-            <a href="users.php" class="btn btn-secondary">👥 إدارة الموظفين والصلاحيات</a>
-            <a href="upload.php" class="btn btn-approve">⬆️ رفع / تحديث جدول الحصص</a>
+        </div>
+    <?php endif; ?>
+    
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a href="reports.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
+                <i class="bi bi-file-earmark-pdf display-5 text-primary mb-3"></i>
+                <h3 class="h5 text-dark fw-bold">التقارير</h3>
+                <p class="small text-muted mb-0">استخراج تقارير التبديلات والطباعة</p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="users.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
+                <i class="bi bi-person-vcard display-5 text-secondary mb-3"></i>
+                <h3 class="h5 text-dark fw-bold">الموظفين</h3>
+                <p class="small text-muted mb-0">إدارة الصلاحيات والبيانات</p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="upload.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
+                <i class="bi bi-file-earmark-spreadsheet display-5 text-success mb-3"></i>
+                <h3 class="h5 text-dark fw-bold">الجداول</h3>
+                <p class="small text-muted mb-0">تحديث الجدول المدرسي (Excel)</p>
+            </a>
         </div>
     </div>
 </div>
@@ -169,5 +173,5 @@ async function updateStatus(id, status) {
 }
 </script>
 
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
+
