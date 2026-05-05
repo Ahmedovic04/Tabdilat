@@ -8,8 +8,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="<?= $base_url ?? '' ?>assets/css/style.css">
+    <script>
+        function toggleSidebar() {
+            const body = document.body;
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth <= 991) {
+                body.classList.toggle('sidebar-open');
+                if (overlay) {
+                    overlay.style.display = body.classList.contains('sidebar-open') ? 'block' : 'none';
+                }
+            } else {
+                body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-state', body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
+            }
+        }
+
+        // Apply state immediately to prevent flicker
+        (function() {
+            const state = localStorage.getItem('sidebar-state');
+            if (window.innerWidth > 991 && state === 'collapsed') {
+                document.documentElement.classList.add('sidebar-collapsed');
+                // We also add it to body once it's available, but documentElement helps early
+            }
+        })();
+    </script>
 </head>
-<body>
+<body class="<?= (isset($_COOKIE['sidebar_state']) && $_COOKIE['sidebar_state'] == 'collapsed') ? 'sidebar-collapsed' : '' ?>">
+    <script>
+        // Double check state on body as well
+        if (window.innerWidth > 991 && localStorage.getItem('sidebar-state') === 'collapsed') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    </script>
 
 <div class="sidebar">
     <div class="sidebar-header">
@@ -62,26 +93,4 @@
         </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            const body = document.body;
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            if (window.innerWidth <= 991) {
-                // Mobile behavior
-                body.classList.toggle('sidebar-open');
-                if (overlay) overlay.style.display = body.classList.contains('sidebar-open') ? 'block' : 'none';
-            } else {
-                // Desktop behavior
-                body.classList.toggle('sidebar-collapsed');
-                localStorage.setItem('sidebar-state', body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
-            }
-        }
 
-        // Initialize state on load
-        (function() {
-            if (window.innerWidth > 991 && localStorage.getItem('sidebar-state') === 'collapsed') {
-                document.body.classList.add('sidebar-collapsed');
-            }
-        })();
-    </script>
