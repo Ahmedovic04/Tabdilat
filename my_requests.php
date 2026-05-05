@@ -74,6 +74,7 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>الحصة</th>
                         <th>الصف</th>
                         <th>المعلم البديل</th>
+                        <th>حالة البديل</th>
                         <th>موعد التعويض</th>
                         <th>النائب الأكاديمي</th>
                     </tr>
@@ -85,6 +86,7 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                             <td><span class="badge bg-info text-dark">حصة <?= $req['period_number'] ?></span></td>
                             <td><?= htmlspecialchars($req['class_name']) ?></td>
                             <td class="fw-bold"><?= htmlspecialchars($req['substitute_name']) ?></td>
+                            <td><?= statusBadgeV2($req['sub_coordinator_status'], 'بانتظار البديل', 'وافق البديل', 'رفض البديل') ?></td>
                             <td>
                                 <?= $req['repayment_date']
                                     ? '<div class="text-success fw-bold">'.htmlspecialchars($req['repayment_date']).'</div><small class="text-muted">الحصة '.$req['repayment_period'].'</small>'
