@@ -16,7 +16,7 @@ $stmt = $db->prepare("
     JOIN rased_classes c ON r.class_id = c.id
     JOIN rased_users u1 ON r.requester_id = u1.id
     JOIN rased_users u2 ON r.substitute_id = u2.id
-    WHERE r.request_date = ?
+    WHERE r.request_date = ? AND r.sub_coordinator_status = 'approved'
     ORDER BY r.period_number ASC
 ");
 $stmt->execute([$today]);
@@ -32,8 +32,9 @@ if (empty($requests)) {
     
     foreach ($requests as $req) {
         $status = 'معلق';
-        if ($req['deputy_status'] === 'approved') $status = 'معتمد';
-        elseif ($req['deputy_status'] === 'rejected') $status = 'مرفوض';
+        if ($req['sub_coordinator_status'] === 'approved') $status = 'موافق (بانتظار النائب)';
+        if ($req['deputy_status'] === 'approved') $status = 'معتمد نهائياً';
+        elseif ($req['deputy_status'] === 'rejected') $status = 'مرفوض من النائب';
         
         $message .= "• الحصة: {$req['period_number']}\n";
         $message .= "  - الصف: {$req['class_name']}\n";

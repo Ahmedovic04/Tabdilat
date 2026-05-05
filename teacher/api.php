@@ -338,8 +338,6 @@ if ($action === 'sub_approve') {
         if (!empty($request['substitute_email'])) {
             sendRasedEmail($request['substitute_email'], $subject, $message);
         }
-        // Send to admin/allusersgroup
-        sendRasedEmail('allusersgroup@gmail.com', $subject, $message);
     }
 
     echo json_encode(['success' => true]);
