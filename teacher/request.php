@@ -77,19 +77,19 @@ $has_email = !empty($user_email);
         <?php if (!$has_email): ?>
             <div class="text-center py-5">
                 <h2 class="text-dark fw-bold mb-3">تسجيل بريد إلكتروني وكلمة مرور</h2>
-                <p class="text-muted mb-4">يرجى إدخال بريدك الإلكتروني وكلمة مرور جديدة لتتمكن من طلب تبديل.</p>
-                <form id="profile-save-form" class="row g-3">
+                <p class="text-muted mb-4">يرجى إدخال بريدك الإلكتروني. يمكنك أيضاً تغيير كلمة المرور إذا رغبت في ذلك.</p>
+                <form id="profile-save-form" class="row g-3" style="max-width: 500px; margin: 0 auto;">
                     <div class="form-group" style="text-align: right;">
-                        <label>البريد الإلكتروني</label>
-                        <input type="email" name="email" id="email" required placeholder="example@school.com">
+                        <label>البريد الإلكتروني <span style="color:red;">*</span></label>
+                        <input type="email" name="email" id="email" class="form-control" required placeholder="example@school.com">
                     </div>
-                    <div class="form-group" style="text-align: right;">
-                        <label>كلمة المرور الجديدة</label>
-                        <input type="password" name="new_password" id="new_password" required placeholder="كلمة مرور قوية">
-                        <input type="password" name="confirm_password" id="confirm_password" class="mt-2" required placeholder="تأكيد كلمة المرور">
+                    <div class="form-group" style="text-align: right; border-top: 1px solid #eee; padding-top: 1rem;">
+                        <label>كلمة المرور الجديدة (اختياري)</label>
+                        <input type="password" name="new_password" id="new_password" class="form-control" placeholder="اتركها فارغة إذا لم ترد التغيير">
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control mt-2" placeholder="تأكيد كلمة المرور">
                     </div>
                     <div class="text-center mt-3">
-                        <button type="button" id="save-profile-btn" class="btn" style="background:#059669;">حفظ البيانات</button>
+                        <button type="button" id="save-profile-btn" class="btn btn-success btn-lg px-5 shadow-sm" style="background:#059669; width: 100%;">حفظ البيانات والمتابعة</button>
                     </div>
                 </form>
             </div>
@@ -110,6 +110,49 @@ $has_email = !empty($user_email);
 </div>
 
 <script>
+    // Profile save logic for teachers without email
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const new_password = document.getElementById('new_password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+
+            if (!email) {
+                alert('يرجى إدخال البريد الإلكتروني');
+                return;
+            }
+
+            if (new_password && new_password !== confirm_password) {
+                alert('كلمتا المرور غير متطابقتين');
+                return;
+            }
+
+            saveProfileBtn.disabled = true;
+            saveProfileBtn.textContent = 'جاري الحفظ...';
+
+            try {
+                const res = await fetch('api.php?action=save_profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, new_password, confirm_password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload(); 
+                } else {
+                    alert(data.message || 'حدث خطأ أثناء الحفظ');
+                    saveProfileBtn.disabled = false;
+                    saveProfileBtn.textContent = 'حفظ البيانات والمتابعة';
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+                saveProfileBtn.disabled = false;
+                saveProfileBtn.textContent = 'حفظ البيانات والمتابعة';
+            }
+        });
+    }
+
     const dateInput = document.getElementById('date-input');
     const classesContainer = document.getElementById('classes-container');
     const submitBtn = document.getElementById('submit-btn');

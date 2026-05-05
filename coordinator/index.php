@@ -75,7 +75,7 @@ include '../includes/header.php';
 </div>
 
 <div class="custom-card shadow-sm mb-4">
-    <h2 class="h4 mb-4 fw-bold text-primary">طلبات القسم (تحتاج موافقتك)</h2>
+    <h2 class="h4 mb-4 fw-bold text-primary">تبديلات القسم (للمتابعة والاطلاع)</h2>
     
     <?php if(!$coord_subject): ?>
         <div class="alert alert-warning">
@@ -85,7 +85,7 @@ include '../includes/header.php';
     <?php elseif(empty($pending_requests)): ?>
         <div class="text-center py-5">
             <i class="bi bi-check2-circle display-1 text-muted opacity-25"></i>
-            <p class="mt-3 text-muted">لا توجد طلبات معلقة حالياً في قسمك.</p>
+            <p class="mt-3 text-muted">لا توجد تبديلات حالياً في قسمك.</p>
         </div>
     <?php else: ?>
         <div class="table-responsive">
@@ -98,7 +98,7 @@ include '../includes/header.php';
                         <th>الصف</th>
                         <th>تاريخ الغياب</th>
                         <th>الحصة</th>
-                        <th>إجراء</th>
+                        <th>حالة البديل</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,26 +128,7 @@ include '../includes/header.php';
 </div>
 
 <script>
-async function updateStatus(id, status) {
-    if(!confirm('هل أنت متأكد من هذا الإجراء؟')) return;
-    
-    try {
-        const res = await fetch('api.php?action=update_status', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ request_id: id, status: status })
-        });
-        const data = await res.json();
-        if(data.success) {
-            alert('تم التحديث بنجاح');
-            location.reload();
-        } else {
-            alert(data.message || 'حدث خطأ');
-        }
-    } catch(err) {
-        alert('خطأ في الاتصال');
-    }
-}
+// Coordinator view is now read-only as per latest requirements.
 </script>
 
 <?php include '../includes/footer.php'; ?>

@@ -129,17 +129,18 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>منسق الغائب</th>
                         <th>منسق البديل</th>
                         <th>النائب الأكاديمي</th>
+                        <th>إجراءات البديل</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($my_substitute_tasks as $req): ?>
-                        <tr>
+                        <tr id="req-row-<?= $req['id'] ?>">
                             <td class="fw-bold"><?= htmlspecialchars($req['request_date']) ?></td>
                             <td><span class="badge bg-info text-dark">حصة <?= $req['period_number'] ?></span></td>
                             <td><?= htmlspecialchars($req['class_name']) ?></td>
                             <td class="fw-bold"><?= htmlspecialchars($req['requester_name']) ?></td>
                             <td><?= statusBadgeV2($req['req_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
-                            <td><?= statusBadgeV2($req['sub_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
+                            <td id="status-sub-<?= $req['id'] ?>"><?= statusBadgeV2($req['sub_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
                             <td>
                                 <?php
                                     $ds = $req['deputy_status'];
@@ -151,6 +152,16 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                                         echo '<span class="badge bg-light text-dark border"><i class="bi bi-shield-fill-exclamation me-1"></i>بانتظار النائب</span>';
                                 ?>
                             </td>
+                            <td>
+                                <?php if ($req['sub_coordinator_status'] === 'pending'): ?>
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <button class="btn btn-sm btn-success" onclick="updateSubStatus(<?= $req['id'] ?>, 'approved')">موافقة</button>
+                                        <button class="btn btn-sm btn-danger" onclick="updateSubStatus(<?= $req['id'] ?>, 'rejected')">رفض</button>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="text-muted small">تم الرد</span>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -158,6 +169,28 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+async function updateSubStatus(requestId, status) {
+    if (!confirm('هل أنت متأكد من ' + (status === 'approved' ? 'الموافقة على' : 'رفض') + ' هذا الطلب؟')) return;
+    
+    try {
+        const res = await fetch('teacher/api.php?action=sub_approve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: requestId, status: status })
+        });
+        const data = await res.json();
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message || 'حدث خطأ');
+        }
+    } catch (err) {
+        alert('خطأ في الاتصال');
+    }
+}
+</script>
 
 <?php include 'includes/footer.php'; ?>
 

@@ -12,12 +12,12 @@ $user_id = $_SESSION['rased_user_id'];
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['update_email'])) {
+    if (isset($_POST['email'])) {
         $email = trim($_POST['email']);
         if (filter_var($email, FILTER_VALIDATE_EMAIL) || empty($email)) {
             $stmt = $db->prepare("UPDATE rased_users SET email = ? WHERE id = ?");
             $stmt->execute([$email, $user_id]);
-            $message = '<div style="color:green; margin-bottom:1rem; padding:1rem; background:#D1FAE5; border-radius:8px;">تم تحديث البريد الإلكتروني بنجاح!</div>';
+            $message = '<div style="color:green; margin-bottom:1rem; padding:1rem; background:#D1FAE5; border-radius:8px;">تم تحديث البيانات بنجاح!</div>';
         } else {
             $message = '<div style="color:red; margin-bottom:1rem; padding:1rem; background:#FEE2E2; border-radius:8px;">يرجى إدخال بريد إلكتروني صحيح.</div>';
         }

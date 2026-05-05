@@ -206,3 +206,92 @@ if ($action === 'submit_request') {
     }
     exit;
 }
+
+if ($action === 'save_profile') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $email = trim($data['email'] ?? '');
+    $new_password = $data['new_password'] ?? '';
+    $confirm_password = $data['confirm_password'] ?? '';
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'يرجى إدخال بريد إلكتروني صحيح']);
+        exit;
+    }
+
+    $db->beginTransaction();
+    try {
+        $stmt = $db->prepare("UPDATE rased_users SET email = ? WHERE id = ?");
+        $stmt->execute([$email, $teacher_id]);
+
+        if (!empty($new_password)) {
+            if (strlen($new_password) < 6) {
+                throw new Exception('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+            }
+            if ($new_password !== $confirm_password) {
+                throw new Exception('كلمتا المرور غير متطابقتين');
+            }
+            $hashed = password_hash($new_password, PASSWORD_DEFAULT);
+            $stmt = $db->prepare("UPDATE rased_users SET password = ?, is_new = 0 WHERE id = ?");
+            $stmt->execute([$hashed, $teacher_id]);
+        }
+
+        $db->commit();
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+
+if ($action === 'sub_approve') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $request_id = (int)($data['request_id'] ?? 0);
+    $status = $data['status'] ?? ''; // 'approved' or 'rejected'
+
+    if (!$request_id || !in_array($status, ['approved', 'rejected'])) {
+        echo json_encode(['success' => false, 'message' => 'بيانات غير صالحة']);
+        exit;
+    }
+
+    // Verify current user is the substitute for this request
+    $stmt = $db->prepare("
+        SELECT r.*, u2.name as substitute_name, u1.name as requester_name
+        FROM rased_requests r
+        JOIN rased_users u1 ON r.requester_id = u1.id
+        JOIN rased_users u2 ON r.substitute_id = u2.id
+        WHERE r.id = ? AND r.substitute_id = ?
+    ");
+    $stmt->execute([$request_id, $teacher_id]);
+    $request = $stmt->fetch();
+
+    if (!$request) {
+        echo json_encode(['success' => false, 'message' => 'ليس لك صلاحية الموافقة على هذا الطلب']);
+        exit;
+    }
+
+    // Update substitute status
+    // We also set req_coordinator_status to approved automatically as it's no longer needed
+    $upd = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = ?, req_coordinator_status = 'approved' WHERE id = ?");
+    $upd->execute([$status, $request_id]);
+
+    if ($status === 'approved') {
+        // Send email notification
+        $sub_name = $request['substitute_name'];
+        $req_name = $request['requester_name'];
+        $subject = "تمت الموافقة على طلب تبديل حصة";
+        $message = "قام المعلم البديل ($sub_name) بالموافقة على طلب التبديل المقدم من الزميل ($req_name).\n\n" .
+                   "تفاصيل الطلب:\n" .
+                   "التاريخ: {$request['request_date']}\n" .
+                   "الحصة: {$request['period_number']}";
+        
+        $to = 'allusersgroup@gmail.com';
+        $headers = "From: no-reply@" . $_SERVER['SERVER_NAME'] . "\r\nContent-Type: text/plain; charset=UTF-8";
+        @mail($to, $subject, $message, $headers);
+    }
+
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+
