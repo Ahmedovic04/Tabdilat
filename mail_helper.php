@@ -120,3 +120,36 @@ function sendSubstitutionEmails($db, $request_id) {
     return $all_sent;
 }
 
+function sendRejectionEmails($db, $request_id) {
+    $stmt = $db->prepare("
+        SELECT r.*, 
+               u1.name as req_name, u1.email as req_email,
+               u2.name as sub_name, u2.email as sub_email
+        FROM rased_requests r
+        JOIN rased_users u1 ON r.requester_id = u1.id
+        JOIN rased_users u2 ON r.substitute_id = u2.id
+        WHERE r.id = ?
+    ");
+    $stmt->execute([$request_id]);
+    $req = $stmt->fetch();
+    
+    if (!$req) return false;
+
+    $subject = "إشعار رفض طلب تبديل - نظام راصد";
+    $body = "تحية طيبة،\n\nنود إبلاغكم بأن طلب التبديل رقم #{$request_id} قد تم رفضه من قبل النائب الأكاديمي.\n\n" .
+            "التفاصيل:\n" .
+            "--------------------------\n" .
+            "- المعلم الغائب: {$req['req_name']}\n" .
+            "- المعلم البديل: {$req['sub_name']}\n" .
+            "- التاريخ: {$req['request_date']}\n" .
+            "- الحصة: {$req['period_number']}\n" .
+            "--------------------------\n\n" .
+            "نظام راصد تبديلاتي - مدرسة معيذر الابتدائية";
+
+    $to_emails = array_unique(array_filter([$req['req_email'], $req['sub_email']]));
+    foreach ($to_emails as $email) {
+        sendRasedEmail($email, $subject, $body);
+    }
+    return true;
+}
+

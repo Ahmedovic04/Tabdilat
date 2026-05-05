@@ -338,6 +338,22 @@ if ($action === 'sub_approve') {
         if (!empty($request['substitute_email'])) {
             sendRasedEmail($request['substitute_email'], $subject, $message);
         }
+    } elseif ($status === 'rejected') {
+        $sub_name = $request['substitute_name'];
+        $req_name = $request['requester_name'];
+        $subject = "نعتذر، تم رفض طلب تبديل الحصة";
+        $message = "تحية طيبة،\n\nنود إبلاغكم بأن المعلم ($sub_name) قد اعتذر عن قبول طلب التبديل المقدم من الزميل ($req_name) للحصة ({$request['period_number']}) بتاريخ ({$request['request_date']}).\n\n" .
+                   "يمكنكم محاولة التنسيق مع زميل آخر وإرسال طلب جديد.\n\n" .
+                   "نظام راصد تبديلاتي";
+
+        // Send to requester
+        if (!empty($request['requester_email'])) {
+            sendRasedEmail($request['requester_email'], $subject, $message);
+        }
+        // Send to substitute
+        if (!empty($request['substitute_email'])) {
+            sendRasedEmail($request['substitute_email'], $subject, $message);
+        }
     }
 
     echo json_encode(['success' => true]);

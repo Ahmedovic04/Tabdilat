@@ -47,7 +47,9 @@ if ($action === 'update_status') {
             echo json_encode(['success' => false, 'message' => 'فشل العملية: ' . $e->getMessage()]);
         }
     } else {
-        // Simple rejection (no email required usually, or simpler logic)
+        // Handle rejection with notification
+        sendRejectionEmails($db, $request_id);
+        
         $stmt = $db->prepare("UPDATE rased_requests SET deputy_status = ? WHERE id = ?");
         $stmt->execute([$status, $request_id]);
         echo json_encode(['success' => true]);
