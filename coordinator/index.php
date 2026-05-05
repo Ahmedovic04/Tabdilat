@@ -33,6 +33,9 @@ $stmt = $db->prepare("
 $stmt->execute([$coord_subject, $coord_subject]);
 $pending_requests = $stmt->fetchAll();
 
+// Get Total Today's Substitutions (School-wide)
+$stmtTodayTotal = $db->query("SELECT COUNT(*) FROM rased_requests WHERE request_date = CURDATE() AND deputy_status = 'approved'");
+$today_total_count = $stmtTodayTotal->fetchColumn();
 ?>
 <?php 
 $page_title = 'لوحة المنسق - راصد تبديلاتي';
@@ -53,6 +56,15 @@ include '../includes/header.php';
     </div>
     <div class="col-md-4">
         <div class="stat-card" style="border-right-color: var(--accent-color);">
+            <div class="stat-info">
+                <h3><?= $today_total_count ?></h3>
+                <p>تبديلات اليوم</p>
+            </div>
+            <div class="stat-icon text-primary"><i class="bi bi-arrow-repeat"></i></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-right-color: var(--primary-color);">
             <div class="stat-info">
                 <h5 class="fw-bold mb-1">إجراء سريع</h5>
                 <a href="../teacher/request.php" class="btn btn-sm btn-accent">طلب تبديل لي</a>

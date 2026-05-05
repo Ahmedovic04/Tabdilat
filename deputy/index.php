@@ -27,6 +27,10 @@ $pending_requests = $stmt->fetchAll();
 
 $stmtNew = $db->query("SELECT COUNT(*) FROM rased_users WHERE is_new = 1 AND role = 'teacher'");
 $new_teachers_count = $stmtNew->fetchColumn();
+
+// Get Total Today's Substitutions (School-wide)
+$stmtTodayTotal = $db->query("SELECT COUNT(*) FROM rased_requests WHERE request_date = CURDATE() AND deputy_status = 'approved'");
+$today_total_count = $stmtTodayTotal->fetchColumn();
 ?>
 <?php 
 $page_title = 'لوحة النائب الأكاديمي - راصد تبديلاتي';
@@ -53,6 +57,15 @@ function statusBadgeFinal($status) {
                 <p>طلبات بانتظار الاعتماد</p>
             </div>
             <div class="stat-icon text-primary"><i class="bi bi-file-earmark-check"></i></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="border-right-color: var(--accent-color);">
+            <div class="stat-info">
+                <h3><?= $today_total_count ?></h3>
+                <p>تبديلات اليوم</p>
+            </div>
+            <div class="stat-icon text-warning"><i class="bi bi-arrow-repeat"></i></div>
         </div>
     </div>
     <?php if($new_teachers_count > 0): ?>

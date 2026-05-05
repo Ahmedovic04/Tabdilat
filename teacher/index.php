@@ -22,6 +22,17 @@ $stmt->execute([$teacher_id]);
 $schedule = $stmt->fetchAll();
 
 $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
+
+// Get Today's Substitutions Count for this teacher
+$stmtToday = $db->prepare("
+    SELECT COUNT(*) 
+    FROM rased_requests 
+    WHERE (requester_id = ? OR substitute_id = ?) 
+    AND request_date = CURDATE()
+    AND deputy_status = 'approved'
+");
+$stmtToday->execute([$teacher_id, $teacher_id]);
+$today_substitutions_count = $stmtToday->fetchColumn();
 ?>
 <?php 
 $page_title = 'لوحة المعلم - راصد تبديلاتي';
@@ -43,7 +54,7 @@ include '../includes/header.php';
     <div class="col-md-3">
         <div class="stat-card" style="border-right-color: var(--accent-color);">
             <div class="stat-info">
-                <h3>0</h3>
+                <h3><?= $today_substitutions_count ?></h3>
                 <p>تبديلات اليوم</p>
             </div>
             <div class="stat-icon"><i class="bi bi-arrow-repeat"></i></div>
