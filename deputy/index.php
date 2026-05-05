@@ -98,8 +98,6 @@ function statusBadgeFinal($status) {
                         <th>المعلم الغائب</th>
                         <th>المعلم البديل</th>
                         <th>الصف / الحصة</th>
-                        <th>منسق الغائب</th>
-                        <th>منسق البديل</th>
                         <th>موعد التعويض</th>
                         <th>إجراء المدير</th>
                     </tr>
@@ -114,8 +112,6 @@ function statusBadgeFinal($status) {
                                 <span class="badge bg-secondary"><?= htmlspecialchars($req['class_name']) ?></span>
                                 <div class="small mt-1 text-muted"><?= htmlspecialchars($req['request_date']) ?> (ح<?= $req['period_number'] ?>)</div>
                             </td>
-                            <td><?= statusBadgeFinal($req['req_coordinator_status']) ?></td>
-                            <td><?= statusBadgeFinal($req['sub_coordinator_status']) ?></td>
                             <td>
                                 <?php if($req['repayment_date']): ?>
                                     <div class="text-success small fw-bold"><?= htmlspecialchars($req['repayment_date']) ?></div>

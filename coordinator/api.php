@@ -64,15 +64,8 @@ if ($request['sub_sub'] == $coord_subject) {
     $up->execute([$status, $request_id]);
     $updated = true;
     if ($status === 'approved') {
-        // Send email notification about approval
-        $requesterName = $request['requester_name'];
-        $subName = $request['substitute_name'];
-        $subject = "تمت الموافقة على طلب تبديل";
-        $message = "الزميل $subName (البديل) وافق على طلب تبديل مقدّم من $requesterName.";
-        $to = 'allusersgroup@gmail.com';
-        // Simple mail function (ensure proper headers)
-        $headers = "From: no-reply@" . parse_url(SITE_URL, PHP_URL_HOST) . "\r\nContent-Type: text/plain; charset=UTF-8";
-        @mail($to, $subject, $message, $headers);
+        // Individual notifications are now handled by the teacher/api.php or deputy/api.php
+        // No group email here as per latest requirements.
     }
 }
 
