@@ -1,5 +1,7 @@
 <?php
 require_once '../config.php';
+require_once '../mail_helper.php';
+
 startSecureSession();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -256,7 +258,8 @@ if ($action === 'sub_approve') {
 
     // Verify current user is the substitute for this request
     $stmt = $db->prepare("
-        SELECT r.*, u2.name as substitute_name, u1.name as requester_name
+        SELECT r.*, u2.name as substitute_name, u2.email as substitute_email, 
+               u1.name as requester_name, u1.email as requester_email
         FROM rased_requests r
         JOIN rased_users u1 ON r.requester_id = u1.id
         JOIN rased_users u2 ON r.substitute_id = u2.id
@@ -276,18 +279,25 @@ if ($action === 'sub_approve') {
     $upd->execute([$status, $request_id]);
 
     if ($status === 'approved') {
-        // Send email notification
         $sub_name = $request['substitute_name'];
         $req_name = $request['requester_name'];
         $subject = "تمت الموافقة على طلب تبديل حصة";
-        $message = "قام المعلم البديل ($sub_name) بالموافقة على طلب التبديل المقدم من الزميل ($req_name).\n\n" .
+        $message = "تحية طيبة،\n\nلقد وافق المعلم البديل ($sub_name) على طلب التبديل المقدم من الزميل ($req_name).\n\n" .
                    "تفاصيل الطلب:\n" .
                    "التاريخ: {$request['request_date']}\n" .
-                   "الحصة: {$request['period_number']}";
+                   "الحصة: {$request['period_number']}\n\n" .
+                   "يرجى متابعة الطلب حتى يتم اعتماده نهائياً من قبل النائب الأكاديمي.";
         
-        $to = 'allusersgroup@gmail.com';
-        $headers = "From: no-reply@" . $_SERVER['SERVER_NAME'] . "\r\nContent-Type: text/plain; charset=UTF-8";
-        @mail($to, $subject, $message, $headers);
+        // Send to requester
+        if (!empty($request['requester_email'])) {
+            sendRasedEmail($request['requester_email'], $subject, $message);
+        }
+        // Send to substitute
+        if (!empty($request['substitute_email'])) {
+            sendRasedEmail($request['substitute_email'], $subject, $message);
+        }
+        // Send to admin/allusersgroup
+        sendRasedEmail('allusersgroup@gmail.com', $subject, $message);
     }
 
     echo json_encode(['success' => true]);

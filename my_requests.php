@@ -75,8 +75,6 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>الصف</th>
                         <th>المعلم البديل</th>
                         <th>موعد التعويض</th>
-                        <th>منسق الغائب</th>
-                        <th>منسق البديل</th>
                         <th>النائب الأكاديمي</th>
                     </tr>
                 </thead>
@@ -92,8 +90,6 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                                     ? '<div class="text-success fw-bold">'.htmlspecialchars($req['repayment_date']).'</div><small class="text-muted">الحصة '.$req['repayment_period'].'</small>'
                                     : '<span class="text-muted small">لم يحدد</span>' ?>
                             </td>
-                            <td><?= statusBadgeV2($req['req_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
-                            <td><?= statusBadgeV2($req['sub_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
                             <td>
                                 <?php
                                     $ds = $req['deputy_status'];
@@ -126,8 +122,6 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>الحصة</th>
                         <th>الصف</th>
                         <th>المعلم الغائب</th>
-                        <th>منسق الغائب</th>
-                        <th>منسق البديل</th>
                         <th>النائب الأكاديمي</th>
                         <th>إجراءات البديل</th>
                     </tr>
@@ -139,8 +133,6 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                             <td><span class="badge bg-info text-dark">حصة <?= $req['period_number'] ?></span></td>
                             <td><?= htmlspecialchars($req['class_name']) ?></td>
                             <td class="fw-bold"><?= htmlspecialchars($req['requester_name']) ?></td>
-                            <td><?= statusBadgeV2($req['req_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
-                            <td id="status-sub-<?= $req['id'] ?>"><?= statusBadgeV2($req['sub_coordinator_status'], 'معلق', 'موافق', 'مرفوض') ?></td>
                             <td>
                                 <?php
                                     $ds = $req['deputy_status'];

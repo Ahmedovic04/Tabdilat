@@ -156,9 +156,7 @@ $reports = $stmt->fetchAll();
                             <th>تاريخ الغياب</th>
                             <th>المعلم الغائب</th>
                             <th>الصف / الحصة</th>
-                            <th>منسق الغائب</th>
                             <th>المعلم البديل</th>
-                            <th>منسق البديل</th>
                             <th>موعد التعويض</th>
                             <th>الحالة النهائية</th>
                         </tr>
@@ -173,21 +171,7 @@ $reports = $stmt->fetchAll();
                                     <strong><?= htmlspecialchars($req['class_name']) ?></strong><br>
                                     <span class="period-label">حصة <?= $req['period_number'] ?></span>
                                 </td>
-                                <td>
-                                    <?php 
-                                        if($req['req_coordinator_status'] === 'approved') echo '<span class="text-success">✔ موافق</span>';
-                                        elseif($req['req_coordinator_status'] === 'rejected') echo '<span class="text-danger">✖ مرفوض</span>';
-                                        else echo '<span class="text-muted">⏳ معلق</span>';
-                                    ?>
-                                </td>
                                 <td><strong><?= htmlspecialchars($req['substitute_name']) ?></strong></td>
-                                <td>
-                                    <?php 
-                                        if($req['sub_coordinator_status'] === 'approved') echo '<span class="text-success">✔ موافق</span>';
-                                        elseif($req['sub_coordinator_status'] === 'rejected') echo '<span class="text-danger">✖ مرفوض</span>';
-                                        else echo '<span class="text-muted">⏳ معلق</span>';
-                                    ?>
-                                </td>
                                 <td>
                                     <?php if($req['repayment_date']): ?>
                                         <strong><?= htmlspecialchars($req['repayment_date']) ?></strong><br>

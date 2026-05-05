@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../mail_helper.php';
+
 
 // This script should be run via cron at 6:50 AM Qatar time
 // Example cron: 50 6 * * * php /path/to/cron/daily_email.php
@@ -44,9 +46,8 @@ if (empty($requests)) {
 
 $to = 'allusersgroup@gmail.com';
 $subject = "تقرير تبديلات الحصص اليومي - " . $today;
-$headers = "From: no-reply@" . $_SERVER['SERVER_NAME'] . "\r\nContent-Type: text/plain; charset=UTF-8";
 
-if (@mail($to, $subject, $message, $headers)) {
+if (sendRasedEmail($to, $subject, $message)) {
     echo "Email sent successfully for $today";
 } else {
     echo "Failed to send email.";
