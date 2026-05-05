@@ -54,7 +54,11 @@
             <li><a href="<?= $base_url ?? '' ?>my_requests.php" class="<?= $active_page == 'requests' ? 'active' : '' ?>"><i class="bi bi-clipboard-check"></i> طلباتي</a></li>
             <li><a href="<?= $base_url ?? '' ?>teacher/schedule.php" class="<?= $active_page == 'schedule' ? 'active' : '' ?>"><i class="bi bi-calendar3"></i> جدولي</a></li>
             <li><a href="<?= $base_url ?? '' ?>teacher/request.php" class="<?= $active_page == 'new_request' ? 'active' : '' ?>"><i class="bi bi-plus-circle"></i> طلب جديد</a></li>
-        <?php elseif ($_SESSION['rased_role'] === 'coordinator' || $_SESSION['rased_role'] === 'deputy'): ?>
+        <?php elseif ($_SESSION['rased_role'] === 'coordinator'): ?>
+            <li><a href="<?= $base_url ?? '' ?>coordinator/index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> لوحة المنسق</a></li>
+            <li><a href="<?= $base_url ?? '' ?>my_requests.php" class="<?= $active_page == 'requests' ? 'active' : '' ?>"><i class="bi bi-clipboard-check"></i> طلباتي</a></li>
+            <li><a href="<?= $base_url ?? '' ?>teacher/request.php" class="<?= $active_page == 'new_request' ? 'active' : '' ?>"><i class="bi bi-plus-circle"></i> طلب تبديل</a></li>
+        <?php elseif ($_SESSION['rased_role'] === 'deputy'): ?>
             <li><a href="<?= $base_url ?? '' ?>index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> لوحة التحكم</a></li>
             <li><a href="<?= $base_url ?? '' ?>deputy/users.php" class="<?= $active_page == 'users' ? 'active' : '' ?>"><i class="bi bi-people"></i> المستخدمين</a></li>
             <li><a href="<?= $base_url ?? '' ?>deputy/reports.php" class="<?= $active_page == 'reports' ? 'active' : '' ?>"><i class="bi bi-file-earmark-bar-graph"></i> التقارير</a></li>
