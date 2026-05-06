@@ -105,11 +105,7 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                                 ?>
                             </td>
                             <td>
-                                <?php if ($req['deputy_status'] === 'pending' || $req['request_date'] >= date('Y-m-d')): ?>
-                                    <a href="teacher/request.php?request_id=<?= $req['id'] ?>" class="btn btn-sm btn-outline-primary" title="تعديل الطلب لتغيير الموعد أو البديل">
-                                        <i class="bi bi-pencil-square"></i> تعديل
-                                    </a>
-                                <?php endif; ?>
+                                <!-- Edit button removed for teachers per latest request -->
                             </td>
                         </tr>
                     <?php endforeach; ?>

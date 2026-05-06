@@ -361,6 +361,12 @@ if ($action === 'sub_approve') {
 }
 
 if ($action === 'update_request') {
+    // SECURITY: Only Deputy can update/edit requests now
+    if ($_SESSION['rased_role'] !== 'deputy') {
+        echo json_encode(['success' => false, 'message' => 'عذراً، التعديل متاح فقط للنائب الأكاديمي.']);
+        exit;
+    }
+
     $data = json_decode(file_get_contents('php://input'), true);
     $request_id = (int)($_GET['request_id'] ?? 0);
     $requests = $data['requests'] ?? [];

@@ -18,6 +18,11 @@ $user_email = $stmtEmail->fetchColumn();
 // Check if we are editing an existing request
 $edit_request = null;
 if (isset($_GET['request_id'])) {
+    // Only Deputy can edit existing requests
+    if ($_SESSION['rased_role'] !== 'deputy') {
+        die('<div style="text-align:center; padding:20px; font-family:sans-serif;"><h3>عذراً، التعديل متاح فقط للنائب الأكاديمي.</h3><a href="../my_requests.php">العودة لطلباتي</a></div>');
+    }
+    
     $sql = "SELECT r.*, u2.name as substitute_name FROM rased_requests r JOIN rased_users u2 ON r.substitute_id = u2.id WHERE r.id = ?";
     $params = [$_GET['request_id']];
     
