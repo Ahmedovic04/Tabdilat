@@ -425,20 +425,31 @@ if ($action === 'update_request') {
     $success = $stmt->execute($params);
     $rows_affected = $stmt->rowCount();
 
+    // Fetch details after update to confirm and notify
+    $stmtNew = $db->prepare("
+        SELECT r.*, u1.name as req_name, u1.email as req_email, u2.name as sub_name, u2.email as sub_email
+        FROM rased_requests r
+        JOIN rased_users u1 ON r.requester_id = u1.id
+        JOIN rased_users u2 ON r.substitute_id = u2.id
+        WHERE r.id = ?
+    ");
+    $stmtNew->execute([$request_id]);
+    $new_req = $stmtNew->fetch();
+
     if ($success) {
+        if ($rows_affected === 0) {
+            // Check if it's because values were identical or because of a permission error
+            if ($new_req && $new_req['substitute_id'] == $sub_id && $new_req['request_date'] == $request_date) {
+                // Values are identical, treat as success but notify user
+                echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name'], 'message' => 'لم يتم تغيير أي بيانات (البيانات مطابقة للحالية)']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'لم يتم التحديث. قد لا تملك صلاحية تعديل هذا الطلب أو أن الطلب غير موجود.']);
+            }
+            exit;
+        }
+
         require_once '../mail_helper.php';
         
-        // Fetch FRESH details after update to confirm and notify
-        $stmtNew = $db->prepare("
-            SELECT r.*, u1.name as req_name, u1.email as req_email, u2.name as sub_name, u2.email as sub_email
-            FROM rased_requests r
-            JOIN rased_users u1 ON r.requester_id = u1.id
-            JOIN rased_users u2 ON r.substitute_id = u2.id
-            WHERE r.id = ?
-        ");
-        $stmtNew->execute([$request_id]);
-        $new_req = $stmtNew->fetch();
-
         $subject = "تحديث هام: تم تعديل طلب التبديل #" . $request_id;
         $body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل تفاصيل طلب التبديل رقم #{$request_id}.\n\n" .
                 "التفاصيل المحدثة والنهائية:\n" .
@@ -469,12 +480,12 @@ if ($action === 'update_request') {
             'updated_sub' => $new_req['sub_name'],
             'debug_info' => [
                 'rows_affected' => $rows_affected,
-                'target_sub_id' => $sub_id,
-                'actual_sub_id' => $new_req['substitute_id']
+                'user_id' => $user_id,
+                'requester_id' => $old_req['requester_id']
             ]
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'فشل تحديث البيانات في القاعدة']);
+        echo json_encode(['success' => false, 'message' => 'فشل تنفيذ أمر التحديث في القاعدة']);
     }
     exit;
 }
