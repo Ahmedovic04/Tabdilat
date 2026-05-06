@@ -398,16 +398,32 @@ if ($action === 'update_request') {
     }
 
     // Reset statuses to pending since the request changed
-    $sql = "UPDATE rased_requests SET substitute_id = ?, repayment_date = ?, repayment_period = ?, request_date = ?, sub_coordinator_status = 'pending', deputy_status = 'pending' WHERE id = ?";
-    $params = [$sub_id, $rep_date, $rep_period, $request_date, $request_id];
+    // Using named parameters for better reliability
+    $sql = "UPDATE rased_requests 
+            SET substitute_id = :sub_id, 
+                repayment_date = :rep_date, 
+                repayment_period = :rep_period, 
+                request_date = :req_date, 
+                sub_coordinator_status = 'pending', 
+                deputy_status = 'pending' 
+            WHERE id = :id";
+    
+    $params = [
+        ':sub_id' => $sub_id,
+        ':rep_date' => $rep_date,
+        ':rep_period' => $rep_period,
+        ':req_date' => $request_date,
+        ':id' => $request_id
+    ];
 
     if ($_SESSION['rased_role'] !== 'deputy') {
-        $sql .= " AND requester_id = ?";
-        $params[] = $user_id;
+        $sql .= " AND requester_id = :user_id";
+        $params[':user_id'] = $user_id;
     }
 
     $stmt = $db->prepare($sql);
     $success = $stmt->execute($params);
+    $rows_affected = $stmt->rowCount();
 
     if ($success) {
         require_once '../mail_helper.php';
@@ -423,7 +439,6 @@ if ($action === 'update_request') {
         $stmtNew->execute([$request_id]);
         $new_req = $stmtNew->fetch();
 
-        // Safety check: if DB didn't update for some reason, we'll know
         $subject = "تحديث هام: تم تعديل طلب التبديل #" . $request_id;
         $body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل تفاصيل طلب التبديل رقم #{$request_id}.\n\n" .
                 "التفاصيل المحدثة والنهائية:\n" .
@@ -440,7 +455,7 @@ if ($action === 'update_request') {
         // Notify New Substitute (Important!)
         if (!empty($new_req['sub_email'])) sendRasedEmail($new_req['sub_email'], $subject, $body);
 
-        // If substitute was actually changed in this update, notify the OLD one
+        // If substitute was changed, notify the OLD one
         if ($old_req['substitute_id'] != $new_req['substitute_id'] && !empty($old_req['sub_email'])) {
             $old_sub_subject = "إخطار: إلغاء تكليف بتبديل حصة #{$request_id}";
             $old_sub_body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل طلب التبديل رقم #{$request_id} وتم اختيار معلم بديل آخر.\n\n" .
@@ -449,7 +464,15 @@ if ($action === 'update_request') {
             sendRasedEmail($old_req['sub_email'], $old_sub_subject, $old_sub_body);
         }
 
-        echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name']]);
+        echo json_encode([
+            'success' => true, 
+            'updated_sub' => $new_req['sub_name'],
+            'debug_info' => [
+                'rows_affected' => $rows_affected,
+                'target_sub_id' => $sub_id,
+                'actual_sub_id' => $new_req['substitute_id']
+            ]
+        ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'فشل تحديث البيانات في القاعدة']);
     }
