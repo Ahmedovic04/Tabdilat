@@ -115,7 +115,7 @@ $has_email = !empty($user_email);
             
             <div class="form-group">
                 <label>تاريخ الغياب / التبديل</label>
-                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control" value="<?= $edit_request ? $edit_request['request_date'] : '' ?>" <?= $edit_request ? 'disabled' : '' ?>>
+                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control" value="<?= $edit_request ? $edit_request['request_date'] : '' ?>">
             </div>
             
             <div id="classes-container"></div>
@@ -319,11 +319,12 @@ $has_email = !empty($user_email);
         const requests = [];
         let missingRepayment = false;
         
-        const clsPeriods = editData ? [editData.period_number] : currentClasses.map(c => c.period_number);
+        // Determine which rows to collect. In edit mode, we only have one row.
+        const clsRows = document.querySelectorAll('.class-row');
 
-        clsPeriods.forEach(pNum => {
-            const subSelect = document.getElementById(`sub_${pNum}`);
-            const repaySelect = document.getElementById(`repay_${pNum}`);
+        clsRows.forEach(row => {
+            const subSelect = row.querySelector('select[id^="sub_"]');
+            const repaySelect = row.querySelector('select[id^="repay_"]');
             
             if (subSelect && subSelect.value) {
                 if (!repaySelect.value) {
@@ -332,25 +333,31 @@ $has_email = !empty($user_email);
                 
                 requests.push({
                     class_id: subSelect.dataset.class,
-                    period_number: pNum,
+                    period_number: subSelect.dataset.period,
                     substitute_id: subSelect.value,
-                    repayment_val: repaySelect.value === 'manual' ? null : repaySelect.value
+                    repayment_val: (repaySelect.value === 'manual' || !repaySelect.value) ? null : repaySelect.value
                 });
             }
         });
         
         if (requests.length === 0) {
-            alert('يرجى اختيار معلم بديل لحصة واحدة على الأقل.');
+            alert('يرجى اختيار معلم بديل.');
             return;
         }
         
         if (missingRepayment) {
-            alert('يرجى اختيار حصة التعويض لجميع الطلبات.');
+            alert('يرجى اختيار حصة التعويض.');
             return;
         }
         
+        // Log for debugging (visible in browser console)
+        console.log("Sending Payload:", {
+            date: dateInput.value,
+            requests: requests
+        });
+
         submitBtn.disabled = true;
-        submitBtn.textContent = 'جاري الإرسال...';
+        submitBtn.textContent = 'جاري الحفظ...';
         
         try {
             const actionUrl = editData ? `api.php?action=update_request&request_id=${editData.id}` : 'api.php?action=submit_request';
@@ -364,15 +371,16 @@ $has_email = !empty($user_email);
             });
             const data = await res.json();
             if (data.success) {
-                alert(editData ? 'تم تعديل الطلب بنجاح.' : 'تم إرسال الطلب بنجاح.');
+                alert(editData ? 'تم التحديث بنجاح. الموظف الجديد: ' + (data.updated_sub || '') : 'تم إرسال الطلب بنجاح.');
                 window.location.href = '../<?= $_SESSION['rased_role'] ?>/index.php';
             } else {
-                alert(data.message || 'حدث خطأ');
+                alert(data.message || 'حدث خطأ في الخادم');
                 submitBtn.disabled = false;
                 submitBtn.textContent = editData ? 'حفظ التعديلات' : 'تأكيد إرسال الطلب';
             }
         } catch (err) {
-            alert('خطأ في الاتصال');
+            console.error(err);
+            alert('خطأ في الاتصال بالسيرفر');
             submitBtn.disabled = false;
             submitBtn.textContent = editData ? 'حفظ التعديلات' : 'تأكيد إرسال الطلب';
         }

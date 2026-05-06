@@ -373,10 +373,11 @@ if ($action === 'update_request') {
     $req = $requests[0]; // We only edit one request at a time
     $sub_id = $req['substitute_id'];
     $repayment_val = $req['repayment_val'];
+    $request_date = $data['date'] ?? null; // Capture the date from frontend
     
     $rep_date = null;
     $rep_period = null;
-    if ($repayment_val) {
+    if ($repayment_val && $repayment_val !== 'manual') {
         list($rep_date, $rep_period) = explode('_', $repayment_val);
     }
 
@@ -397,8 +398,8 @@ if ($action === 'update_request') {
     }
 
     // Reset statuses to pending since the request changed
-    $sql = "UPDATE rased_requests SET substitute_id = ?, repayment_date = ?, repayment_period = ?, sub_coordinator_status = 'pending', deputy_status = 'pending' WHERE id = ?";
-    $params = [$sub_id, $rep_date, $rep_period, $request_id];
+    $sql = "UPDATE rased_requests SET substitute_id = ?, repayment_date = ?, repayment_period = ?, request_date = ?, sub_coordinator_status = 'pending', deputy_status = 'pending' WHERE id = ?";
+    $params = [$sub_id, $rep_date, $rep_period, $request_date, $request_id];
 
     if ($_SESSION['rased_role'] !== 'deputy') {
         $sql .= " AND requester_id = ?";
