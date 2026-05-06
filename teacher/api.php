@@ -406,10 +406,12 @@ if ($action === 'update_request') {
     }
 
     $stmt = $db->prepare($sql);
-    if ($stmt->execute($params)) {
+    $success = $stmt->execute($params);
+
+    if ($success) {
         require_once '../mail_helper.php';
         
-        // Fetch FRESH details after update
+        // Fetch FRESH details after update to confirm and notify
         $stmtNew = $db->prepare("
             SELECT r.*, u1.name as req_name, u1.email as req_email, u2.name as sub_name, u2.email as sub_email
             FROM rased_requests r
@@ -420,32 +422,33 @@ if ($action === 'update_request') {
         $stmtNew->execute([$request_id]);
         $new_req = $stmtNew->fetch();
 
+        // Safety check: if DB didn't update for some reason, we'll know
         $subject = "تحديث هام: تم تعديل طلب التبديل #" . $request_id;
         $body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل تفاصيل طلب التبديل رقم #{$request_id}.\n\n" .
-                "التفاصيل المحدثة:\n" .
+                "التفاصيل المحدثة والنهائية:\n" .
                 "  - المعلم الغائب: {$new_req['req_name']}\n" .
                 "  - المعلم البديل: {$new_req['sub_name']}\n" .
                 "  - تاريخ التبديل: {$new_req['request_date']}\n" .
-                "  - موعد التعويض: " . ($rep_date ?: 'غير محدد') . " (الحصة " . ($rep_period ?: '-') . ")\n\n" .
-                "يرجى من المعلم البديل الدخول للنظام للمراجعة والموافقة على الموعد الجديد.\n\n" .
+                "  - موعد التعويض: " . ($new_req['repayment_date'] ?: 'غير محدد') . " (الحصة " . ($new_req['repayment_period'] ?: '-') . ")\n\n" .
+                "يرجى من المعلم البديل ({$new_req['sub_name']}) الدخول للنظام للمراجعة والموافقة.\n\n" .
                 "نظام راصد تبديلاتي";
 
         // Notify Requester
         if (!empty($new_req['req_email'])) sendRasedEmail($new_req['req_email'], $subject, $body);
         
-        // Notify New Substitute
+        // Notify New Substitute (Important!)
         if (!empty($new_req['sub_email'])) sendRasedEmail($new_req['sub_email'], $subject, $body);
 
-        // If substitute was changed, notify the OLD one as well
+        // If substitute was actually changed in this update, notify the OLD one
         if ($old_req['substitute_id'] != $new_req['substitute_id'] && !empty($old_req['sub_email'])) {
-            $old_sub_subject = "إلغاء تكليف بتبديل حصة - رقم #{$request_id}";
-            $old_sub_body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل طلب التبديل رقم #{$request_id} واختيار معلم بديل آخر.\n\n" .
-                            "لم تعد مكلفاً بتغطية هذه الحصة. شكراً لتعاونكم.\n\n" .
+            $old_sub_subject = "إخطار: إلغاء تكليف بتبديل حصة #{$request_id}";
+            $old_sub_body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل طلب التبديل رقم #{$request_id} وتم اختيار معلم بديل آخر.\n\n" .
+                            "لم تعد مكلفاً بتغطية هذه الحصة. نشكركم على تعاونكم.\n\n" .
                             "نظام راصد تبديلاتي";
             sendRasedEmail($old_req['sub_email'], $old_sub_subject, $old_sub_body);
         }
 
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name']]);
     } else {
         echo json_encode(['success' => false, 'message' => 'فشل تحديث البيانات في القاعدة']);
     }
