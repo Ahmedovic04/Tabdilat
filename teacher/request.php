@@ -115,7 +115,7 @@ $has_email = !empty($user_email);
             
             <div class="form-group">
                 <label>تاريخ الغياب / التبديل</label>
-                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control" value="<?= $edit_request ? $edit_request['request_date'] : '' ?>">
+                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control" value="<?= $edit_request ? $edit_request['request_date'] : '' ?>" <?= $edit_request ? 'disabled' : '' ?>>
             </div>
             
             <div id="classes-container"></div>
@@ -211,47 +211,22 @@ $has_email = !empty($user_email);
         classesContainer.innerHTML = '';
         currentClasses = classes;
         
+        let renderedAny = false;
         for (const cls of classes) {
             // In edit mode, only show the row for the period we are editing
             if (editData && cls.period_number != editData.period_number) continue;
 
+            renderedAny = true;
             const row = document.createElement('div');
             row.className = 'class-row';
-            
-            row.innerHTML = `
-                <div class="class-info">
-                    الحصة ${cls.period_number} - ${cls.class_name}
-                </div>
-                <div class="row-grid">
-                    <div>
-                        <label>اختر المعلم البديل</label>
-                        <select id="sub_${cls.period_number}" class="sub-select" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number}, ${cls.class_id})">
-                            <option value="">-- اختر المعلم البديل --</option>
-                        </select>
-                    </div>
-                    <div class="repay-container">
-                        <label>اقتراحات الحصص لتعويض الزميل</label>
-                        <select id="repay_${cls.period_number}" class="repay-select" disabled>
-                            <option value="">-- اختر المعلم أولاً --</option>
-                        </select>
-                    </div>
-                </div>
-            `;
-            classesContainer.appendChild(row);
-            
-            await loadSubstitutes(cls.class_id, dayOfWeek, cls.period_number, `sub_${cls.period_number}`);
-            
-            // Only pre-fill if it's the first load AND the date matches
-            if (editData && isFirstLoad && cls.period_number == editData.period_number && dateInput.value === editData.request_date) {
-                const subSelect = document.getElementById(`sub_${cls.period_number}`);
-                subSelect.value = editData.substitute_id;
-                await handleSubChange(cls.period_number, cls.class_id);
-                const repaySelect = document.getElementById(`repay_${cls.period_number}`);
-                repaySelect.value = editData.repayment_date + '_' + editData.repayment_period;
-            }
+            ...
         }
         
-        submitBtn.style.display = 'block';
+        if (editData && !renderedAny) {
+            classesContainer.innerHTML = '<p style="color:red; text-align:center; padding:1rem; border:1px solid #ffcccc; border-radius:8px;">⚠️ تنبيه: لا توجد حصة رقم (' + editData.period_number + ') مسجلة لك في هذا اليوم حسب الجدول الحالي. يرجى مراجعة النائب الأكاديمي.</p>';
+        }
+        
+        submitBtn.style.display = renderedAny ? 'block' : 'none';
     }
     
     async function loadSubstitutes(classId, day, period, selectId) {
