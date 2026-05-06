@@ -76,7 +76,9 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>المعلم البديل</th>
                         <th>حالة البديل</th>
                         <th>موعد التعويض</th>
+                        <th>موعد التعويض</th>
                         <th>النائب الأكاديمي</th>
+                        <th>إدارة</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,6 +104,13 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                                     else
                                         echo '<span class="badge bg-light text-dark border"><i class="bi bi-shield-fill-exclamation me-1"></i>بانتظار النائب</span>';
                                 ?>
+                            </td>
+                            <td>
+                                <?php if ($req['deputy_status'] === 'pending' || $req['request_date'] >= date('Y-m-d')): ?>
+                                    <a href="teacher/request.php?request_id=<?= $req['id'] ?>" class="btn btn-sm btn-outline-primary" title="تعديل الطلب لتغيير الموعد أو البديل">
+                                        <i class="bi bi-pencil-square"></i> تعديل
+                                    </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

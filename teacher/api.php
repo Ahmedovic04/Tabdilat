@@ -360,4 +360,40 @@ if ($action === 'sub_approve') {
     exit;
 }
 
+if ($action === 'update_request') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $request_id = (int)($_GET['request_id'] ?? 0);
+    $requests = $data['requests'] ?? [];
+
+    if (!$request_id || empty($requests)) {
+        echo json_encode(['success' => false, 'message' => 'بيانات غير مكتملة']);
+        exit;
+    }
+
+    $req = $requests[0]; // We only edit one request at a time
+    $sub_id = $req['substitute_id'];
+    $repayment_val = $req['repayment_val'];
+    
+    $rep_date = null;
+    $rep_period = null;
+    if ($repayment_val) {
+        list($rep_date, $rep_period) = explode('_', $repayment_val);
+    }
+
+    // Reset statuses to pending since the request changed
+    $sql = "UPDATE rased_requests SET substitute_id = ?, repayment_date = ?, repayment_period = ?, sub_coordinator_status = 'pending', deputy_status = 'pending' WHERE id = ?";
+    $params = [$sub_id, $rep_date, $rep_period, $request_id];
+
+    if ($_SESSION['rased_role'] !== 'deputy') {
+        $sql .= " AND requester_id = ?";
+        $params[] = $user_id;
+    }
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+
+    echo json_encode(['success' => true]);
+    exit;
+}
+
 

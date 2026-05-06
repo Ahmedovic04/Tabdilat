@@ -181,6 +181,17 @@ $reports = $stmt->fetchAll();
                                     <?php endif; ?>
                                 </td>
                                 <td>
+                                    <div class="hide-print" style="margin-bottom: 5px;">
+                                    <?php if($req['deputy_status'] === 'approved' || $req['deputy_status'] === 'approved_with_mod'): ?>
+                                        <button class="btn" style="background: var(--danger); padding: 4px 8px; font-size: 0.75rem;" onclick="revokeStatus(<?= $req['id'] ?>)">
+                                            ⚠️ إلغاء الاعتماد
+                                        </button>
+                                        &nbsp;
+                                        <a href="../teacher/request.php?request_id=<?= $req['id'] ?>" class="btn" style="background: var(--primary); padding: 4px 8px; font-size: 0.75rem; text-decoration: none;">
+                                            ✏️ تعديل
+                                        </a>
+                                    <?php endif; ?>
+                                    </div>
                                     <?php 
                                         if($req['deputy_status'] === 'approved' || $req['deputy_status'] === 'approved_with_mod') 
                                             echo '<span class="status-badge approved">معتمد</span>';

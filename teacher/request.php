@@ -2,7 +2,7 @@
 require_once '../config.php';
 startSecureSession();
 
-if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator', 'deputy'])) {
     header('Location: ../login.php');
     exit;
 }
@@ -15,6 +15,22 @@ $stmtEmail = $db->prepare("SELECT email FROM rased_users WHERE id = ?");
 $stmtEmail->execute([$user_id]);
 $user_email = $stmtEmail->fetchColumn();
 
+// Check if we are editing an existing request
+$edit_request = null;
+if (isset($_GET['request_id'])) {
+    $sql = "SELECT r.*, u2.name as substitute_name FROM rased_requests r JOIN rased_users u2 ON r.substitute_id = u2.id WHERE r.id = ?";
+    $params = [$_GET['request_id']];
+    
+    if ($_SESSION['rased_role'] !== 'deputy') {
+        $sql .= " AND r.requester_id = ?";
+        $params[] = $user_id;
+    }
+
+    $stmtEdit = $db->prepare($sql);
+    $stmtEdit->execute($params);
+    $edit_request = $stmtEdit->fetch();
+}
+
 $has_email = !empty($user_email);
 ?>
 <!DOCTYPE html>
@@ -22,7 +38,7 @@ $has_email = !empty($user_email);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طلب تبديل حصة - راصد تبديلاتي</title>
+    <title><?= $edit_request ? 'تعديل طلب تبديل' : 'طلب تبديل حصة' ?> - راصد تبديلاتي</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -94,17 +110,19 @@ $has_email = !empty($user_email);
                 </form>
             </div>
         <?php else: ?>
-            <h2>طلب تبديل ذكي</h2>
+            <h2><?= $edit_request ? 'تعديل طلب تبديل #' . $edit_request['id'] : 'طلب تبديل ذكي' ?></h2>
             <p style="margin-bottom: 1.5rem; color: #6B7280;">اختر تاريخ الغياب وسيقوم النظام باقتراح المعلمين المتاحين واقتراح أفضل الحصص التي يمكنك من خلالها تعويضهم.</p>
             
             <div class="form-group">
                 <label>تاريخ الغياب / التبديل</label>
-                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control">
+                <input type="date" id="date-input" min="<?= date('Y-m-d') ?>" class="form-control" value="<?= $edit_request ? $edit_request['request_date'] : '' ?>" <?= $edit_request ? 'disabled' : '' ?>>
             </div>
             
             <div id="classes-container"></div>
             
-            <button id="submit-btn" class="btn btn-primary w-100 mt-4 shadow-sm py-3 fw-bold" style="display: none;">تأكيد إرسال الطلب</button>
+            <button id="submit-btn" class="btn btn-primary w-100 mt-4 shadow-sm py-3 fw-bold" style="display: none;">
+                <?= $edit_request ? 'حفظ التعديلات' : 'تأكيد إرسال الطلب' ?>
+            </button>
         <?php endif; ?>
     </div>
 </div>
@@ -158,9 +176,20 @@ $has_email = !empty($user_email);
     const submitBtn = document.getElementById('submit-btn');
     
     let currentClasses = [];
+    const editData = <?= $edit_request ? json_encode($edit_request) : 'null' ?>;
 
-    dateInput.addEventListener('change', async (e) => {
-        const date = e.target.value;
+    if (editData) {
+        // Trigger loading classes for the edit date
+        window.addEventListener('load', () => {
+            loadClasses(editData.request_date);
+        });
+    }
+
+    dateInput.addEventListener('change', (e) => {
+        loadClasses(e.target.value);
+    });
+
+    async function loadClasses(date) {
         if (!date) return;
         
         classesContainer.innerHTML = '<p>جاري تحميل الحصص...</p>';
@@ -178,13 +207,16 @@ $has_email = !empty($user_email);
         } catch (err) {
             classesContainer.innerHTML = '<p>حدث خطأ في الاتصال.</p>';
         }
-    });
+    }
     
     async function renderClasses(classes, dayOfWeek) {
         classesContainer.innerHTML = '';
         currentClasses = classes;
         
         for (const cls of classes) {
+            // In edit mode, only show the row for the period we are editing
+            if (editData && cls.period_number != editData.period_number) continue;
+
             const row = document.createElement('div');
             row.className = 'class-row';
             
@@ -209,7 +241,15 @@ $has_email = !empty($user_email);
             `;
             classesContainer.appendChild(row);
             
-            loadSubstitutes(cls.class_id, dayOfWeek, cls.period_number, `sub_${cls.period_number}`);
+            await loadSubstitutes(cls.class_id, dayOfWeek, cls.period_number, `sub_${cls.period_number}`);
+            
+            if (editData && cls.period_number == editData.period_number) {
+                const subSelect = document.getElementById(`sub_${cls.period_number}`);
+                subSelect.value = editData.substitute_id;
+                await handleSubChange(cls.period_number, cls.class_id);
+                const repaySelect = document.getElementById(`repay_${cls.period_number}`);
+                repaySelect.value = editData.repayment_date + '_' + editData.repayment_period;
+            }
         }
         
         submitBtn.style.display = 'block';
@@ -279,18 +319,20 @@ $has_email = !empty($user_email);
         const requests = [];
         let missingRepayment = false;
         
-        currentClasses.forEach(cls => {
-            const subSelect = document.getElementById(`sub_${cls.period_number}`);
-            const repaySelect = document.getElementById(`repay_${cls.period_number}`);
+        const clsPeriods = editData ? [editData.period_number] : currentClasses.map(c => c.period_number);
+
+        clsPeriods.forEach(pNum => {
+            const subSelect = document.getElementById(`sub_${pNum}`);
+            const repaySelect = document.getElementById(`repay_${pNum}`);
             
-            if (subSelect.value) {
+            if (subSelect && subSelect.value) {
                 if (!repaySelect.value) {
                     missingRepayment = true;
                 }
                 
                 requests.push({
-                    class_id: cls.class_id,
-                    period_number: cls.period_number,
+                    class_id: subSelect.dataset.class,
+                    period_number: pNum,
                     substitute_id: subSelect.value,
                     repayment_val: repaySelect.value === 'manual' ? null : repaySelect.value
                 });
@@ -311,7 +353,8 @@ $has_email = !empty($user_email);
         submitBtn.textContent = 'جاري الإرسال...';
         
         try {
-            const res = await fetch('api.php?action=submit_request', {
+            const actionUrl = editData ? `api.php?action=update_request&request_id=${editData.id}` : 'api.php?action=submit_request';
+            const res = await fetch(actionUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -321,17 +364,17 @@ $has_email = !empty($user_email);
             });
             const data = await res.json();
             if (data.success) {
-                alert('تم إرسال الطلب بنجاح.');
+                alert(editData ? 'تم تعديل الطلب بنجاح.' : 'تم إرسال الطلب بنجاح.');
                 window.location.href = '../<?= $_SESSION['rased_role'] ?>/index.php';
             } else {
                 alert(data.message || 'حدث خطأ');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'تأكيد إرسال الطلب';
+                submitBtn.textContent = editData ? 'حفظ التعديلات' : 'تأكيد إرسال الطلب';
             }
         } catch (err) {
             alert('خطأ في الاتصال');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'تأكيد إرسال الطلب';
+            submitBtn.textContent = editData ? 'حفظ التعديلات' : 'تأكيد إرسال الطلب';
         }
     });
 </script>
