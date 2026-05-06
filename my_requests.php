@@ -76,7 +76,6 @@ function statusBadgeV2($status, $label_pending, $label_approved, $label_rejected
                         <th>المعلم البديل</th>
                         <th>حالة البديل</th>
                         <th>موعد التعويض</th>
-                        <th>موعد التعويض</th>
                         <th>النائب الأكاديمي</th>
                         <th>إدارة</th>
                     </tr>

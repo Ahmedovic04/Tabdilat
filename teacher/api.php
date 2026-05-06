@@ -380,6 +380,22 @@ if ($action === 'update_request') {
         list($rep_date, $rep_period) = explode('_', $repayment_val);
     }
 
+    // Fetch request details BEFORE update to know emails
+    $stmtData = $db->prepare("
+        SELECT r.*, u1.name as req_name, u1.email as req_email, u2.name as sub_name, u2.email as sub_email
+        FROM rased_requests r
+        JOIN rased_users u1 ON r.requester_id = u1.id
+        JOIN rased_users u2 ON r.substitute_id = u2.id
+        WHERE r.id = ?
+    ");
+    $stmtData->execute([$request_id]);
+    $old_req = $stmtData->fetch();
+
+    if (!$old_req) {
+        echo json_encode(['success' => false, 'message' => 'الطلب غير موجود']);
+        exit;
+    }
+
     // Reset statuses to pending since the request changed
     $sql = "UPDATE rased_requests SET substitute_id = ?, repayment_date = ?, repayment_period = ?, sub_coordinator_status = 'pending', deputy_status = 'pending' WHERE id = ?";
     $params = [$sub_id, $rep_date, $rep_period, $request_id];
@@ -390,9 +406,26 @@ if ($action === 'update_request') {
     }
 
     $stmt = $db->prepare($sql);
-    $stmt->execute($params);
+    if ($stmt->execute($params)) {
+        require_once '../mail_helper.php';
+        
+        $subject = "تحديث: تم تعديل طلب التبديل #" . $request_id;
+        $body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل تفاصيل طلب التبديل رقم #{$request_id}.\n\n" .
+                "التفاصيل الجديدة:\n" .
+                "  - المعلم الغائب: {$old_req['req_name']}\n" .
+                "  - المعلم البديل: " . ($sub_id == $old_req['substitute_id'] ? $old_req['sub_name'] : "تم تغييره") . "\n" .
+                "  - تاريخ التبديل: {$old_req['request_date']}\n" .
+                "  - موعد التعويض: " . ($rep_date ?: 'غير محدد') . " (الحصة " . ($rep_period ?: '-') . ")\n\n" .
+                "تمت إعادة حالة الطلب إلى (بانتظار موافقة البديل) ليتمكن المعلم البديل من مراجعة التعديلات والموافقة عليها.\n\n" .
+                "نظام راصد تبديلاتي";
 
-    echo json_encode(['success' => true]);
+        if (!empty($old_req['req_email'])) sendRasedEmail($old_req['req_email'], $subject, $body);
+        if (!empty($old_req['sub_email'])) sendRasedEmail($old_req['sub_email'], $subject, $body);
+
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'فشل تحديث البيانات في القاعدة']);
+    }
     exit;
 }
 
