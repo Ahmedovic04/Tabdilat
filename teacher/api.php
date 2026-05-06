@@ -443,7 +443,9 @@ if ($action === 'update_request') {
                 // Values are identical, treat as success but notify user
                 echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name'], 'message' => 'لم يتم تغيير أي بيانات (البيانات مطابقة للحالية)']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'لم يتم التحديث. قد لا تملك صلاحية تعديل هذا الطلب أو أن الطلب غير موجود.']);
+                $debug_msg = "لم يتم التحديث. ";
+                $debug_msg .= " (SessionID: {$user_id}, RequesterID: " . ($old_req['requester_id'] ?? 'N/A') . ", Role: " . $_SESSION['rased_role'] . ")";
+                echo json_encode(['success' => false, 'message' => $debug_msg]);
             }
             exit;
         }
