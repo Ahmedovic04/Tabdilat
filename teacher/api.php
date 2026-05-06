@@ -6,7 +6,7 @@ startSecureSession();
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator', 'deputy'])) {
     echo json_encode(['success' => false, 'message' => 'غير مصرح']);
     exit;
 }
@@ -418,7 +418,7 @@ if ($action === 'update_request') {
 
     if ($_SESSION['rased_role'] !== 'deputy') {
         $sql .= " AND requester_id = :user_id";
-        $params[':user_id'] = $user_id;
+        $params[':user_id'] = $teacher_id;
     }
 
     $stmt = $db->prepare($sql);
@@ -438,14 +438,11 @@ if ($action === 'update_request') {
 
     if ($success) {
         if ($rows_affected === 0) {
-            // Check if it's because values were identical or because of a permission error
+            // Check if it's because values were identical or because of a real error
             if ($new_req && $new_req['substitute_id'] == $sub_id && $new_req['request_date'] == $request_date) {
-                // Values are identical, treat as success but notify user
                 echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name'], 'message' => 'لم يتم تغيير أي بيانات (البيانات مطابقة للحالية)']);
             } else {
-                $debug_msg = "لم يتم التحديث. ";
-                $debug_msg .= " (SessionID: {$user_id}, RequesterID: " . ($old_req['requester_id'] ?? 'N/A') . ", Role: " . $_SESSION['rased_role'] . ")";
-                echo json_encode(['success' => false, 'message' => $debug_msg]);
+                echo json_encode(['success' => false, 'message' => 'عذراً، لم نتمكن من تحديث الطلب. يرجى التأكد من أنك تملك صلاحية التعديل.']);
             }
             exit;
         }
@@ -462,13 +459,11 @@ if ($action === 'update_request') {
                 "يرجى من المعلم البديل ({$new_req['sub_name']}) الدخول للنظام للمراجعة والموافقة.\n\n" .
                 "نظام راصد تبديلاتي";
 
-        // Notify Requester
+        // Notify All Parties
         if (!empty($new_req['req_email'])) sendRasedEmail($new_req['req_email'], $subject, $body);
-        
-        // Notify New Substitute (Important!)
         if (!empty($new_req['sub_email'])) sendRasedEmail($new_req['sub_email'], $subject, $body);
 
-        // If substitute was changed, notify the OLD one
+        // If substitute changed, notify the old one
         if ($old_req['substitute_id'] != $new_req['substitute_id'] && !empty($old_req['sub_email'])) {
             $old_sub_subject = "إخطار: إلغاء تكليف بتبديل حصة #{$request_id}";
             $old_sub_body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تعديل طلب التبديل رقم #{$request_id} وتم اختيار معلم بديل آخر.\n\n" .
@@ -477,15 +472,7 @@ if ($action === 'update_request') {
             sendRasedEmail($old_req['sub_email'], $old_sub_subject, $old_sub_body);
         }
 
-        echo json_encode([
-            'success' => true, 
-            'updated_sub' => $new_req['sub_name'],
-            'debug_info' => [
-                'rows_affected' => $rows_affected,
-                'user_id' => $user_id,
-                'requester_id' => $old_req['requester_id']
-            ]
-        ]);
+        echo json_encode(['success' => true, 'updated_sub' => $new_req['sub_name']]);
     } else {
         echo json_encode(['success' => false, 'message' => 'فشل تنفيذ أمر التحديث في القاعدة']);
     }
