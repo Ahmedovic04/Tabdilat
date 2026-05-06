@@ -171,12 +171,9 @@ $has_email = !empty($user_email);
         });
     }
 
-    const dateInput = document.getElementById('date-input');
-    const classesContainer = document.getElementById('classes-container');
-    const submitBtn = document.getElementById('submit-btn');
-    
     let currentClasses = [];
     const editData = <?= $edit_request ? json_encode($edit_request) : 'null' ?>;
+    let isFirstLoad = true; // Flag to only pre-fill once
 
     if (editData) {
         // Trigger loading classes for the edit date
@@ -186,13 +183,14 @@ $has_email = !empty($user_email);
     }
 
     dateInput.addEventListener('change', (e) => {
+        isFirstLoad = false; // Disable pre-fill if date is changed manually
         loadClasses(e.target.value);
     });
 
     async function loadClasses(date) {
         if (!date) return;
         
-        classesContainer.innerHTML = '<p>جاري تحميل الحصص...</p>';
+        classesContainer.innerHTML = '<div class="text-center p-4">⌛ جاري تحميل الحصص والبدلاء...</div>';
         submitBtn.style.display = 'none';
         
         try {
@@ -200,12 +198,12 @@ $has_email = !empty($user_email);
             const data = await res.json();
             
             if (data.classes && data.classes.length > 0) {
-                renderClasses(data.classes, data.day);
+                await renderClasses(data.classes, data.day);
             } else {
-                classesContainer.innerHTML = '<p style="color:red;">لا توجد حصص في هذا اليوم، أو أنه يوم عطلة.</p>';
+                classesContainer.innerHTML = '<p style="color:red; text-align:center; padding:2rem;">لا توجد حصص في هذا اليوم، أو أنه يوم عطلة.</p>';
             }
         } catch (err) {
-            classesContainer.innerHTML = '<p>حدث خطأ في الاتصال.</p>';
+            classesContainer.innerHTML = '<p style="text-align:center; padding:2rem;">حدث خطأ في الاتصال بالسيرفر.</p>';
         }
     }
     
@@ -227,13 +225,13 @@ $has_email = !empty($user_email);
                 <div class="row-grid">
                     <div>
                         <label>اختر المعلم البديل</label>
-                        <select id="sub_${cls.period_number}" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number}, ${cls.class_id})">
+                        <select id="sub_${cls.period_number}" class="sub-select" data-class="${cls.class_id}" data-period="${cls.period_number}" onchange="handleSubChange(${cls.period_number}, ${cls.class_id})">
                             <option value="">-- اختر المعلم البديل --</option>
                         </select>
                     </div>
                     <div class="repay-container">
                         <label>اقتراحات الحصص لتعويض الزميل</label>
-                        <select id="repay_${cls.period_number}" disabled>
+                        <select id="repay_${cls.period_number}" class="repay-select" disabled>
                             <option value="">-- اختر المعلم أولاً --</option>
                         </select>
                     </div>
@@ -243,7 +241,8 @@ $has_email = !empty($user_email);
             
             await loadSubstitutes(cls.class_id, dayOfWeek, cls.period_number, `sub_${cls.period_number}`);
             
-            if (editData && cls.period_number == editData.period_number) {
+            // Only pre-fill if it's the first load AND the date matches
+            if (editData && isFirstLoad && cls.period_number == editData.period_number && dateInput.value === editData.request_date) {
                 const subSelect = document.getElementById(`sub_${cls.period_number}`);
                 subSelect.value = editData.substitute_id;
                 await handleSubChange(cls.period_number, cls.class_id);
@@ -319,23 +318,23 @@ $has_email = !empty($user_email);
         const requests = [];
         let missingRepayment = false;
         
-        // Determine which rows to collect. In edit mode, we only have one row.
-        const clsRows = document.querySelectorAll('.class-row');
-
-        clsRows.forEach(row => {
-            const subSelect = row.querySelector('select[id^="sub_"]');
-            const repaySelect = row.querySelector('select[id^="repay_"]');
+        // Final collection of data
+        const subSelects = document.querySelectorAll('.sub-select');
+        subSelects.forEach(subSelect => {
+            const pNum = subSelect.dataset.period;
+            const repaySelect = document.getElementById(`repay_${pNum}`);
             
-            if (subSelect && subSelect.value) {
-                if (!repaySelect.value) {
+            if (subSelect.value) {
+                if (!repaySelect || !repaySelect.value) {
                     missingRepayment = true;
                 }
                 
                 requests.push({
                     class_id: subSelect.dataset.class,
-                    period_number: subSelect.dataset.period,
+                    period_number: pNum,
                     substitute_id: subSelect.value,
-                    repayment_val: (repaySelect.value === 'manual' || !repaySelect.value) ? null : repaySelect.value
+                    sub_name: subSelect.options[subSelect.selectedIndex].text.split('(')[0].trim(), // For debugging alert
+                    repayment_val: (repaySelect && (repaySelect.value === 'manual' || !repaySelect.value)) ? null : repaySelect.value
                 });
             }
         });
@@ -350,11 +349,11 @@ $has_email = !empty($user_email);
             return;
         }
         
-        // Log for debugging (visible in browser console)
-        console.log("Sending Payload:", {
-            date: dateInput.value,
-            requests: requests
-        });
+        const confirmMsg = editData 
+            ? `تأكيد التعديل:\nالمعلم البديل: ${requests[0].sub_name}\nالتاريخ: ${dateInput.value}\nهل تريد الحفظ؟`
+            : `تأكيد إرسال الطلب؟`;
+            
+        if(!confirm(confirmMsg)) return;
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'جاري الحفظ...';
@@ -371,7 +370,7 @@ $has_email = !empty($user_email);
             });
             const data = await res.json();
             if (data.success) {
-                alert(editData ? 'تم التحديث بنجاح. الموظف الجديد: ' + (data.updated_sub || '') : 'تم إرسال الطلب بنجاح.');
+                alert('تم التحديث بنجاح. الموظف المسجل حالياً هو: ' + (data.updated_sub || ''));
                 window.location.href = '../<?= $_SESSION['rased_role'] ?>/index.php';
             } else {
                 alert(data.message || 'حدث خطأ في الخادم');
