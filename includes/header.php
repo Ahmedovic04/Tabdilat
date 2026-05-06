@@ -52,7 +52,6 @@
         <?php if ($_SESSION['rased_role'] === 'teacher'): ?>
             <li><a href="<?= $base_url ?? '' ?>teacher/index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-house-door"></i> الرئيسية</a></li>
             <li><a href="<?= $base_url ?? '' ?>my_requests.php" class="<?= $active_page == 'requests' ? 'active' : '' ?>"><i class="bi bi-clipboard-check"></i> طلباتي</a></li>
-            <li><a href="<?= $base_url ?? '' ?>teacher/schedule.php" class="<?= $active_page == 'schedule' ? 'active' : '' ?>"><i class="bi bi-calendar3"></i> جدولي</a></li>
             <li><a href="<?= $base_url ?? '' ?>teacher/request.php" class="<?= $active_page == 'new_request' ? 'active' : '' ?>"><i class="bi bi-plus-circle"></i> طلب جديد</a></li>
         <?php elseif ($_SESSION['rased_role'] === 'coordinator'): ?>
             <li><a href="<?= $base_url ?? '' ?>coordinator/index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> لوحة المنسق</a></li>

@@ -66,7 +66,7 @@ include '../includes/header.php';
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h4 mb-0 fw-bold text-primary">جدول الحصص الخاص بك</h2>
         <div class="d-flex gap-2">
-            <a href="schedule.php" class="btn btn-sm btn-outline-secondary"><i class="bi bi-gear"></i> إعداد الجدول</a>
+            <!-- Schedule setting disabled for teachers to prevent manual tampering -->
             <a href="request.php" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> طلب تبديل</a>
         </div>
     </div>

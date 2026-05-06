@@ -2,14 +2,16 @@
 require_once '../config.php';
 startSecureSession();
 
-if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator'])) {
+if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['teacher', 'coordinator', 'deputy'])) {
     header('Location: ../login.php');
     exit;
 }
 
-$db = getDB();
-$teacher_id = $_SESSION['rased_user_id'];
-$message = '';
+// SECURITY: Disable manual schedule editing for teachers to prevent tampering
+if ($_SESSION['rased_role'] !== 'deputy') {
+    header('Location: index.php');
+    exit;
+}
 
 // Handle save schedule
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule'])) {
