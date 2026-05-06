@@ -25,40 +25,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
             $db->exec("TRUNCATE TABLE rased_teacher_classes");
             
             $default_password = password_hash('123456', PASSWORD_DEFAULT);
-            $stmtUser = $db->prepare("INSERT IGNORE INTO rased_users (username, password, name, role, is_new) VALUES (?, ?, ?, 'teacher', TRUE)");
-            $stmtClass = $db->prepare("INSERT IGNORE INTO rased_classes (name) VALUES (?)");
             
+            // Group users by normalized name and keep the one with most requests or oldest ID
+            function normalize_arabic($str) {
+                $str = trim($str);
+                $str = str_replace(['أ', 'إ', 'آ'], 'ا', $str);
+                $str = str_replace('ة', 'ه', $str);
+                $str = str_replace('ى', 'ي', $str);
+                return preg_replace('/\s+/', ' ', $str);
+            }
+
+            // --- STEP 1: CLEANUP EXISTING DUPLICATES ---
+            $users_to_clean = $db->query("SELECT id, name FROM rased_users WHERE role = 'teacher'")->fetchAll();
+            $unique_names = [];
+            foreach ($users_to_clean as $u) {
+                $norm = normalize_arabic($u['name']);
+                if (!isset($unique_names[$norm])) {
+                    $unique_names[$norm] = $u['id'];
+                } else {
+                    $original_id = $unique_names[$norm];
+                    $db->prepare("UPDATE rased_teacher_classes SET teacher_id = ? WHERE teacher_id = ?")->execute([$original_id, $u['id']]);
+                    $db->prepare("UPDATE rased_requests SET requester_id = ? WHERE requester_id = ?")->execute([$original_id, $u['id']]);
+                    $db->prepare("UPDATE rased_requests SET substitute_id = ? WHERE substitute_id = ?")->execute([$original_id, $u['id']]);
+                    $db->prepare("DELETE FROM rased_users WHERE id = ?")->execute([$u['id']]);
+                }
+            }
+
+            // --- STEP 2: PRE-FETCH MAPPINGS ---
+            $all_users = $db->query("SELECT id, name FROM rased_users")->fetchAll();
+            $user_map = [];
+            foreach ($all_users as $u) { $user_map[normalize_arabic($u['name'])] = $u['id']; }
+
+            $all_classes = $db->query("SELECT id, name FROM rased_classes")->fetchAll();
+            $class_map = [];
+            foreach ($all_classes as $c) { $class_map[$c['name']] = $c['id']; }
+
+            $stmtUser = $db->prepare("INSERT INTO rased_users (username, password, name, role, is_new) VALUES (?, ?, ?, 'teacher', TRUE)");
+            $stmtClass = $db->prepare("INSERT INTO rased_classes (name) VALUES (?)");
+            $stmtInsertTC = $db->prepare("INSERT INTO rased_teacher_classes (teacher_id, class_id, day_of_week, period_number) VALUES (?, ?, ?, ?)");
+            
+            // --- STEP 3: PROCESS ROWS ---
             foreach ($rows as $index => $row) {
                 if ($index < 2) continue; // Skip header
                 $cells = $xpath->query('td', $row);
-                if ($cells->length < 36) continue;
+                if ($cells->length < 1) continue;
                 
                 $teacher_name = trim($cells->item(0)->nodeValue);
-                if (empty($teacher_name)) continue;
+                if (empty($teacher_name) || mb_strlen($teacher_name) < 3) continue;
                 
-                $username = 't_' . crc32($teacher_name);
-                $stmtUser->execute([$username, $default_password, $teacher_name]);
+                $norm_name = normalize_arabic($teacher_name);
                 
-                $t_res = $db->query("SELECT id FROM rased_users WHERE name = " . $db->quote($teacher_name))->fetch();
-                if (!$t_res) continue;
-                $teacher_id = $t_res['id'];
+                if (isset($user_map[$norm_name])) {
+                    $teacher_id = $user_map[$norm_name];
+                } else {
+                    $username = 't_' . crc32($teacher_name) . rand(10,99);
+                    $stmtUser->execute([$username, $default_password, $teacher_name]);
+                    $teacher_id = $db->lastInsertId();
+                    $user_map[$norm_name] = $teacher_id;
+                }
                 
-                for ($i = 1; $i <= 35; $i++) {
+                for ($i = 1; $i < $cells->length && $i <= 35; $i++) {
                     $class_name = trim($cells->item($i)->nodeValue);
-                    if (empty($class_name)) continue;
+                    if (empty($class_name) || $class_name == '-') continue;
                     
-                    $stmtClass->execute([$class_name]);
-                    $c_res = $db->query("SELECT id FROM rased_classes WHERE name = " . $db->quote($class_name))->fetch();
-                    if (!$c_res) continue;
+                    if (!isset($class_map[$class_name])) {
+                        $stmtClass->execute([$class_name]);
+                        $class_id = $db->lastInsertId();
+                        $class_map[$class_name] = $class_id;
+                    } else {
+                        $class_id = $class_map[$class_name];
+                    }
                     
                     $day_of_week = floor(($i - 1) / 7);
                     $period_number = (($i - 1) % 7) + 1;
-                    
-                    $db->prepare("INSERT INTO rased_teacher_classes (teacher_id, class_id, day_of_week, period_number) VALUES (?, ?, ?, ?)")
-                       ->execute([$teacher_id, $c_res['id'], $day_of_week, $period_number]);
+                    $stmtInsertTC->execute([$teacher_id, $class_id, $day_of_week, $period_number]);
                 }
             }
-            $message = "تم تحديث الجدول بنجاح.";
+            $message = "تم تحديث الجدول بنجاح وتنظيف الأسماء المكررة.";
 
             // ── AUTOMATED CONFLICT RESOLUTION AFTER SCHEDULE UPDATE ──
             require_once '../mail_helper.php';
