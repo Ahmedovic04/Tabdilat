@@ -37,15 +37,71 @@ if (isset($_GET['request_id'])) {
 }
 
 $has_email = !empty($user_email);
-
-$page_title = $edit_request ? 'تعديل طلب تبديل' : 'طلب تبديل ذكي';
-$active_page = 'new_request';
-$base_url = '../';
-include '../includes/header.php'; 
 ?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $edit_request ? 'تعديل طلب تبديل' : 'طلب تبديل ذكي' ?> - راصد تبديلاتي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a3a5c; --primary-hover: #122a44;
+            --bg-color: #f0f4f9; --card-bg: #FFFFFF; --text-main: #1F2937; --border-color: #E5E7EB;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg-color); color: var(--text-main); }
+        .navbar {
+            background: var(--card-bg); padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { color: var(--text-main); margin-bottom: 0.5rem; font-weight: 800; font-size: 2rem; }
+        .hint { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.8rem; font-weight: bold; color: #444; }
+        
+        input[type="date"], select {
+            width: 100%; padding: 0.85rem; border: 1px solid var(--border-color); border-radius: 10px; font-size: 1.05rem;
+            background: #fff; transition: 0.3s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,58,92,0.1); }
 
-<div class="container py-4">
-    <div class="card shadow-sm border-0 p-4">
+        .class-row {
+            padding: 1.5rem; border: 1px solid #eee; border-radius: 12px; margin-bottom: 1.5rem;
+            background: #fff; transition: 0.3s;
+        }
+        .class-info { font-weight: 800; margin-bottom: 1rem; color: #333; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .row-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .grid-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        .grid-item label { margin: 0; white-space: nowrap; min-width: 180px; text-align: left; }
+        .grid-item select { flex: 1; }
+
+        .btn-submit {
+            background: var(--primary); color: white; padding: 1.2rem;
+            border: none; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: 800;
+            width: 100%; margin-top: 2rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(26,58,92,0.2);
+        }
+        .btn-submit:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .repay-container { background: #f8faff; padding: 1rem; border-radius: 10px; border: 1px dashed #cbd5e1; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div style="font-weight:800; font-size:1.2rem; color:var(--primary);">راصد تبديلاتي</div>
+    <div><a href="../<?= $_SESSION['rased_role'] ?>/index.php" style="color:var(--primary); text-decoration:none; font-weight: 800;">العودة للوحة الرئيسية</a></div>
+</div>
+
+<div class="container">
+    <div class="card">
         <?php if (!$has_email): ?>
             <div class="text-center py-5">
                 <h2 class="text-dark fw-bold mb-3">تسجيل بريد إلكتروني وكلمة مرور</h2>
@@ -355,4 +411,5 @@ include '../includes/header.php';
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+</body>
+</html>
