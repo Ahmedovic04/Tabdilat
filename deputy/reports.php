@@ -30,81 +30,28 @@ $stmt = $db->prepare("
 $stmt->execute([$start_date, $end_date]);
 $reports = $stmt->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقارير التبديلات - راصد تبديلاتي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #1a3a5c;
-            --success: #10B981;
-            --danger: #EF4444;
-            --warning: #F59E0B;
-            --text-main: #1a2535;
-            --border-color: #dee2e6;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: #f0f4f9; color: var(--text-main); }
-        
-        .navbar {
-            background: white; padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
-        .card { background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        
-        .filter-form { display: flex; gap: 1.5rem; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; background: #f8f9fa; padding: 20px; border-radius: 12px; }
-        .filter-form .group { display: flex; flex-direction: column; }
-        .filter-form label { margin-bottom: 0.5rem; font-weight: 700; color: var(--primary); font-size: 0.9rem; }
-        .filter-form input { padding: 0.6rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; outline: none; }
-        
-        .btn {
-            background: var(--primary); color: white; padding: 0.6rem 1.5rem;
-            border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: 0.3s;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 600;
-        }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-print { background: #334155; }
-        
-        .table-report { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; }
-        .table-report th { background: #f1f5f9; padding: 12px 10px; border: 1px solid var(--border-color); font-weight: 800; color: var(--primary); font-size: 0.9rem; }
-        .table-report td { padding: 12px 10px; border: 1px solid var(--border-color); font-size: 0.95rem; line-height: 1.4; }
-        
-        .period-label { font-size: 0.8rem; color: #64748b; font-weight: 600; }
-        
-        .status-badge {
-            display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
-        }
-        .status-badge.approved { background: #dcfce7; color: #166534; }
-        .status-badge.pending { background: #fef9c3; color: #854d0e; }
-        .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+<?php 
+$page_title = 'تقارير التبديلات - راصد تبديلاتي';
+$active_page = 'reports';
+$base_url = '../';
+include '../includes/header.php'; 
+?>
 
+<div class="custom-card shadow-sm p-4">
+    <style>
         @media print {
             body { background: white !important; padding: 0 !important; }
             .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .navbar, .filter-form, .hide-print { display: none !important; }
-            .card { box-shadow: none !important; border: none !important; padding: 0 !important; }
+            .navbar, .filter-form, .hide-print, .sidebar, .top-nav { display: none !important; }
+            .card, .custom-card { box-shadow: none !important; border: none !important; padding: 0 !important; }
             .report-footer { display: block !important; }
             .table-report th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
-            .status-badge { border: 1px solid #ccc !important; -webkit-print-color-adjust: exact; }
             @page { margin: 1.5cm; }
         }
+        .table-report { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; }
+        .table-report th { background: #f1f5f9; padding: 12px 10px; border: 1px solid var(--border-color); font-weight: 800; color: var(--primary); font-size: 0.9rem; }
+        .table-report td { padding: 12px 10px; border: 1px solid var(--border-color); font-size: 0.95rem; line-height: 1.4; }
     </style>
-</head>
-<body>
-
-<div class="navbar hide-print">
-    <div class="brand">راصد تبديلاتي - التقارير الشاملة</div>
-    <div>
-        <a href="index.php" style="color: var(--primary); text-decoration: none; font-weight: bold;">العودة للوحة النائب</a>
-    </div>
-</div>
-
-<div class="container">
     <!-- Professional Header for Print -->
     <div class="report-header text-center mb-5">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
@@ -221,8 +168,6 @@ $reports = $stmt->fetchAll();
                 يعتمد ،، مدير المدرسة
             </div>
         </div>
-    </div>
 </div>
 
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>

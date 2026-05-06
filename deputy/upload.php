@@ -214,33 +214,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>تحديث الجدول - النائب الأكاديمي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #4F46E5; --bg-color: #F3F4F6; --card-bg: #FFFFFF; --text-main: #1F2937; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); padding: 2rem; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: auto; }
-        .btn { background: var(--primary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; }
-        .msg { background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-    </style>
-</head>
-<body>
-<div class="card">
-    <h2>رفع وتحديث جدول المعلمين</h2>
-    <?php if($message): ?> <div class="msg"><?= $message ?></div> <?php endif; ?>
-    <form method="POST" enctype="multipart/form-data">
-        <div style="margin-bottom: 1rem;">
-            <label>اختر ملف الجدول (بصيغة xls المستخرجة كـ HTML)</label><br><br>
-            <input type="file" name="schedule_file" accept=".xls,.html,.htm" required>
+<?php 
+$page_title = 'تحديث الجدول - النائب الأكاديمي';
+$active_page = 'upload';
+$base_url = '../';
+include '../includes/header.php'; 
+?>
+
+<div class="custom-card shadow-sm p-4" style="max-width: 600px; margin: 2rem auto;">
+    <h2 class="h4 mb-4 fw-bold text-primary">رفع وتحديث جدول المعلمين</h2>
+    
+    <?php if($message): ?> 
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <?= $message ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <button type="submit" class="btn">رفع وتحديث</button>
-        <a href="index.php" style="margin-right: 1rem; color: var(--primary);">العودة للوحة</a>
+    <?php endif; ?>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-4">
+            <label class="form-label fw-bold text-muted small">اختر ملف الجدول (بصيغة xls المستخرجة كـ HTML)</label>
+            <input type="file" name="schedule_file" class="form-control form-control-lg" accept=".xls,.html,.htm" required>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <button type="submit" class="btn btn-primary px-4">رفع وتحديث</button>
+            <a href="index.php" class="text-decoration-none text-muted small">العودة للوحة النائب</a>
+        </div>
     </form>
 </div>
-</body>
-</html>
+
+<?php include '../includes/footer.php'; ?>
