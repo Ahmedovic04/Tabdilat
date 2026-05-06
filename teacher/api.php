@@ -405,6 +405,7 @@ if ($action === 'update_request') {
         $params[] = $user_id;
     }
 
+    $stmt = $db->prepare($sql);
     if ($stmt->execute($params)) {
         require_once '../mail_helper.php';
         
