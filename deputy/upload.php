@@ -60,10 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
             }
             $message = "تم تحديث الجدول بنجاح.";
 
-            // ── CONFLICT DETECTION AFTER SCHEDULE UPDATE ──
+            // ── AUTOMATED CONFLICT RESOLUTION AFTER SCHEDULE UPDATE ──
             require_once '../mail_helper.php';
 
-            // Fetch all active (non-rejected) substitution requests that have not been completed
+            // Fetch all future active substitution requests
             $stmtReqs = $db->query("
                 SELECT r.id, r.requester_id, r.substitute_id, r.class_id,
                        r.request_date, r.period_number,
@@ -76,97 +76,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
                 JOIN rased_users u2 ON r.substitute_id = u2.id
                 JOIN rased_classes c ON r.class_id = c.id
                 WHERE r.deputy_status != 'rejected'
-                  AND r.sub_coordinator_status = 'approved'
                   AND r.request_date >= CURDATE()
             ");
             $active_requests = $stmtReqs->fetchAll();
 
-            $stmtCheckSlot = $db->prepare("
+            $stmtCheckNewPos = $db->prepare("
+                SELECT period_number FROM rased_teacher_classes
+                WHERE teacher_id = ? AND class_id = ? AND day_of_week = ?
+            ");
+
+            $stmtIsFree = $db->prepare("
                 SELECT COUNT(*) FROM rased_teacher_classes
                 WHERE teacher_id = ? AND day_of_week = ? AND period_number = ?
             ");
 
-            // Function to find alternative slots for the substitute
-            $findAltSlot = function($teacher_id, $exclude_dow, $exclude_period, $start_from_date) use ($db) {
-                $stmtSched = $db->prepare("SELECT class_id, day_of_week, period_number FROM rased_teacher_classes WHERE teacher_id = ?");
-                $stmtSched->execute([$teacher_id]);
-                $slots = $stmtSched->fetchAll();
-                
-                $current = strtotime($start_from_date . ' +1 day');
-                for ($i = 0; $i < 14; $i++) {
-                    $dow = (int)date('w', $current);
-                    if ($dow >= 0 && $dow <= 4) { // Sun-Thu
-                        foreach ($slots as $s) {
-                            if ($s['day_of_week'] == $dow && !($s['day_of_week'] == $exclude_dow && $s['period_number'] == $exclude_period)) {
-                                $cStmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
-                                $cStmt->execute([$s['class_id']]);
-                                $cName = $cStmt->fetchColumn();
-                                return [
-                                    'date' => date('Y-m-d', $current),
-                                    'period' => $s['period_number'],
-                                    'class_name' => $cName,
-                                ];
-                            }
-                        }
-                    }
-                    $current = strtotime('+1 day', $current);
-                }
-                return null;
-            };
+            $rescheduledCount = 0;
+            $conflictedCount = 0;
 
-            $conflictsFound = 0;
             foreach ($active_requests as $req) {
-                $conflicts = [];
+                $day_of_week = (int)date('w', strtotime($req['request_date']));
+                
+                // 1. Find where the class is now in the new timetable
+                $stmtCheckNewPos->execute([$req['requester_id'], $req['class_id'], $day_of_week]);
+                $new_period = $stmtCheckNewPos->fetchColumn();
 
-                // Check substitution slot: does the substitute still have that period free?
-                $req_dow = (int)date('w', strtotime($req['request_date']));
-                $stmtCheckSlot->execute([$req['substitute_id'], $req_dow, $req['period_number']]);
-                $subHasClass = $stmtCheckSlot->fetchColumn();
-                if ($subHasClass > 0) {
-                    $conflicts[] = "تعارض في حصة التبديل (الحصة {$req['period_number']} بتاريخ {$req['request_date']})";
-                }
+                $needsNotification = false;
+                $resolved = false;
 
-                // Check repayment slot if set
-                if ($req['repayment_date'] && $req['repayment_period']) {
-                    $rep_dow = (int)date('w', strtotime($req['repayment_date']));
-                    $stmtCheckSlot->execute([$req['requester_id'], $rep_dow, $req['repayment_period']]);
-                    $reqHasClass = $stmtCheckSlot->fetchColumn();
-                    if ($reqHasClass > 0) {
-                        $conflicts[] = "تعارض في حصة التعويض (الحصة {$req['repayment_period']} بتاريخ {$req['repayment_date']})";
+                // Check if the original slot is still valid
+                if ($new_period == $req['period_number']) {
+                    // Class is in the same place. Is the substitute still free?
+                    $stmtIsFree->execute([$req['substitute_id'], $day_of_week, $new_period]);
+                    if ($stmtIsFree->fetchColumn() > 0) {
+                        // Conflict! Substitute is now busy. Try to find if class moved? 
+                        // (Wait, we already checked new_period. If it's the same, then it's a hard conflict)
+                        $needsNotification = true;
+                    } else {
+                        // Everything is still fine for this request.
+                        continue;
                     }
+                } else if ($new_period) {
+                    // Class moved to a new period. Can the substitute cover it?
+                    $stmtIsFree->execute([$req['substitute_id'], $day_of_week, $new_period]);
+                    if ($stmtIsFree->fetchColumn() == 0) {
+                        // Yes! Auto-reschedule
+                        $db->prepare("UPDATE rased_requests SET period_number = ? WHERE id = ?")->execute([$new_period, $req['id']]);
+                        
+                        $subject = "تحديث آلي: تغيير موعد حصة التبديل رقم #{$req['id']}";
+                        $body = "تحية طيبة،\n\nنود إبلاغكم بأنه تم تحديث الجدول المدرسي، وبناءً عليه تم تحديث موعد التبديل الخاص بكم آلياً ليتناسب مع الجدول الجديد:\n\n" .
+                                "رقم الطلب: #{$req['id']}\n" .
+                                "المعلم الغائب: {$req['req_name']}\n" .
+                                "المعلم البديل: {$req['sub_name']}\n" .
+                                "الصف: {$req['class_name']}\n" .
+                                "التاريخ: {$req['request_date']}\n" .
+                                "الموعد الجديد: الحصة {$new_period}\n\n" .
+                                "تم تعديل البيانات في النظام بنجاح.\n\nنظام راصد تبديلاتي";
+                        
+                        if (!empty($req['req_email'])) sendRasedEmail($req['req_email'], $subject, $body);
+                        if (!empty($req['sub_email'])) sendRasedEmail($req['sub_email'], $subject, $body);
+                        
+                        $rescheduledCount++;
+                        $resolved = true;
+                    } else {
+                        // Class moved but substitute is busy there too
+                        $needsNotification = true;
+                    }
+                } else {
+                    // Class is no longer on this day at all!
+                    $needsNotification = true;
                 }
 
-                if (!empty($conflicts)) {
-                    $conflictsFound++;
-
-                    // Find alternative slot for the substitute
-                    $altSlot = $findAltSlot($req['substitute_id'], $req_dow, $req['period_number'], $req['request_date']);
+                if ($needsNotification && !$resolved) {
+                    $conflictedCount++;
+                    $subject = "تنبيه هام: تعارض في طلب التبديل رقم #{$req['id']}";
+                    $body = "تحية طيبة،\n\nيرجى العلم أن التبديل رقم #{$req['id']} (بين {$req['req_name']} و {$req['sub_name']}) قد تعارض مع حصصكم الأساسية بعد تحديث الجدول المدرسي، ولم يتمكن النظام من إيجاد حل آلي مناسب.\n\n" .
+                            "يرجى الدخول للنظام وإعادة تقديم طلب تبديل جديد يتوافق مع الجدول الحالي.\n\n" .
+                            "نظام راصد تبديلاتي";
                     
-                    $altText = "لم يتم العثور على حصة بديلة متاحة حالياً.";
-                    if ($altSlot) {
-                        $altText = "اقتراح بديل: يوم {$altSlot['date']} - الحصة {$altSlot['period']} - صف {$altSlot['class_name']}";
-                    }
-
-                    $conflictList = implode("\n  - ", $conflicts);
-                    $subject = "تنبيه: تعارض في جدول التبديل بعد تحديث الجدول المدرسي";
-                    $body = "تحية طيبة،\n\nنود إبلاغكم بأن الجدول المدرسي قد تم تحديثه وأدى ذلك إلى تعارض في طلب التبديل الخاص بكم:\n\n" .
-                            "  - المعلم الغائب: {$req['req_name']}\n" .
-                            "  - المعلم البديل: {$req['sub_name']}\n" .
-                            "  - الحصة الأصلية: {$req['period_number']} بتاريخ {$req['request_date']}\n\n" .
-                            "التعارضات المكتشفة:\n  - {$conflictList}\n\n" .
-                            "---\n{$altText}\n---\n\n" .
-                            "يرجى مراجعة النظام والتنسيق لتعديل موعد التبديل بما يتناسب مع الجدول الجديد.\n\n" .
-                            "نظام راصد تبديلاتي - مدرسة معيذر الابتدائية";
-
                     if (!empty($req['req_email'])) sendRasedEmail($req['req_email'], $subject, $body);
                     if (!empty($req['sub_email'])) sendRasedEmail($req['sub_email'], $subject, $body);
                 }
             }
 
-            if ($conflictsFound > 0) {
-                $message .= " ⚠️ تم اكتشاف ($conflictsFound) تعارض مع تبديلات سابقة، وتم إرسال إشعارات للمعلمين المعنيين.";
+            if ($rescheduledCount > 0 || $conflictedCount > 0) {
+                $message .= " ⚠️ تم تحديث ($rescheduledCount) طلب آلياً، ووجد ($conflictedCount) تعارضات تتطلب تدخلكم.";
             }
-            // ── END CONFLICT DETECTION ──
+            // ── END AUTOMATED RESOLUTION ──
 
         } else {
             $message = "الملف غير صالح أو لا يحتوي على بيانات الجدول.";
