@@ -69,8 +69,10 @@ include '../includes/header.php';
         font-size: 1rem; font-family: inherit; cursor: pointer; transition: 0.3s;
     }
     
-    .dropdowns-row { display: flex; gap: 2rem; align-items: flex-start; }
-    .dropdowns-row .grid-item { flex: 1; margin-bottom: 0; }
+    .dropdowns-row { display: flex; gap: 2rem; align-items: flex-end; }
+    .dropdowns-row .grid-item { flex: 1; margin-bottom: 0; flex-direction: column; align-items: stretch; }
+    .dropdowns-row .grid-item label { text-align: right; margin-bottom: 0.5rem; }
+    .dropdowns-row .grid-item select { width: 100%; }
     .grid-item select:focus { border-color: #1a3a5c; box-shadow: 0 0 0 4px rgba(26,58,92,0.1); }
 
     .btn-submit-main {
