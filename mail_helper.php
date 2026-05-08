@@ -16,8 +16,8 @@ function _rased_smtp_comm($socket, $cmd = "") {
 
 function sendRasedEmail($to, $subject, $message) {
     // --- IMPORTANT: Gmail SMTP Configuration ---
-    $smtp_user = 'abo.hyzar41@gmail.com';
-    $smtp_pass = 'ruowqwdaikcsprhf'; // 16-char App Password
+    $smtp_user = 'rasedsystem9@gmail.com';
+    $smtp_pass = 'jczv glyv fsnn fxfy'; // 16-char App Password
     // -------------------------------------------
 
     $host = "smtp.gmail.com";
