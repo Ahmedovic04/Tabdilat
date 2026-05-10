@@ -122,16 +122,8 @@ include 'includes/header.php';
 </div>
 
 <script>
-// Detect base URL
-function getBaseUrl() {
-    const path = window.location.pathname;
-    const pathParts = path.split('/').filter(p => p);
-    if (pathParts.length > 0 && ['teacher', 'coordinator', 'deputy'].includes(pathParts[0])) {
-        return '../';
-    }
-    return '';
-}
-const BASE_URL = getBaseUrl();
+// Use base URL from PHP (set in header.php)
+const BASE_URL = window.API_BASE_URL || '';
 
 async function markAllReadAndReload() {
     try {

@@ -89,6 +89,10 @@ $unread_notifications_count = getUnreadCount($_SESSION['rased_user_id'] ?? 0);
 </div>
 
 <!-- Notification System JavaScript -->
+<script>
+    // Global base URL for API calls
+    window.API_BASE_URL = "<?= $base_url ?? '' ?>";
+</script>
 <script src="<?= $base_url ?? '' ?>assets/js/notifications.js"></script>
 
 <!-- Mobile Overlay -->

@@ -6,22 +6,8 @@
 let notificationsData = [];
 let isDropdownOpen = false;
 
-// Detect base URL dynamically
-function getBaseUrl() {
-    // Get the path up to the root of the application
-    const path = window.location.pathname;
-    const pathParts = path.split('/').filter(p => p);
-    
-    // If we're in a subdirectory like /teacher/ or /deputy/, go up
-    if (pathParts.length > 0 && ['teacher', 'coordinator', 'deputy'].includes(pathParts[0])) {
-        return '../';
-    }
-    
-    // Otherwise, we're in the root
-    return '';
-}
-
-const BASE_URL = getBaseUrl();
+// Use base URL from PHP (set in header.php)
+const BASE_URL = window.API_BASE_URL || '';
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
