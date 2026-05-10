@@ -38,7 +38,10 @@ $compensations = $stmtCompensation->fetchAll();
 
 // Build message for substitutions
 if (empty($requests) && empty($compensations)) {
-    $message = "لا توجد أي تبديلات حصص أو تعويضات مسجلة لهذا اليوم: " . $today;
+    $message = "📋 تقرير يوم: " . $today . "\n";
+    $message .= "==========================================\n\n";
+    $message .= "لا توجد أي تبديلات حصص أو تعويضات مسجلة لهذا اليوم.\n";
+    $message .= "\n🔄 لا توجد حصص تعويض مجدولة لهذا اليوم.\n";
 } else {
     // Substitutions Section
     if (!empty($requests)) {
