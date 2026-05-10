@@ -201,7 +201,9 @@ include 'includes/header.php';
                     <i class="bi bi-bar-chart-line text-primary me-2"></i>
                     الإحصائيات الشهرية (آخر 6 أشهر)
                 </h5>
-                <canvas id="monthlyChart" height="250"></canvas>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
             </div>
         </div>
         <div class="col-lg-4">
@@ -210,7 +212,9 @@ include 'includes/header.php';
                     <i class="bi bi-pie-chart text-primary me-2"></i>
                     حالة الطلبات
                 </h5>
-                <canvas id="statusChart" height="250"></canvas>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="statusChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -223,7 +227,9 @@ include 'includes/header.php';
                     <i class="bi bi-clock-history text-primary me-2"></i>
                     توزيع الحصص اليومية
                 </h5>
-                <canvas id="periodChart" height="200"></canvas>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="periodChart"></canvas>
+                </div>
             </div>
         </div>
         <div class="col-lg-6">
@@ -235,10 +241,12 @@ include 'includes/header.php';
                 <?php if (empty($top_classes)): ?>
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-                        <p class="mt-2">لا توجد بيانات</p>
+                        <p class="mt-2 mb-0">لا توجد بيانات</p>
                     </div>
                 <?php else: ?>
-                    <canvas id="classesChart" height="200"></canvas>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="classesChart"></canvas>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
