@@ -255,6 +255,21 @@ if ($action === 'submit_request') {
                 // Log error but don't stop the process
                 error_log("Failed to send request email: " . $e->getMessage());
             }
+            
+            // --- CREATE IN-APP NOTIFICATION FOR SUBSTITUTE ---
+            try {
+                require_once __DIR__ . '/../notifications_helper.php';
+                $request_id = $db->lastInsertId();
+                notifyRequestSubmitted(
+                    $request_id,
+                    $teacher_id,
+                    $req['substitute_id'],
+                    $date,
+                    $req['period_number']
+                );
+            } catch (Exception $e) {
+                error_log("Failed to create notification: " . $e->getMessage());
+            }
             // ----------------------------------------
         }
         $db->commit();
@@ -398,6 +413,21 @@ if ($action === 'sub_approve') {
         if (!empty($request['substitute_email'])) {
             sendRasedEmail($request['substitute_email'], $subject, $message);
         }
+        
+        // --- CREATE IN-APP NOTIFICATION ---
+        try {
+            require_once __DIR__ . '/../notifications_helper.php';
+            notifyRequestApproved(
+                $request_id,
+                $request['requester_id'],
+                $request['substitute_id'],
+                $sub_name
+            );
+        } catch (Exception $e) {
+            error_log("Failed to create approval notification: " . $e->getMessage());
+        }
+        // ----------------------------------
+        
     } elseif ($status === 'rejected') {
         $sub_name = $request['substitute_name'];
         $req_name = $request['requester_name'];
@@ -414,6 +444,20 @@ if ($action === 'sub_approve') {
         if (!empty($request['substitute_email'])) {
             sendRasedEmail($request['substitute_email'], $subject, $message);
         }
+        
+        // --- CREATE IN-APP NOTIFICATION ---
+        try {
+            require_once __DIR__ . '/../notifications_helper.php';
+            notifyRequestRejected(
+                $request_id,
+                $request['requester_id'],
+                $request['substitute_id'],
+                $sub_name
+            );
+        } catch (Exception $e) {
+            error_log("Failed to create rejection notification: " . $e->getMessage());
+        }
+        // ----------------------------------
     }
 
     echo json_encode(['success' => true]);

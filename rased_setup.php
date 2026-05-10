@@ -68,6 +68,24 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ");
 
+    // Notifications table for in-app notifications
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS rased_notifications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            type VARCHAR(50) NOT NULL,
+            title VARCHAR(200) NOT NULL,
+            message TEXT NOT NULL,
+            related_request_id INT NULL,
+            is_read BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES rased_users(id) ON DELETE CASCADE,
+            FOREIGN KEY (related_request_id) REFERENCES rased_requests(id) ON DELETE SET NULL,
+            INDEX idx_user_read (user_id, is_read),
+            INDEX idx_created_at (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+
     // Migrations
     try { $db->exec("ALTER TABLE rased_users ADD COLUMN email VARCHAR(100) NULL AFTER name"); } catch(Exception $e){}
     try { $db->exec("ALTER TABLE rased_requests ADD COLUMN repayment_date DATE NULL AFTER period_number"); } catch(Exception $e){}
