@@ -8,8 +8,9 @@ require_once __DIR__ . '/../mail_helper.php';
 
 $db = getDB();
 $today = date('Y-m-d');
+$message = "";
 
-// Fetch all requests for today
+// Fetch all requests for today (substitutions)
 $stmt = $db->prepare("
     SELECT r.*, c.name as class_name, u1.name as requester_name, u2.name as substitute_name
     FROM rased_requests r
@@ -22,31 +23,67 @@ $stmt = $db->prepare("
 $stmt->execute([$today]);
 $requests = $stmt->fetchAll();
 
-if (empty($requests)) {
-    // Optional: Send email even if no substitutions? The user said "all substitutions for this day"
-    // If none, we can send a message saying "No substitutions today".
-    $message = "لا توجد أي تبديلات حصص مسجلة لهذا اليوم: " . $today;
+// Fetch all compensation sessions scheduled for today
+$stmtCompensation = $db->prepare("
+    SELECT r.*, c.name as class_name, u1.name as requester_name, u2.name as substitute_name
+    FROM rased_requests r
+    JOIN rased_classes c ON r.class_id = c.id
+    JOIN rased_users u1 ON r.requester_id = u1.id
+    JOIN rased_users u2 ON r.substitute_id = u2.id
+    WHERE r.repayment_date = ? AND r.sub_coordinator_status = 'approved'
+    ORDER BY r.repayment_period ASC
+");
+$stmtCompensation->execute([$today]);
+$compensations = $stmtCompensation->fetchAll();
+
+// Build message for substitutions
+if (empty($requests) && empty($compensations)) {
+    $message = "لا توجد أي تبديلات حصص أو تعويضات مسجلة لهذا اليوم: " . $today;
 } else {
-    $message = "تقرير تبديلات الحصص ليوم: " . $today . "\n";
-    $message .= "------------------------------------------\n\n";
-    
-    foreach ($requests as $req) {
-        $status = 'معلق';
-        if ($req['sub_coordinator_status'] === 'approved') $status = 'موافق (بانتظار النائب)';
-        if ($req['deputy_status'] === 'approved') $status = 'معتمد نهائياً';
-        elseif ($req['deputy_status'] === 'rejected') $status = 'مرفوض من النائب';
+    // Substitutions Section
+    if (!empty($requests)) {
+        $message .= "📋 تقرير تبديلات الحصص ليوم: " . $today . "\n";
+        $message .= "==========================================\n\n";
         
-        $message .= "• الحصة: {$req['period_number']}\n";
-        $message .= "  - الصف: {$req['class_name']}\n";
-        $message .= "  - المعلم الغائب: {$req['requester_name']}\n";
-        $message .= "  - المعلم البديل: {$req['substitute_name']}\n";
-        $message .= "  - الحالة: $status\n";
-        $message .= "------------------------------------------\n";
+        foreach ($requests as $req) {
+            $status = 'معلق';
+            if ($req['sub_coordinator_status'] === 'approved') $status = 'موافق (بانتظار النائب)';
+            if ($req['deputy_status'] === 'approved') $status = 'معتمد نهائياً';
+            elseif ($req['deputy_status'] === 'rejected') $status = 'مرفوض من النائب';
+            
+            $message .= "• الحصة: {$req['period_number']}\n";
+            $message .= "  - الصف: {$req['class_name']}\n";
+            $message .= "  - المعلم الغائب: {$req['requester_name']}\n";
+            $message .= "  - المعلم البديل: {$req['substitute_name']}\n";
+            $message .= "  - الحالة: $status\n";
+            $message .= "------------------------------------------\n";
+        }
+    } else {
+        $message .= "📋 لا توجد تبديلات حصص لهذا اليوم.\n\n";
+    }
+    
+    // Compensation Section
+    $message .= "\n\n";
+    if (!empty($compensations)) {
+        $message .= "🔄 حصص التعويض المجدولة ليوم: " . $today . "\n";
+        $message .= "==========================================\n\n";
+        
+        foreach ($compensations as $comp) {
+            $message .= "• الحصة: {$comp['repayment_period']}\n";
+            $message .= "  - الصف: {$comp['class_name']}\n";
+            $message .= "  - المعلم المكلف بالتعويض: {$comp['substitute_name']}\n";
+            $message .= "  - المعلم المستفيد من التعويض: {$comp['requester_name']}\n";
+            $message .= "  - تاريخ التبديل الأصلي: {$comp['request_date']}\n";
+            $message .= "  - الحصة الأصلية: {$comp['period_number']}\n";
+            $message .= "------------------------------------------\n";
+        }
+    } else {
+        $message .= "🔄 لا توجد حصص تعويض مجدولة لهذا اليوم.\n";
     }
 }
 
 $to = 'allusersgroup@gmail.com';
-$subject = "تقرير تبديلات الحصص اليومي - " . $today;
+$subject = "تقرير تبديلات الحصص والتعويضات اليومي - " . $today;
 
 if (sendRasedEmail($to, $subject, $message)) {
     echo "Email sent successfully for $today";

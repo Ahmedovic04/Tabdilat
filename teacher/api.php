@@ -220,7 +220,14 @@ if ($action === 'submit_request') {
                 'message' => "⚠️ لا يمكن إرسال الطلب: يوجد طلب تبديل مسبق للحصة رقم ({$periods}) في نفس اليوم. لا يمكن تكرار الطلب."
             ]);
         } else {
-            echo json_encode(['success' => true]);
+            // Get the first substitute name for the success message
+            $first_sub_name = '';
+            if (!empty($data['requests'][0]['substitute_id'])) {
+                $stmtSubName = $db->prepare("SELECT name FROM rased_users WHERE id = ?");
+                $stmtSubName->execute([$data['requests'][0]['substitute_id']]);
+                $first_sub_name = $stmtSubName->fetchColumn();
+            }
+            echo json_encode(['success' => true, 'updated_sub' => $first_sub_name]);
         }
 
     } catch (Exception $e) {
