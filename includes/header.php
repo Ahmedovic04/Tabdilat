@@ -91,9 +91,10 @@ $unread_notifications_count = getUnreadCount($_SESSION['rased_user_id'] ?? 0);
 <!-- Notification System JavaScript -->
 <script>
     // Global base URL for API calls
-    window.API_BASE_URL = "<?= $base_url ?? '' ?>";
+    window.API_BASE_URL = "<?php echo isset($base_url) ? $base_url : ''; ?>";
+    console.log('API_BASE_URL set to:', window.API_BASE_URL);
 </script>
-<script src="<?= $base_url ?? '' ?>assets/js/notifications.js"></script>
+<script src="<?php echo isset($base_url) ? $base_url : ''; ?>assets/js/notifications.js"></script>
 
 <!-- Mobile Overlay -->
 <div id="sidebarOverlay" onclick="toggleSidebar()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
