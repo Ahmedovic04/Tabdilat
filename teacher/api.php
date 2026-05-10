@@ -91,6 +91,23 @@ if ($action === 'get_repayment_suggestions') {
         $req_busy[$rs['day_of_week'] . '-' . $rs['period_number']] = true;
     }
     
+    // ── CHECK ALREADY RESERVED COMPENSATION SESSIONS ──
+    // Get all compensation sessions already reserved by other approved requests
+    $reserved_stmt = $db->prepare("
+        SELECT repayment_date, repayment_period 
+        FROM rased_requests 
+        WHERE repayment_date IS NOT NULL 
+        AND repayment_period IS NOT NULL 
+        AND sub_coordinator_status = 'approved'
+    ");
+    $reserved_stmt->execute();
+    $reserved_sessions = [];
+    while ($row = $reserved_stmt->fetch()) {
+        $key = $row['repayment_date'] . '_' . $row['repayment_period'];
+        $reserved_sessions[$key] = true;
+    }
+    // --------------------------------------------------
+    
     $suggestions = [];
     $current_date = strtotime($absence_date . ' + 1 day');
     $days_checked = 0;
@@ -101,14 +118,23 @@ if ($action === 'get_repayment_suggestions') {
             foreach ($sub_schedule as $ss) {
                 if ($ss['day_of_week'] == $dow) {
                     if (!isset($req_busy[$dow . '-' . $ss['period_number']])) {
+                        $comp_date = date('Y-m-d', $current_date);
+                        $comp_period = $ss['period_number'];
+                        $session_key = $comp_date . '_' . $comp_period;
+                        
+                        // Skip if this session is already reserved
+                        if (isset($reserved_sessions[$session_key])) {
+                            continue;
+                        }
+                        
                         $c_stmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
                         $c_stmt->execute([$ss['class_id']]);
                         $c_name = $c_stmt->fetchColumn();
                         
                         $suggestions[] = [
-                            'date' => date('Y-m-d', $current_date),
+                            'date' => $comp_date,
                             'formatted_date' => date('d/m/Y', $current_date),
-                            'period' => $ss['period_number'],
+                            'period' => $comp_period,
                             'class_name' => $c_name
                         ];
                     }
@@ -170,6 +196,26 @@ if ($action === 'submit_request') {
                     $rep_period = (int)$parts[1];
                 }
             }
+            
+            // ── CHECK IF COMPENSATION SESSION IS ALREADY RESERVED ──
+            if ($rep_date && $rep_period) {
+                $checkReserved = $db->prepare("
+                    SELECT COUNT(*) FROM rased_requests 
+                    WHERE repayment_date = ? 
+                    AND repayment_period = ? 
+                    AND sub_coordinator_status = 'approved'
+                ");
+                $checkReserved->execute([$rep_date, $rep_period]);
+                if ($checkReserved->fetchColumn() > 0) {
+                    $db->rollBack();
+                    echo json_encode([
+                        'success' => false, 
+                        'message' => "⚠️ عذراً، الحصة المختارة للتعويض (التاريخ: {$rep_date}، الحصة: {$rep_period}) قد تم حجزها بالفعل من قبل معلم آخر. يرجى اختيار حصة تعويض أخرى."
+                    ]);
+                    exit;
+                }
+            }
+            // ------------------------------------------------------
             
             $role = $_SESSION['rased_role'];
                     $initial_status = 'pending';
