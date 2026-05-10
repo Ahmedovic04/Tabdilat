@@ -6,6 +6,23 @@
 let notificationsData = [];
 let isDropdownOpen = false;
 
+// Detect base URL dynamically
+function getBaseUrl() {
+    // Get the path up to the root of the application
+    const path = window.location.pathname;
+    const pathParts = path.split('/').filter(p => p);
+    
+    // If we're in a subdirectory like /teacher/ or /deputy/, go up
+    if (pathParts.length > 0 && ['teacher', 'coordinator', 'deputy'].includes(pathParts[0])) {
+        return '../';
+    }
+    
+    // Otherwise, we're in the root
+    return '';
+}
+
+const BASE_URL = getBaseUrl();
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     initializeNotifications();
@@ -40,7 +57,7 @@ async function loadNotifications() {
     if (!notificationList) return;
     
     try {
-        const response = await fetch('/notifications_api.php?action=get_notifications&limit=10');
+        const response = await fetch(`${BASE_URL}notifications_api.php?action=get_notifications&limit=10`);
         const data = await response.json();
         
         if (data.success) {
@@ -131,7 +148,7 @@ async function handleNotificationClick(event, notificationId, requestId) {
     
     // Navigate to related request if exists
     if (requestId) {
-        window.location.href = `/my_requests.php?id=${requestId}`;
+        window.location.href = `${BASE_URL}my_requests.php?id=${requestId}`;
     }
 }
 
@@ -140,7 +157,7 @@ async function handleNotificationClick(event, notificationId, requestId) {
  */
 async function markAsRead(notificationId) {
     try {
-        const response = await fetch('/notifications_api.php?action=mark_read', {
+        const response = await fetch(`${BASE_URL}notifications_api.php?action=mark_read`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -167,7 +184,7 @@ async function markAsRead(notificationId) {
  */
 async function markAllNotificationsRead() {
     try {
-        const response = await fetch('/notifications_api.php?action=mark_all_read', {
+        const response = await fetch(`${BASE_URL}notifications_api.php?action=mark_all_read`, {
             method: 'POST'
         });
         
@@ -189,7 +206,7 @@ async function markAllNotificationsRead() {
  */
 async function refreshUnreadCount() {
     try {
-        const response = await fetch('/notifications_api.php?action=get_unread_count');
+        const response = await fetch(`${BASE_URL}notifications_api.php?action=get_unread_count`);
         const data = await response.json();
         
         if (data.success) {
