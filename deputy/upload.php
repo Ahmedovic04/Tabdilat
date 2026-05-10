@@ -26,24 +26,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
             
             $default_password = password_hash('123456', PASSWORD_DEFAULT);
             
-            // Group users by normalized name and keep the one with most requests or oldest ID
+            // Enhanced normalization for Arabic names
             function normalize_arabic($str) {
                 $str = trim($str);
-                $str = str_replace(['أ', 'إ', 'آ'], 'ا', $str);
-                $str = str_replace('ة', 'ه', $str);
-                $str = str_replace('ى', 'ي', $str);
-                return preg_replace('/\s+/', ' ', $str);
+                // Normalize Arabic letters
+                $str = str_replace(['أ', 'إ', 'آ', 'ٱ'], 'ا', $str);
+                $str = str_replace(['ة', 'ﺔ'], 'ه', $str);
+                $str = str_replace(['ى', 'ﻰ'], 'ي', $str);
+                $str = str_replace(['ؤ', 'ئ'], 'ي', $str); // Some names use these interchangeably
+                $str = str_replace(['َ', 'ُ', 'ِ', 'ّ', 'ْ', 'ٓ', 'ٔ', 'ٕ'], '', $str); // Remove tashkeel
+                // Convert to lowercase for consistency
+                $str = mb_strtolower($str, 'UTF-8');
+                // Remove extra spaces and special chars
+                $str = preg_replace('/\s+/', ' ', $str);
+                $str = preg_replace('/[^\p{L}\p{N}\s]/u', '', $str); // Keep only letters, numbers, spaces
+                return $str;
             }
 
-            // --- STEP 1: CLEANUP EXISTING DUPLICATES ---
-            $users_to_clean = $db->query("SELECT id, name FROM rased_users WHERE role = 'teacher'")->fetchAll();
+            // Calculate similarity between two names (0-100%)
+            function name_similarity($name1, $name2) {
+                $norm1 = normalize_arabic($name1);
+                $norm2 = normalize_arabic($name2);
+                
+                if ($norm1 === $norm2) return 100;
+                
+                // Levenshtein distance for fuzzy matching
+                $len1 = mb_strlen($norm1);
+                $len2 = mb_strlen($norm2);
+                if ($len1 === 0 || $len2 === 0) return 0;
+                
+                $max_len = max($len1, $len2);
+                $lev = levenshtein($norm1, $norm2);
+                return round((1 - $lev / $max_len) * 100);
+            }
+
+            // --- STEP 1: CLEANUP EXISTING DUPLICATES WITH REPORTING ---
+            $merge_report = [];
+            $users_to_clean = $db->query("SELECT id, name FROM rased_users WHERE role = 'teacher' ORDER BY id ASC")->fetchAll();
             $unique_names = [];
+            $duplicate_count = 0;
+            
             foreach ($users_to_clean as $u) {
                 $norm = normalize_arabic($u['name']);
                 if (!isset($unique_names[$norm])) {
-                    $unique_names[$norm] = $u['id'];
+                    $unique_names[$norm] = ['id' => $u['id'], 'name' => $u['name']];
                 } else {
-                    $original_id = $unique_names[$norm];
+                    $duplicate_count++;
+                    $original = $unique_names[$norm];
+                    $merge_report[] = [
+                        'kept' => $original['name'],
+                        'removed' => $u['name'],
+                        'reason' => 'نفس الاسم بعد التطبيع'
+                    ];
+                    
+                    $original_id = $original['id'];
                     $db->prepare("UPDATE rased_teacher_classes SET teacher_id = ? WHERE teacher_id = ?")->execute([$original_id, $u['id']]);
                     $db->prepare("UPDATE rased_requests SET requester_id = ? WHERE requester_id = ?")->execute([$original_id, $u['id']]);
                     $db->prepare("UPDATE rased_requests SET substitute_id = ? WHERE substitute_id = ?")->execute([$original_id, $u['id']]);
@@ -101,7 +137,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['schedule_file'])) {
                     $stmtInsertTC->execute([$teacher_id, $class_id, $day_of_week, $period_number]);
                 }
             }
-            $message = "تم تحديث الجدول بنجاح وتنظيف الأسماء المكررة.";
+            // Build enhanced message with merge report
+            $message_parts = ["✅ تم تحديث الجدول بنجاح."];
+            
+            if ($duplicate_count > 0) {
+                $message_parts[] = "🔄 تم دمج ($duplicate_count) اسم مكرر:";
+                foreach ($merge_report as $i => $merge) {
+                    if ($i < 5) { // Show first 5 only
+                        $message_parts[] = "  • احتفظ بـ \"{$merge['kept']}\" (حذف \"{$merge['removed']}\")";
+                    }
+                }
+                if (count($merge_report) > 5) {
+                    $message_parts[] = "  • و " . (count($merge_report) - 5) . " أسماء أخرى...";
+                }
+            }
+            
+            $message = implode("<br>", $message_parts);
 
             // ── AUTOMATED CONFLICT RESOLUTION AFTER SCHEDULE UPDATE ──
             require_once '../mail_helper.php';
