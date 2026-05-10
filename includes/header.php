@@ -90,9 +90,9 @@ $unread_notifications_count = getUnreadCount($_SESSION['rased_user_id'] ?? 0);
 
 <!-- Notification System JavaScript -->
 <script>
-    // Global base URL for API calls
-    window.API_BASE_URL = "<?php echo isset($base_url) ? $base_url : ''; ?>";
-    console.log('API_BASE_URL set to:', window.API_BASE_URL);
+    // Always use root path for API calls since notifications_api.php is in root
+    window.API_BASE_URL = '/';
+    console.log('API_BASE_URL set to root:', window.API_BASE_URL);
 </script>
 <script src="<?php echo isset($base_url) ? $base_url : ''; ?>assets/js/notifications.js"></script>
 
