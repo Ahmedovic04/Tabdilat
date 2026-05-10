@@ -92,6 +92,11 @@
                     <span class="small fw-bold">مرحباً، <?= htmlspecialchars($_SESSION['rased_name']) ?></span>
                     <span class="badge bg-primary rounded-pill small"><?= $_SESSION['rased_role'] == 'teacher' ? 'معلم' : 'إدارة' ?></span>
                 </div>
+                
+                <!-- Mobile logout button -->
+                <a href="<?= $base_url ?? '' ?>teacher/logout.php" class="topbar-logout" title="تسجيل الخروج">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
