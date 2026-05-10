@@ -104,7 +104,7 @@ include 'includes/header.php';
                                             <?php endif; ?>
                                             
                                             <?php if ($notification['related_request_id']): ?>
-                                                <a href="my_requests.php?id=<?= $notification['related_request_id'] ?>" 
+                                                <a href="/my_requests.php?id=<?= $notification['related_request_id'] ?>" 
                                                    class="btn btn-sm btn-outline-secondary">
                                                     عرض الطلب
                                                 </a>
@@ -124,7 +124,7 @@ include 'includes/header.php';
 <script>
 async function markAllReadAndReload() {
     try {
-        const response = await fetch('notifications_api.php?action=mark_all_read', {
+        const response = await fetch('/notifications_api.php?action=mark_all_read', {
             method: 'POST'
         });
         const data = await response.json();
@@ -138,7 +138,7 @@ async function markAllReadAndReload() {
 
 async function markAsReadAndReload(notificationId) {
     try {
-        const response = await fetch('notifications_api.php?action=mark_read', {
+        const response = await fetch('/notifications_api.php?action=mark_read', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

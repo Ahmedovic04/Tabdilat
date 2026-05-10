@@ -40,7 +40,7 @@ async function loadNotifications() {
     if (!notificationList) return;
     
     try {
-        const response = await fetch('notifications_api.php?action=get_notifications&limit=10');
+        const response = await fetch('/notifications_api.php?action=get_notifications&limit=10');
         const data = await response.json();
         
         if (data.success) {
@@ -131,7 +131,7 @@ async function handleNotificationClick(event, notificationId, requestId) {
     
     // Navigate to related request if exists
     if (requestId) {
-        window.location.href = `my_requests.php?id=${requestId}`;
+        window.location.href = `/my_requests.php?id=${requestId}`;
     }
 }
 
@@ -140,7 +140,7 @@ async function handleNotificationClick(event, notificationId, requestId) {
  */
 async function markAsRead(notificationId) {
     try {
-        const response = await fetch('notifications_api.php?action=mark_read', {
+        const response = await fetch('/notifications_api.php?action=mark_read', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ async function markAsRead(notificationId) {
  */
 async function markAllNotificationsRead() {
     try {
-        const response = await fetch('notifications_api.php?action=mark_all_read', {
+        const response = await fetch('/notifications_api.php?action=mark_all_read', {
             method: 'POST'
         });
         
@@ -189,7 +189,7 @@ async function markAllNotificationsRead() {
  */
 async function refreshUnreadCount() {
     try {
-        const response = await fetch('notifications_api.php?action=get_unread_count');
+        const response = await fetch('/notifications_api.php?action=get_unread_count');
         const data = await response.json();
         
         if (data.success) {
