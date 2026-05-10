@@ -348,9 +348,16 @@ if ($action === 'sub_approve') {
     }
 
     // Update substitute status
-    // We also set req_coordinator_status to approved automatically as it's no longer needed
-    $upd = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = ?, req_coordinator_status = 'approved' WHERE id = ?");
-    $upd->execute([$status, $request_id]);
+    // Automatically approve the request fully when substitute approves
+    // Deputy approval becomes optional (already approved)
+    if ($status === 'approved') {
+        $upd = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = 'approved', req_coordinator_status = 'approved', deputy_status = 'approved' WHERE id = ?");
+        $upd->execute([$request_id]);
+    } else {
+        // If rejected, only update substitute status
+        $upd = $db->prepare("UPDATE rased_requests SET sub_coordinator_status = ?, req_coordinator_status = 'approved' WHERE id = ?");
+        $upd->execute([$status, $request_id]);
+    }
 
     if ($status === 'approved') {
         $sub_name = $request['substitute_name'];

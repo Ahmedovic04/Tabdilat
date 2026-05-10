@@ -10,27 +10,27 @@ $db = getDB();
 $today = date('Y-m-d');
 $message = "";
 
-// Fetch all requests for today (substitutions)
+// Fetch all requests for today (substitutions) - approved by substitute is now fully approved
 $stmt = $db->prepare("
     SELECT r.*, c.name as class_name, u1.name as requester_name, u2.name as substitute_name
     FROM rased_requests r
     JOIN rased_classes c ON r.class_id = c.id
     JOIN rased_users u1 ON r.requester_id = u1.id
     JOIN rased_users u2 ON r.substitute_id = u2.id
-    WHERE r.request_date = ? AND r.sub_coordinator_status = 'approved'
+    WHERE r.request_date = ? AND (r.sub_coordinator_status = 'approved' OR r.deputy_status = 'approved')
     ORDER BY r.period_number ASC
 ");
 $stmt->execute([$today]);
 $requests = $stmt->fetchAll();
 
-// Fetch all compensation sessions scheduled for today
+// Fetch all compensation sessions scheduled for today - approved by substitute is now fully approved
 $stmtCompensation = $db->prepare("
     SELECT r.*, c.name as class_name, u1.name as requester_name, u2.name as substitute_name
     FROM rased_requests r
     JOIN rased_classes c ON r.class_id = c.id
     JOIN rased_users u1 ON r.requester_id = u1.id
     JOIN rased_users u2 ON r.substitute_id = u2.id
-    WHERE r.repayment_date = ? AND r.sub_coordinator_status = 'approved'
+    WHERE r.repayment_date = ? AND (r.sub_coordinator_status = 'approved' OR r.deputy_status = 'approved')
     ORDER BY r.repayment_period ASC
 ");
 $stmtCompensation->execute([$today]);
@@ -50,9 +50,11 @@ if (empty($requests) && empty($compensations)) {
         
         foreach ($requests as $req) {
             $status = 'معلق';
-            if ($req['sub_coordinator_status'] === 'approved') $status = 'موافق (بانتظار النائب)';
-            if ($req['deputy_status'] === 'approved') $status = 'معتمد نهائياً';
-            elseif ($req['deputy_status'] === 'rejected') $status = 'مرفوض من النائب';
+            if ($req['sub_coordinator_status'] === 'approved' || $req['deputy_status'] === 'approved') {
+                $status = '✅ معتمد نهائياً (وافق البديل)';
+            } elseif ($req['deputy_status'] === 'rejected') {
+                $status = '❌ مرفوض';
+            }
             
             $message .= "• الحصة: {$req['period_number']}\n";
             $message .= "  - الصف: {$req['class_name']}\n";

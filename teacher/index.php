@@ -23,13 +23,13 @@ $schedule = $stmt->fetchAll();
 
 $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
 
-// Get Today's Substitutions Count for this teacher
+// Get Today's Substitutions Count for this teacher (approved by substitute is now fully approved)
 $stmtToday = $db->prepare("
     SELECT COUNT(*) 
     FROM rased_requests 
     WHERE (requester_id = ? OR substitute_id = ?) 
     AND request_date = CURDATE()
-    AND deputy_status = 'approved'
+    AND (sub_coordinator_status = 'approved' OR deputy_status = 'approved')
 ");
 $stmtToday->execute([$teacher_id, $teacher_id]);
 $today_substitutions_count = $stmtToday->fetchColumn();
