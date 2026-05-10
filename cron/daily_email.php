@@ -87,7 +87,7 @@ if (empty($requests) && empty($compensations)) {
     }
 }
 
-$to = 'allusersgroup@gmail.com';
+$to = 'fursan2019@QatarEducation.onmicrosoft.com';
 $subject = "تقرير تبديلات الحصص والتعويضات اليومي - " . $today;
 
 if (sendRasedEmail($to, $subject, $message)) {
