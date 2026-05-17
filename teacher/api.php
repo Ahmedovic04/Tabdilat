@@ -107,44 +107,95 @@ if ($action === 'get_repayment_suggestions') {
         $reserved_sessions[$key] = true;
     }
     // --------------------------------------------------
-    
+
     $suggestions = [];
-    $current_date = strtotime($absence_date . ' + 1 day');
-    $days_checked = 0;
-    
-    while ($days_checked < 14 && count($suggestions) < 10) {
+
+    // ── SEARCH BEFORE ABSENCE DATE (up to 7 days before) ──
+    $current_date = strtotime($absence_date . ' - 1 day');
+    $days_checked_before = 0;
+
+    while ($days_checked_before < 7 && count($suggestions) < 10) {
         $dow = date('w', $current_date);
-        if ($dow <= 4) {
+        if ($dow <= 4) { // Sunday to Thursday
             foreach ($sub_schedule as $ss) {
                 if ($ss['day_of_week'] == $dow) {
                     if (!isset($req_busy[$dow . '-' . $ss['period_number']])) {
                         $comp_date = date('Y-m-d', $current_date);
                         $comp_period = $ss['period_number'];
                         $session_key = $comp_date . '_' . $comp_period;
-                        
+
                         // Skip if this session is already reserved
                         if (isset($reserved_sessions[$session_key])) {
                             continue;
                         }
-                        
+
                         $c_stmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
                         $c_stmt->execute([$ss['class_id']]);
                         $c_name = $c_stmt->fetchColumn();
-                        
+
                         $suggestions[] = [
                             'date' => $comp_date,
                             'formatted_date' => date('d/m/Y', $current_date),
                             'period' => $comp_period,
-                            'class_name' => $c_name
+                            'class_name' => $c_name,
+                            'is_before' => true // Mark as before absence
+                        ];
+                    }
+                }
+            }
+        }
+        $current_date = strtotime('-1 day', $current_date);
+        $days_checked_before++;
+    }
+
+    // ── SEARCH AFTER ABSENCE DATE (up to 14 days after) ──
+    $current_date = strtotime($absence_date . ' + 1 day');
+    $days_checked_after = 0;
+
+    while ($days_checked_after < 14 && count($suggestions) < 10) {
+        $dow = date('w', $current_date);
+        if ($dow <= 4) { // Sunday to Thursday
+            foreach ($sub_schedule as $ss) {
+                if ($ss['day_of_week'] == $dow) {
+                    if (!isset($req_busy[$dow . '-' . $ss['period_number']])) {
+                        $comp_date = date('Y-m-d', $current_date);
+                        $comp_period = $ss['period_number'];
+                        $session_key = $comp_date . '_' . $comp_period;
+
+                        // Skip if this session is already reserved
+                        if (isset($reserved_sessions[$session_key])) {
+                            continue;
+                        }
+
+                        $c_stmt = $db->prepare("SELECT name FROM rased_classes WHERE id = ?");
+                        $c_stmt->execute([$ss['class_id']]);
+                        $c_name = $c_stmt->fetchColumn();
+
+                        $suggestions[] = [
+                            'date' => $comp_date,
+                            'formatted_date' => date('d/m/Y', $current_date),
+                            'period' => $comp_period,
+                            'class_name' => $c_name,
+                            'is_before' => false // Mark as after absence
                         ];
                     }
                 }
             }
         }
         $current_date = strtotime('+1 day', $current_date);
-        $days_checked++;
+        $days_checked_after++;
     }
-    
+
+    // Sort suggestions: prioritize dates closest to absence date
+    usort($suggestions, function($a, $b) use ($absence_date) {
+        $diff_a = abs(strtotime($a['date']) - strtotime($absence_date));
+        $diff_b = abs(strtotime($b['date']) - strtotime($absence_date));
+        return $diff_a - $diff_b;
+    });
+
+    // Limit to 10 suggestions
+    $suggestions = array_slice($suggestions, 0, 10);
+
     echo json_encode(['success' => true, 'suggestions' => $suggestions]);
     exit;
 }

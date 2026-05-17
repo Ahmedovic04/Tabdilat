@@ -307,7 +307,8 @@ include '../includes/header.php';
                 data.suggestions.forEach(sug => {
                     const opt = document.createElement('option');
                     opt.value = `${sug.date}_${sug.period}`;
-                    opt.textContent = `${sug.formatted_date} - الحصة ${sug.period} (${sug.class_name})`;
+                    const beforeLabel = sug.is_before ? ' (قبل الغياب)' : '';
+                    opt.textContent = `${sug.formatted_date} - الحصة ${sug.period} (${sug.class_name})${beforeLabel}`;
                     repaySelect.appendChild(opt);
                 });
                 repaySelect.disabled = false;
