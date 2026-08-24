@@ -7,14 +7,49 @@ if (!isset($_SESSION['rased_user_id']) || !in_array($_SESSION['rased_role'], ['t
     exit;
 }
 
-// SECURITY: Disable manual schedule editing for teachers to prevent tampering
-if ($_SESSION['rased_role'] !== 'deputy') {
-    header('Location: index.php');
-    exit;
+$db = getDB();
+$message = '';
+
+// Determine target teacher ID
+$logged_user_id = (int)$_SESSION['rased_user_id'];
+$logged_role = $_SESSION['rased_role'];
+
+$teacher_id = $logged_user_id;
+$editing_other = false;
+$teacher_name = '';
+
+if ($logged_role === 'deputy' && isset($_GET['teacher_id']) && (int)$_GET['teacher_id'] > 0) {
+    $teacher_id = (int)$_GET['teacher_id'];
+    $editing_other = true;
+}
+
+// Fetch teacher name
+$stmtName = $db->prepare("SELECT name FROM rased_users WHERE id = ?");
+$stmtName->execute([$teacher_id]);
+$teacher_name = $stmtName->fetchColumn();
+
+// Handle Add New Class
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_new_class'])) {
+    $new_class_name = trim($_POST['new_class_name'] ?? '');
+    if (!empty($new_class_name)) {
+        try {
+            $stmtAddCls = $db->prepare("INSERT INTO rased_classes (name) VALUES (?)");
+            $stmtAddCls->execute([$new_class_name]);
+            $message = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>تم إضافة الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" بنجاح إلى النظام.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+        } catch (Exception $e) {
+            $message = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" موجود بالفعل أو لم تكتمل الإضافة.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+        }
+    }
 }
 
 // Handle save schedule
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_schedule'])) {
     $db->beginTransaction();
     try {
         $stmt = $db->prepare("DELETE FROM rased_teacher_classes WHERE teacher_id = ?");
@@ -22,25 +57,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule'])) {
         
         $insert_stmt = $db->prepare("INSERT INTO rased_teacher_classes (teacher_id, class_id, day_of_week, period_number) VALUES (?, ?, ?, ?)");
         
-        foreach ($_POST['schedule'] as $day => $periods) {
-            foreach ($periods as $period => $class_id) {
-                $class_id = (int)$class_id;
-                if (!$class_id) continue;
-                $insert_stmt->execute([$teacher_id, $class_id, $day, $period]);
+        if (isset($_POST['schedule']) && is_array($_POST['schedule'])) {
+            foreach ($_POST['schedule'] as $day => $periods) {
+                foreach ($periods as $period => $class_id) {
+                    $class_id = (int)$class_id;
+                    if (!$class_id) continue;
+                    $insert_stmt->execute([$teacher_id, $class_id, (int)$day, (int)$period]);
+                }
             }
         }
         $db->commit();
-        $message = '<div class="msg msg-success">✅ تم حفظ الجدول بنجاح!</div>';
+        $message = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>تم حفظ الجدول المدرسي بنجاح!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
     } catch (Exception $e) {
         $db->rollBack();
-        $message = '<div class="msg msg-error">❌ حدث خطأ أثناء الحفظ.</div>';
+        $message = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>حدث خطأ أثناء حفظ الجدول: ' . htmlspecialchars($e->getMessage()) . '
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
     }
 }
 
 // Get all available classes from DB
 $allClasses = $db->query("SELECT id, name FROM rased_classes ORDER BY name ASC")->fetchAll();
 
-// Get current schedule
+// Get current schedule for target teacher
 $stmt = $db->prepare("
     SELECT tc.day_of_week, tc.period_number, tc.class_id
     FROM rased_teacher_classes tc 
@@ -53,111 +96,67 @@ foreach ($stmt->fetchAll() as $s) {
 }
 
 $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
+$page_title = 'إعداد جدول الحصص - راصد تبديلاتي';
+$active_page = 'schedule';
+$base_url = '../';
+include '../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعداد الجدول يدوياً - راصد تبديلاتي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5; --primary-hover: #4338CA;
-            --bg-color: #F3F4F6; --card-bg: #FFFFFF; --text-main: #1F2937; --border-color: #E5E7EB;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); }
 
-        .navbar {
-            background: var(--card-bg); padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: var(--primary); margin-bottom: 0.5rem; }
-
-        .msg { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: bold; }
-        .msg-success { background: #D1FAE5; color: #065F46; }
-        .msg-error   { background: #FEE2E2; color: #991B1B; }
-
-        .table-container { overflow-x: auto; margin-top: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 0.6rem 0.4rem; border: 1px solid var(--border-color); }
-        th { background: #F9FAFB; font-weight: 700; font-size: 0.95rem; }
-        th.day-header { background: #EEF2FF; color: var(--primary); font-size: 1rem; min-width: 80px; }
-
-        select {
-            width: 100%;
-            padding: 0.4rem 0.3rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.88rem;
-            background: #fff;
-            color: var(--text-main);
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            text-align: center;
-        }
-        select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
-        select.has-value { background: #EEF2FF; color: var(--primary); font-weight: bold; border-color: var(--primary); }
-
-        .btn {
-            background: var(--primary); color: white; padding: 0.75rem 2rem;
-            border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;
-            font-family: inherit; transition: 0.3s; margin-top: 1.5rem;
-            display: inline-flex; align-items: center; gap: 0.5rem;
-        }
-        .btn:hover { background: var(--primary-hover); }
-
-        .hint { color: #6B7280; font-size: 0.9rem; margin-top: 0.4rem; }
-    </style>
-</head>
-<body>
-
-<div class="navbar">
-    <div style="font-weight:800; color:var(--primary);">إعداد الجدول الشخصي</div>
-    <a href="../<?= $_SESSION['rased_role'] ?>/index.php" style="color: var(--primary); font-weight:bold; text-decoration: none;">← العودة للوحة الرئيسية</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="h3 fw-bold text-primary mb-1">
+            <i class="bi bi-calendar3 me-2"></i>إعداد وتعديل جدول الحصص
+        </h2>
+        <p class="text-muted mb-0">
+            <?= $editing_other ? 'تعديل جدول المعلم: <strong>' . htmlspecialchars($teacher_name) . '</strong>' : 'قم بتنسيق جدول الحصص الأسبوعي الخاص بك' ?>
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
+            <i class="bi bi-plus-lg me-1"></i> إضافة صف جديد
+        </button>
+        <a href="<?= $base_url . $_SESSION['rased_role'] ?>/index.php" class="btn btn-secondary">
+            <i class="bi bi-arrow-right me-1"></i> العودة
+        </a>
+    </div>
 </div>
 
-<div class="container">
-    <div class="card">
-        <h2>إنشاء أو تعديل جدول الحصص</h2>
-        <p class="hint">اختر الصف من القائمة لكل حصة. اترك الخانة فارغة إذا لم تكن لديك حصة.</p>
+<?= $message ?>
 
-        <?= $message ?>
-
-        <?php if (empty($allClasses)): ?>
-            <div class="msg msg-error" style="margin-top:1rem;">
-                ⚠️ لا توجد صفوف مضافة في النظام بعد. يرجى مراجعة النائب الأكاديمي لرفع جدول الحصص أولاً.
+<div class="custom-card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mb-4">
+            <i class="bi bi-info-circle-fill fs-4 me-3 text-info"></i>
+            <div>
+                <strong>توجيهات إدخال الجدول:</strong> حدد الصف المناسب أمام كل حصة من الحصص (1 إلى 7) لجميع أيام الأسبوع. اترك الحصة على الخيار (—) إذا كنت غير مكلف بحصة في ذلك التوقيت.
             </div>
-        <?php else: ?>
+        </div>
+
         <form method="POST">
-            <div class="table-container">
-                <table>
-                    <thead>
+            <input type="hidden" name="save_schedule" value="1">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center table-hover">
+                    <thead class="table-light">
                         <tr>
-                            <th class="day-header">اليوم / الحصة</th>
-                            <th>1</th><th>2</th><th>3</th><th>4</th>
-                            <th>5</th><th>6</th><th>7</th>
+                            <th style="width: 140px;" class="bg-primary text-white">اليوم / الحصة</th>
+                            <?php for($i = 1; $i <= 7; $i++): ?>
+                                <th class="bg-light fw-bold fs-6">الحصة <?= $i ?></th>
+                            <?php endfor; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($days as $day_index => $day_name): ?>
                             <tr>
-                                <th class="day-header"><?= $day_name ?></th>
+                                <td class="fw-bold bg-light text-primary fs-6"><?= $day_name ?></td>
                                 <?php for($i = 1; $i <= 7; $i++): ?>
                                     <?php $selected_id = $schedule[$day_index][$i] ?? 0; ?>
-                                    <td>
+                                    <td class="<?= $selected_id ? 'bg-white' : 'bg-light' ?>">
                                         <select
                                             name="schedule[<?= $day_index ?>][<?= $i ?>]"
-                                            class="<?= $selected_id ? 'has-value' : '' ?>"
-                                            onchange="this.className = this.value ? 'has-value' : ''"
+                                            class="form-select form-select-sm text-center shadow-none <?= $selected_id ? 'border-primary fw-bold text-primary bg-primary-subtle' : '' ?>"
+                                            onchange="this.className = this.value ? 'form-select form-select-sm text-center shadow-none border-primary fw-bold text-primary bg-primary-subtle' : 'form-select form-select-sm text-center shadow-none'"
                                         >
-                                            <option value="0">—</option>
+                                            <option value="0">— لا يوجد —</option>
                                             <?php foreach($allClasses as $cls): ?>
                                                 <option value="<?= $cls['id'] ?>" <?= $selected_id == $cls['id'] ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($cls['name']) ?>
@@ -172,11 +171,40 @@ $days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء',
                 </table>
             </div>
 
-            <button type="submit" class="btn">💾 حفظ الجدول</button>
+            <div class="d-flex justify-content-end mt-4 gap-2">
+                <button type="submit" class="btn btn-primary btn-lg px-4 shadow-sm">
+                    <i class="bi bi-floppy-fill me-2"></i> حفظ الجدول
+                </button>
+            </div>
         </form>
-        <?php endif; ?>
     </div>
 </div>
 
-</body>
-</html>
+<!-- Modal: Add New Class -->
+<div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST">
+                <input type="hidden" name="add_new_class" value="1">
+                <div class="modal-header">
+                    <h5 class="modal-header-title fw-bold text-primary mb-0" id="addClassModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>إضافة صف جديد للنظام
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="new_class_name" class="form-label fw-bold">اسم الصف (مثال: 5/1، 6/2):</label>
+                        <input type="text" class="form-control form-control-lg" id="new_class_name" name="new_class_name" placeholder="أدخل اسم الصف..." required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">إضافة الصف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php include '../includes/footer.php'; ?>

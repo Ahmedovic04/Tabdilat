@@ -57,12 +57,14 @@ $unread_notifications_count = getUnreadCount($_SESSION['rased_user_id'] ?? 0);
     <ul class="sidebar-menu">
         <?php if ($_SESSION['rased_role'] === 'teacher'): ?>
             <li><a href="<?= $base_url ?? '' ?>teacher/index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+            <li><a href="<?= $base_url ?? '' ?>teacher/schedule.php" class="<?= $active_page == 'schedule' ? 'active' : '' ?>"><i class="bi bi-calendar3"></i> جدول الحصص</a></li>
             <li><a href="<?= $base_url ?? '' ?>my_requests.php" class="<?= $active_page == 'requests' ? 'active' : '' ?>"><i class="bi bi-clipboard-check"></i> طلباتي</a></li>
             <li><a href="<?= $base_url ?? '' ?>teacher/request.php" class="<?= $active_page == 'new_request' ? 'active' : '' ?>"><i class="bi bi-plus-circle"></i> طلب جديد</a></li>
             <li class="mt-3"><a href="<?= $base_url ?? '' ?>statistics.php" class="<?= $active_page == 'statistics' ? 'active' : '' ?>"><i class="bi bi-graph-up"></i> الإحصائيات</a></li>
             <li><a href="<?= $base_url ?? '' ?>history.php" class="<?= $active_page == 'history' ? 'active' : '' ?>"><i class="bi bi-clock-history"></i> سجل التبديلات</a></li>
         <?php elseif ($_SESSION['rased_role'] === 'coordinator'): ?>
             <li><a href="<?= $base_url ?? '' ?>coordinator/index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> لوحة المنسق</a></li>
+            <li><a href="<?= $base_url ?? '' ?>teacher/schedule.php" class="<?= $active_page == 'schedule' ? 'active' : '' ?>"><i class="bi bi-calendar3"></i> جدول الحصص</a></li>
             <li><a href="<?= $base_url ?? '' ?>my_requests.php" class="<?= $active_page == 'requests' ? 'active' : '' ?>"><i class="bi bi-clipboard-check"></i> طلباتي</a></li>
             <li><a href="<?= $base_url ?? '' ?>teacher/request.php" class="<?= $active_page == 'new_request' ? 'active' : '' ?>"><i class="bi bi-plus-circle"></i> طلب تبديل</a></li>
             <li class="mt-3"><a href="<?= $base_url ?? '' ?>statistics.php" class="<?= $active_page == 'statistics' ? 'active' : '' ?>"><i class="bi bi-graph-up"></i> الإحصائيات</a></li>
