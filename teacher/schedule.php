@@ -28,22 +28,29 @@ $stmtName = $db->prepare("SELECT name FROM rased_users WHERE id = ?");
 $stmtName->execute([$teacher_id]);
 $teacher_name = $stmtName->fetchColumn();
 
-// Handle Add New Class
+// Handle Add New Class (Deputy only permission)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_new_class'])) {
-    $new_class_name = trim($_POST['new_class_name'] ?? '');
-    if (!empty($new_class_name)) {
-        try {
-            $stmtAddCls = $db->prepare("INSERT INTO rased_classes (name) VALUES (?)");
-            $stmtAddCls->execute([$new_class_name]);
-            $message = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>تم إضافة الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" بنجاح إلى النظام.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>';
-        } catch (Exception $e) {
-            $message = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" موجود بالفعل أو لم تكتمل الإضافة.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>';
+    if ($logged_role !== 'deputy') {
+        $message = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>عذراً، إضافة وإدارة الصفوف مقتصرة فقط على النائب الأكاديمي / إدارة النظام.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    } else {
+        $new_class_name = trim($_POST['new_class_name'] ?? '');
+        if (!empty($new_class_name)) {
+            try {
+                $stmtAddCls = $db->prepare("INSERT INTO rased_classes (name) VALUES (?)");
+                $stmtAddCls->execute([$new_class_name]);
+                $message = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>تم إضافة الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" بنجاح إلى النظام.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+            } catch (Exception $e) {
+                $message = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>الصف "<strong>' . htmlspecialchars($new_class_name) . '</strong>" موجود بالفعل أو لم تكتمل الإضافة.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+            }
         }
     }
 }
@@ -112,9 +119,11 @@ include '../includes/header.php';
         </p>
     </div>
     <div class="d-flex gap-2">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
-            <i class="bi bi-plus-lg me-1"></i> إضافة صف جديد
-        </button>
+        <?php if ($logged_role === 'deputy'): ?>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                <i class="bi bi-plus-lg me-1"></i> إضافة صف جديد
+            </button>
+        <?php endif; ?>
         <a href="<?= $base_url . $_SESSION['rased_role'] ?>/index.php" class="btn btn-secondary">
             <i class="bi bi-arrow-right me-1"></i> العودة
         </a>
@@ -180,7 +189,8 @@ include '../includes/header.php';
     </div>
 </div>
 
-<!-- Modal: Add New Class -->
+<?php if ($logged_role === 'deputy'): ?>
+<!-- Modal: Add New Class (Deputy Only) -->
 <div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -206,5 +216,6 @@ include '../includes/header.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php include '../includes/footer.php'; ?>
