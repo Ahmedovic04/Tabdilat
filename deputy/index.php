@@ -148,10 +148,10 @@ function statusBadgeFinal($status) {
     
     <div class="row g-3">
         <div class="col-md-3">
-            <a href="../teacher/schedule.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
-                <i class="bi bi-calendar-plus display-5 text-primary mb-3"></i>
-                <h3 class="h5 text-dark fw-bold">إضافة صفوف وجداول</h3>
-                <p class="small text-muted mb-0">إضافة صفوف دراسية وتعديل جدول الحصص</p>
+            <a href="classes.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
+                <i class="bi bi-door-open display-5 text-primary mb-3"></i>
+                <h3 class="h5 text-dark fw-bold">إدارة الصفوف</h3>
+                <p class="small text-muted mb-0">إضافة وتعديل صفوف المدرسة الدراسية</p>
             </a>
         </div>
         <div class="col-md-3">

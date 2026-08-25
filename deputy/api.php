@@ -56,3 +56,17 @@ if ($action === 'update_status') {
     }
     exit;
 }
+
+if ($action === 'revoke_status') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $request_id = (int)($data['request_id'] ?? 0);
+
+    if ($request_id > 0) {
+        $stmt = $db->prepare("UPDATE rased_requests SET deputy_status = 'pending' WHERE id = ?");
+        $stmt->execute([$request_id]);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+    echo json_encode(['success' => false, 'message' => 'طلب غير صالح']);
+    exit;
+}

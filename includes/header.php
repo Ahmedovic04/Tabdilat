@@ -71,7 +71,7 @@ $unread_notifications_count = getUnreadCount($_SESSION['rased_user_id'] ?? 0);
             <li><a href="<?= $base_url ?? '' ?>history.php" class="<?= $active_page == 'history' ? 'active' : '' ?>"><i class="bi bi-clock-history"></i> سجل التبديلات</a></li>
         <?php elseif ($_SESSION['rased_role'] === 'deputy'): ?>
             <li><a href="<?= $base_url ?? '' ?>index.php" class="<?= $active_page == 'home' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> لوحة التحكم</a></li>
-            <li><a href="<?= $base_url ?? '' ?>teacher/schedule.php" class="<?= $active_page == 'schedule' ? 'active' : '' ?>"><i class="bi bi-calendar3"></i> إعداد الجداول والصفوف</a></li>
+            <li><a href="<?= $base_url ?? '' ?>deputy/classes.php" class="<?= $active_page == 'classes' ? 'active' : '' ?>"><i class="bi bi-door-open"></i> إدارة الصفوف</a></li>
             <li><a href="<?= $base_url ?? '' ?>deputy/users.php" class="<?= $active_page == 'users' ? 'active' : '' ?>"><i class="bi bi-people"></i> المستخدمين</a></li>
             <li><a href="<?= $base_url ?? '' ?>deputy/reports.php" class="<?= $active_page == 'reports' ? 'active' : '' ?>"><i class="bi bi-file-earmark-bar-graph"></i> التقارير</a></li>
             <li><a href="<?= $base_url ?? '' ?>deputy/upload.php" class="<?= $active_page == 'upload' ? 'active' : '' ?>"><i class="bi bi-cloud-upload"></i> رفع الجداول (Excel)</a></li>
