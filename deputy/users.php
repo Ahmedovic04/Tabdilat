@@ -191,6 +191,7 @@ include '../includes/header.php';
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     <button type="submit" class="btn btn-sm btn-outline-primary" title="حفظ التعديلات"><i class="bi bi-check2"></i></button>
                                         </form>
+                                                    <a href="../teacher/schedule.php?teacher_id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-info" title="تعديل جدول الحصص والصفوف"><i class="bi bi-calendar3"></i></a>
                                                     <form method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الموظف نهائياً؟');" class="d-inline">
                                                         <input type="hidden" name="action" value="delete_user">
                                                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">

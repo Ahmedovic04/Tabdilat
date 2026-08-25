@@ -147,24 +147,31 @@ function statusBadgeFinal($status) {
     <?php endif; ?>
     
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <a href="../teacher/schedule.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
+                <i class="bi bi-calendar-plus display-5 text-primary mb-3"></i>
+                <h3 class="h5 text-dark fw-bold">إضافة صفوف وجداول</h3>
+                <p class="small text-muted mb-0">إضافة صفوف دراسية وتعديل جدول الحصص</p>
+            </a>
+        </div>
+        <div class="col-md-3">
             <a href="reports.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
-                <i class="bi bi-file-earmark-pdf display-5 text-primary mb-3"></i>
+                <i class="bi bi-file-earmark-pdf display-5 text-info mb-3"></i>
                 <h3 class="h5 text-dark fw-bold">التقارير</h3>
                 <p class="small text-muted mb-0">استخراج تقارير التبديلات والطباعة</p>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a href="users.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
                 <i class="bi bi-person-vcard display-5 text-secondary mb-3"></i>
                 <h3 class="h5 text-dark fw-bold">الموظفين</h3>
                 <p class="small text-muted mb-0">إدارة الصلاحيات والبيانات</p>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a href="upload.php" class="d-block p-4 text-center text-decoration-none bg-light rounded-4 hover-shadow transition">
                 <i class="bi bi-file-earmark-spreadsheet display-5 text-success mb-3"></i>
-                <h3 class="h5 text-dark fw-bold">الجداول</h3>
+                <h3 class="h5 text-dark fw-bold">رفع الجداول</h3>
                 <p class="small text-muted mb-0">تحديث الجدول المدرسي (Excel)</p>
             </a>
         </div>
